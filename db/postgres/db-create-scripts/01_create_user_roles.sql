@@ -1,0 +1,48 @@
+-- Role: rds_iam
+-- DROP ROLE IF EXISTS rds_iam;
+
+CREATE ROLE rds_iam WITH
+  NOLOGIN
+  NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION;
+  
+-- Role: iam_db_user_dev
+-- DROP ROLE IF EXISTS iam_db_user_dev;
+
+CREATE ROLE iam_db_user_dev WITH
+  LOGIN
+  NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION;
+
+GRANT rds_iam TO iam_db_user_dev;
+
+-- Role: radx_admin
+-- DROP ROLE IF EXISTS radx_admin;
+
+CREATE ROLE radx_admin WITH
+  LOGIN
+  NOSUPERUSER
+  INHERIT
+  CREATEDB
+  CREATEROLE
+  NOREPLICATION;
+
+GRANT rds_superuser TO radx_admin WITH ADMIN OPTION;
+
+-- Role: radx_user
+-- DROP ROLE IF EXISTS radx_user;
+
+CREATE ROLE radx_user WITH
+  LOGIN
+  NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION
+  VALID UNTIL 'infinity';
