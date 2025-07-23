@@ -529,4 +529,55 @@ INSERT INTO event_link (id, event_id, link_label, link_url, display_order) VALUE
 (1, 1, 'Join Us for Office Hours on July 8! ', 'https://docs.google.com/document/d/1GzPM6R6CWd10sp0Pdl3RfRw-RIkla4iDbdcKcQJDTlA/edit?tab=t.0#heading=h.1s48q99qxb5x', 1),
 (2, 3, 'View Slide', 'https://drive.google.com/file/d/1wP1qs-bwGjnRd-7cPLxEmf5i-tQ_vypF/view', 2);
 
+-- Create a test user for local development
+INSERT INTO users (
+  id,
+  uuid,
+  first_name,
+  middle_initial,
+  last_name,
+  email_address,
+  orcid_id,
+  job_title,
+  institution_id,
+  researcher_level_id,
+  status_id,
+  internal_user,
+  accept_terms,
+  last_dua_date,
+  last_login_at,
+  sftp_path,
+  created_at,
+  modified_at,
+  dcc_id
+)
+VALUES
+(
+  3,                                          -- id
+  null,     -- uuid
+  'Test',                                    -- first_name
+  null,                                        -- middle_initial
+  'Test',                                    -- last_name
+  'test@test.com',                  -- email_address
+  null,                      -- orcid_id
+  'Software Developer',                      -- job_title
+  1,                                          -- institution_id
+  5,                                          -- researcher_level_id
+  1,                                          -- status_id
+  true,                                       -- internal_user
+  true,                                       -- accept_terms
+  null,                               -- last_dua_date
+  CURRENT_TIMESTAMP,                      -- last_login_at
+  NULL,                                       -- sftp_path
+  CURRENT_TIMESTAMP,                          -- created_at
+  NULL,                                       -- modified_at
+  1                                           -- dcc_id
+);
 
+INSERT INTO user_role (id, user_id, role_id) VALUES
+(1, 3, 1),
+(2, 3, 2),
+(3, 3, 3),
+(4, 3, 4),
+(5, 3, 5),
+(6, 3, 6);
