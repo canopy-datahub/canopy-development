@@ -73,8 +73,8 @@ INSERT INTO public.lkup_property_codelist VALUES (28, 'Study_Focus_Population', 
 -- Data for Name: lkup_property_source; Type: TABLE DATA; Schema: public; Owner: radx_admin
 --
 
-INSERT INTO public.lkup_property_source VALUES (1, 'dbGaP/RADx MTA', NULL);
-INSERT INTO public.lkup_property_source VALUES (2, 'RADx Hub Online Submission', NULL);
+INSERT INTO public.lkup_property_source VALUES (1, 'dbGaP/MTA', NULL);
+INSERT INTO public.lkup_property_source VALUES (2, 'Online Submission', NULL);
 INSERT INTO public.lkup_property_source VALUES (3, 'Database Administrator', NULL);
 INSERT INTO public.lkup_property_source VALUES (4, 'Other', 'unknown');
 
