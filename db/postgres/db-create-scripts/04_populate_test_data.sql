@@ -568,7 +568,7 @@ VALUES
   true,                                       -- accept_terms
   null,                               -- last_dua_date
   CURRENT_TIMESTAMP,                      -- last_login_at
-  NULL,                                       -- sftp_path
+  'local-yan',                                       -- sftp_path
   CURRENT_TIMESTAMP,                          -- created_at
   NULL,                                       -- modified_at
   1                                           -- dcc_id
