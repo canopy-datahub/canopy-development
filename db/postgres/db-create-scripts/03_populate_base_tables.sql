@@ -1155,7 +1155,7 @@ INSERT INTO public.lkup_status VALUES (18, 'completed', 'data_submission', 100, 
 INSERT INTO public.lkup_status VALUES (23, 'active', 'institution', 20, NULL);
 INSERT INTO public.lkup_status VALUES (24, 'inactive', 'institution', 30, NULL);
 INSERT INTO public.lkup_status VALUES (22, 'pending', 'institution', 10, NULL);
-INSERT INTO public.lkup_status VALUES (25, 'Saved', 'study', 10, NULL);
+INSERT INTO public.lkup_status VALUES (25, 'Draft', 'study', 10, NULL);
 INSERT INTO public.lkup_status VALUES (26, 'In Review', 'study', 20, NULL);
 INSERT INTO public.lkup_status VALUES (27, 'Approved', 'study', 30, NULL);
 INSERT INTO public.lkup_status VALUES (19, 'submitted', 'workbench_request', 10, NULL);
