@@ -37,7 +37,7 @@ INSERT INTO public.lkup_entity_type VALUES (5, 'datafile', NULL);
 -- Data for Name: lkup_property_codelist; Type: TABLE DATA; Schema: public; Owner: radx_admin
 --
 
-INSERT INTO public.lkup_property_codelist VALUES (2, 'RADX_Data_Program', 'study_dcc');
+INSERT INTO public.lkup_property_codelist VALUES (2, 'Center', 'study_center');
 INSERT INTO public.lkup_property_codelist VALUES (3, 'Collection_Method', 'study_source');
 INSERT INTO public.lkup_property_codelist VALUES (4, 'Repositories', 'data_access_points');
 INSERT INTO public.lkup_property_codelist VALUES (5, 'Genomic_Analyses_Types', 'data_analyses');
@@ -106,7 +106,7 @@ INSERT INTO public.entity_property VALUES (1, 'phs', NULL, 1, 1, 2, false, false
 INSERT INTO public.entity_property VALUES (2, 'title', NULL, 1, 1, 1, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (6, 'studystartdate', NULL, 1, 4, 2, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (7, 'studyenddate', NULL, 1, 4, 2, false, false, NULL, false);
-INSERT INTO public.entity_property VALUES (5, 'dcc', NULL, 1, 3, 2, false, false, 2, false);
+INSERT INTO public.entity_property VALUES (5, 'center', NULL, 1, 3, 2, false, false, 2, false);
 INSERT INTO public.entity_property VALUES (20, 'source', NULL, 1, 3, 2, false, true, 3, false);
 INSERT INTO public.entity_property VALUES (3, 'description', NULL, 1, 1, 1, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (9, 'multi_center_sites', NULL, 1, 1, 1, false, false, NULL, false);
@@ -407,6 +407,7 @@ INSERT INTO public.lkup_property_codelist_value VALUES (5, 2, 'RADx DHT', 10);
 INSERT INTO public.lkup_property_codelist_value VALUES (6, 2, 'RADx-rad', 20);
 INSERT INTO public.lkup_property_codelist_value VALUES (7, 2, 'RADx Tech', 30);
 INSERT INTO public.lkup_property_codelist_value VALUES (8, 2, 'RADx-UP', 40);
+INSERT INTO public.lkup_property_codelist_value VALUES (363, 2, 'Stanford', 50);
 INSERT INTO public.lkup_property_codelist_value VALUES (284, 16, 'Community Outreach Programs', 50);
 INSERT INTO public.lkup_property_codelist_value VALUES (285, 16, 'Comorbidities', 60);
 INSERT INTO public.lkup_property_codelist_value VALUES (286, 16, 'COVID Hotspots', 70);
@@ -942,13 +943,14 @@ INSERT INTO public.lkup_data_file_category VALUES (12, 'README', 'A file contain
 --
 -- TOC entry 4987 (class 0 OID 16507)
 -- Dependencies: 236
--- Data for Name: lkup_dcc; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_center; Type: TABLE DATA; Schema: public; Owner: radx_admin
 --
 
-INSERT INTO public.lkup_dcc VALUES (1, 'RADx-UP', NULL);
-INSERT INTO public.lkup_dcc VALUES (2, 'RADx Tech', NULL);
-INSERT INTO public.lkup_dcc VALUES (3, 'RADx DHT', NULL);
-INSERT INTO public.lkup_dcc VALUES (4, 'RADx-rad', NULL);
+INSERT INTO public.lkup_center VALUES (1, 'RADx-UP', NULL);
+INSERT INTO public.lkup_center VALUES (2, 'RADx Tech', NULL);
+INSERT INTO public.lkup_center VALUES (3, 'RADx DHT', NULL);
+INSERT INTO public.lkup_center VALUES (4, 'RADx-rad', NULL);
+INSERT INTO public.lkup_center VALUES (5, 'Stanford', NULL);
 
 
 --
@@ -958,7 +960,7 @@ INSERT INTO public.lkup_dcc VALUES (4, 'RADx-rad', NULL);
 --
 
 INSERT INTO public.lkup_event_type VALUES (1, 'webinar');
-INSERT INTO public.lkup_event_type VALUES (2, 'dcc meeting');
+INSERT INTO public.lkup_event_type VALUES (2, 'center meeting');
 INSERT INTO public.lkup_event_type VALUES (3, 'general event');
 
 
@@ -1285,10 +1287,10 @@ SELECT pg_catalog.setval('public.lkup_data_file_category_id_seq', 14, true);
 --
 -- TOC entry 5036 (class 0 OID 0)
 -- Dependencies: 235
--- Name: lkup_dcc_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_center_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
 --
 
-SELECT pg_catalog.setval('public.lkup_dcc_id_seq', 4, true);
+SELECT pg_catalog.setval('public.lkup_center_id_seq', 4, true);
 
 
 --

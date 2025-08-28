@@ -64,7 +64,7 @@ ALTER TYPE public.variableinfotype OWNER TO radx_admin;
 
 CREATE TYPE public.variablemappingtype AS (
 	id character varying,
-	dcc character varying,
+	center character varying,
 	program character varying,
 	tier_2_variable_id character varying,
 	label text,
@@ -101,6 +101,9 @@ CREATE TYPE public.variabletermstype AS (
 
 
 ALTER TYPE public.variabletermstype OWNER TO radx_admin;
+
+-- Install hstore extension
+CREATE EXTENSION IF NOT EXISTS hstore;
 
 --
 -- TOC entry 486 (class 1255 OID 28416)
@@ -275,10 +278,10 @@ CREATE PROCEDURE public.sp_generate_hub_content_metrics()
 	END IF;
 	
 	Delete from hub_content_metrics where report_id=_report_id;
-	INSERT INTO hub_content_metrics(report_id, dcc, study_phs, study_title,study_status, study_create_date,study_has_data_file,
+	INSERT INTO hub_content_metrics(report_id, center, study_phs, study_title,study_status, study_create_date,study_has_data_file,
 		total_file_count,data_file_count,total_file_size, orig_data_file_count, standardized_data_file_count, metadata_file_count,
 		dictionary_file_count,	readme_file_count,	other_file_count )
-	SELECT _report_id, d.dcc, d.study_phs, d.study_title, d.study_status, d.study_create_date,
+	SELECT _report_id, d.center, d.study_phs, d.study_title, d.study_status, d.study_create_date,
 			d.study_has_data_file,
             d.total_file_count,
             d.data_file_count,
@@ -544,7 +547,7 @@ CREATE TABLE public.datafile_harmonization_metrics (
     orig_file_name character varying(1024),
     transform_file_name character varying(1024),
     study_phs character varying(10),
-    dcc character varying(128),
+    center character varying(128),
     orig_variable_count integer,
     transform_variable_count integer,
     harmonizable_tier_1_variable_count integer,
@@ -878,7 +881,7 @@ ALTER SEQUENCE public.funding_id_seq OWNED BY public.funding.id;
 CREATE TABLE public.hub_content_metrics (
     id integer NOT NULL,
     report_id integer NOT NULL,
-    dcc text,
+    center text,
     study_phs text,
     study_title text,
     study_status text,
@@ -1177,24 +1180,24 @@ ALTER SEQUENCE public.lkup_data_file_category_id_seq OWNED BY public.lkup_data_f
 
 --
 -- TOC entry 236 (class 1259 OID 16507)
--- Name: lkup_dcc; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_center; Type: TABLE; Schema: public; Owner: radx_admin
 --
 
-CREATE TABLE public.lkup_dcc (
+CREATE TABLE public.lkup_center (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
     description text
 );
 
 
-ALTER TABLE public.lkup_dcc OWNER TO radx_admin;
+ALTER TABLE public.lkup_center OWNER TO radx_admin;
 
 --
 -- TOC entry 235 (class 1259 OID 16506)
--- Name: lkup_dcc_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_center_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
 --
 
-CREATE SEQUENCE public.lkup_dcc_id_seq
+CREATE SEQUENCE public.lkup_center_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -1203,15 +1206,15 @@ CREATE SEQUENCE public.lkup_dcc_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_dcc_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_center_id_seq OWNER TO radx_admin;
 
 --
 -- TOC entry 5457 (class 0 OID 0)
 -- Dependencies: 235
--- Name: lkup_dcc_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_center_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
 --
 
-ALTER SEQUENCE public.lkup_dcc_id_seq OWNED BY public.lkup_dcc.id;
+ALTER SEQUENCE public.lkup_center_id_seq OWNED BY public.lkup_center.id;
 
 
 --
@@ -1929,7 +1932,7 @@ ALTER SEQUENCE public.lkup_support_request_type_id_seq OWNED BY public.lkup_supp
 CREATE TABLE public.lkup_variable_category (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
-    dcc_id integer,
+    center_id integer,
     description text
 );
 
@@ -2530,8 +2533,8 @@ CREATE TABLE public.study (
     public_key_url character varying(255),
     file_name character varying(255),
     file_url character varying(255),
-    dcc_id integer NOT NULL,
-    dcc_admin_uuid character varying(36),
+    center_id integer NOT NULL,
+    center_admin_uuid character varying(36),
     status_id integer,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     created_by integer DEFAULT 9999 NOT NULL,
@@ -2551,7 +2554,7 @@ CREATE TABLE public.study_harmonization_metrics (
     id integer NOT NULL,
     report_id integer NOT NULL,
     study_phs character varying(10),
-    dcc character varying(128),
+    center character varying(128),
     orig_transform_pairs_count integer,
     variable_count integer,
     harmonizable_tier_1_variable_count integer,
@@ -2778,7 +2781,7 @@ ALTER SEQUENCE public.tier_1_variable_id_seq OWNED BY public.tier_1_variable.id;
 CREATE TABLE public.tier_1_variable_mapping_json (
     id integer NOT NULL,
     tier_1_variable_id character varying(256) NOT NULL,
-    dcc_id integer,
+    center_id integer,
     program character varying(256) NOT NULL,
     data_elements jsonb
 );
@@ -3134,7 +3137,7 @@ CREATE TABLE public.users (
     sftp_path character varying(128),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     modified_at timestamp without time zone,
-    dcc_id integer
+    center_id integer
 );
 
 
@@ -3174,7 +3177,7 @@ CREATE TABLE public.variable_mapping (
     id integer NOT NULL,
     variable_1_id integer NOT NULL,
     variable_2_id integer,
-    variable_2_dcc_id integer,
+    variable_2_center_id integer,
     variable_2_program character varying(256),
     variable_2_name character varying(256) NOT NULL
 );
@@ -3301,7 +3304,7 @@ ALTER SEQUENCE public.variable_property_value_id_seq OWNED BY public.variable_pr
 CREATE TABLE public.variables (
     id integer NOT NULL,
     category_id integer NOT NULL,
-    dcc_id integer,
+    center_id integer,
     study_id integer,
     name character varying(256) NOT NULL,
     label text,
@@ -3341,14 +3344,13 @@ ALTER SEQUENCE public.variables_id_seq OWNED BY public.variables.id;
 -- TOC entry 333 (class 1259 OID 22387)
 -- Name: view_study; Type: VIEW; Schema: public; Owner: radx_user
 --
-CREATE EXTENSION IF NOT EXISTS tablefunc;
 
 CREATE VIEW public.view_study AS
  SELECT p.study_id,
     p.phs,
     p.title,
     p.description,
-    p.dcc,
+    p.center,
     p.studystartdate,
     p.studyenddate,
     p.is_multi_center,
@@ -3390,7 +3392,7 @@ CREATE VIEW public.view_study AS
             crosstab.phs,
             crosstab.title,
             crosstab.description,
-            crosstab.dcc,
+            crosstab.center,
             crosstab.studystartdate,
             crosstab.studyenddate,
             crosstab.is_multi_center,
@@ -3431,7 +3433,7 @@ CREATE VIEW public.view_study AS
 	    values (''phs''),
 		(''title''),
 		(''description''),
-		(''dcc''),
+		(''center''),
 		(''studystartdate''),
 		(''studyenddate''),
 		(''is_multi_center''),
@@ -3465,7 +3467,7 @@ CREATE VIEW public.view_study AS
 		(''FOA_number''),
 		(''FOA_URL''),
 		(''estimated_participant_range'')
-	'::text) crosstab(study_id integer, phs text, title text, description text, dcc text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, estimated_participants text, source text, subject text, types text, institutes_supporting_study text, data_general_types text, acknowledgement_statement text, data_species text, disease_specific_group text, disease_specific_related_conditions text, general_research_group text, grant_number text, health_biomed_group text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text)) p ON ((s.id = p.study_id)));
+	'::text) crosstab(study_id integer, phs text, title text, description text, center text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, estimated_participants text, source text, subject text, types text, institutes_supporting_study text, data_general_types text, acknowledgement_statement text, data_species text, disease_specific_group text, disease_specific_related_conditions text, general_research_group text, grant_number text, health_biomed_group text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text)) p ON ((s.id = p.study_id)));
 
 
 ALTER VIEW public.view_study OWNER TO radx_user;
@@ -3509,7 +3511,7 @@ ALTER VIEW public.view_current_data_file OWNER TO radx_admin;
 
 CREATE VIEW public.view_current_hub_content AS
  SELECT id,
-    dcc,
+    center,
     study_phs,
     study_title,
     study_status,
@@ -3525,7 +3527,7 @@ CREATE VIEW public.view_current_hub_content AS
     other_file_count,
     (data_file_count > 0) AS study_has_data_file
    FROM ( SELECT s.study_id AS id,
-            s.dcc,
+            s.center,
             s.phs AS study_phs,
             s.title AS study_title,
             s.status AS study_status,
@@ -3544,7 +3546,7 @@ CREATE VIEW public.view_current_hub_content AS
              LEFT JOIN public.data_file d ON (((d.submission_id = m.id) AND d.is_current_version)))
              LEFT JOIN public.lkup_data_file_category l ON ((d.file_category_id = l.id)))
           WHERE (s.status = 'Approved'::text)
-          GROUP BY s.study_id, s.dcc, s.phs, s.title, s.status, s.created_at, s.has_data_files
+          GROUP BY s.study_id, s.center, s.phs, s.title, s.status, s.created_at, s.has_data_files
           ORDER BY s.study_id) a;
 
 
@@ -3558,7 +3560,7 @@ ALTER VIEW public.view_current_hub_content OWNER TO radx_admin;
 CREATE VIEW public.view_current_hub_content_data AS
  SELECT (row_number() OVER ())::integer AS id,
     CURRENT_DATE AS report_date,
-    t.dcc,
+    t.center,
     t.phs AS study_phs,
     t.title AS study_title,
     t.status AS study_status,
@@ -3601,7 +3603,7 @@ CREATE VIEW public.view_data_file_variables AS
     s.study_id,
     s.title AS study_name,
     s.phs AS study_phs,
-    s.dcc AS study_program
+    s.center AS study_program
    FROM (((((((public.data_file f
      JOIN public.s3_file s3 ON ((f.s3_file_id = s3.id)))
      JOIN public.data_file_variable v ON (((f.id = v.data_file_id) AND f.is_current_version)))
@@ -3609,7 +3611,7 @@ CREATE VIEW public.view_data_file_variables AS
      JOIN public.study y ON ((m.study_id = y.id)))
      JOIN public.view_study s ON ((m.study_id = s.study_id)))
      LEFT JOIN public.variables l ON ((((l.name)::text = (v.variable)::text) AND (l.category_id = 1))))
-     LEFT JOIN public.variables l2 ON ((((l2.name)::text = (v.variable)::text) AND (l2.dcc_id = y.dcc_id))));
+     LEFT JOIN public.variables l2 ON ((((l2.name)::text = (v.variable)::text) AND (l2.center_id = y.center_id))));
 
 
 ALTER VIEW public.view_data_file_variables OWNER TO radx_admin;
@@ -3625,7 +3627,7 @@ CREATE VIEW public.view_study_all AS
     p.title,
     p.description,
     p."RAPIDS_link",
-    p.dcc,
+    p.center,
     p.studystartdate,
     p.studyenddate,
     p.is_multi_center,
@@ -3733,7 +3735,7 @@ CREATE VIEW public.view_study_all AS
             crosstab.title,
             crosstab.description,
             crosstab."RAPIDS_link",
-            crosstab.dcc,
+            crosstab.center,
             crosstab.studystartdate,
             crosstab.studyenddate,
             crosstab.is_multi_center,
@@ -3840,7 +3842,7 @@ CREATE VIEW public.view_study_all AS
 		(''title''),
 		(''description''),
 		(''RAPIDS_link''),
-		(''dcc''),
+		(''center''),
 		(''studystartdate''),
 		(''studyenddate''),
 		(''is_multi_center''),
@@ -3939,7 +3941,7 @@ CREATE VIEW public.view_study_all AS
 		(''FOA_URL''),
 		(''estimated_participant_range''),
 		(''data_use_limitations'')
-	'::text) crosstab(study_id integer, phs text, title text, description text, "RAPIDS_link" text, dcc text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, pi_email text, pi_assistant_name text, pi_assistant_email text, pi_institution text, pi_sign_date text, po_name text, officer_sign_date text, estimated_participants text, public_access_data text, source text, subject text, types text, unrestricted_access text, institutes_supporting_study text, needs_institutional_certifications text, data_general_types text, data_genomic text, data_genotype text, data_sample_types text, data_sequencing text, user_agreement_accepted text, data_policy_accepted text, reject_comments text, study_approved_date text, acknowledgement_statement text, aggregate_appropriate_for_general_use text, awardee text, consent_to_add_aggregate text, consent_to_add_individual text, controlled_access text, controlled_access_data text, data_access_points text, data_analyses text, data_array_data text, data_from_repository_name text, data_phenotype text, data_sample_collection text, data_sharing_info text, data_species text, data_storage_size text, data_submission_date text, data_submission_method text, data_submission_timeline_details text, data_target_delivery_date text, data_target_release_date text, disease_specific_group text, disease_specific_related_conditions text, eua text, expected_data_format text, general_research_group text, geno_seq_platform_info text, geno_seq_platform_url text, geno_seq_platform_probes text, geno_seq_platform_vendor text, geno_seq_platform_description text, geno_seq_platform_name_version text, grant_number text, has_era_account text, has_ic text, health_biomed_group text, individual_appropriate_for_general_use text, other_group_description text, project_number text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, types_other_specify text, source_other_specify text, data_general_types_other_specify text, data_genomic_other_specify text, data_phenotype_other_specify text, data_sample_types_other_specify text, data_genotype_other_specify text, data_sequencing_other_specify text, data_analyses_other_specify text, data_array_data_other_specify text, data_access_points_other text, topics_other_specify text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, access_type text, data_access_type text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text, data_use_limitations text)) p ON ((s.id = p.study_id)));
+	'::text) crosstab(study_id integer, phs text, title text, description text, "RAPIDS_link" text, center text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, pi_email text, pi_assistant_name text, pi_assistant_email text, pi_institution text, pi_sign_date text, po_name text, officer_sign_date text, estimated_participants text, public_access_data text, source text, subject text, types text, unrestricted_access text, institutes_supporting_study text, needs_institutional_certifications text, data_general_types text, data_genomic text, data_genotype text, data_sample_types text, data_sequencing text, user_agreement_accepted text, data_policy_accepted text, reject_comments text, study_approved_date text, acknowledgement_statement text, aggregate_appropriate_for_general_use text, awardee text, consent_to_add_aggregate text, consent_to_add_individual text, controlled_access text, controlled_access_data text, data_access_points text, data_analyses text, data_array_data text, data_from_repository_name text, data_phenotype text, data_sample_collection text, data_sharing_info text, data_species text, data_storage_size text, data_submission_date text, data_submission_method text, data_submission_timeline_details text, data_target_delivery_date text, data_target_release_date text, disease_specific_group text, disease_specific_related_conditions text, eua text, expected_data_format text, general_research_group text, geno_seq_platform_info text, geno_seq_platform_url text, geno_seq_platform_probes text, geno_seq_platform_vendor text, geno_seq_platform_description text, geno_seq_platform_name_version text, grant_number text, has_era_account text, has_ic text, health_biomed_group text, individual_appropriate_for_general_use text, other_group_description text, project_number text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, types_other_specify text, source_other_specify text, data_general_types_other_specify text, data_genomic_other_specify text, data_phenotype_other_specify text, data_sample_types_other_specify text, data_genotype_other_specify text, data_sequencing_other_specify text, data_analyses_other_specify text, data_array_data_other_specify text, data_access_points_other text, topics_other_specify text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, access_type text, data_access_type text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text, data_use_limitations text)) p ON ((s.id = p.study_id)));
 
 
 ALTER VIEW public.view_study_all OWNER TO radx_user;
@@ -3956,7 +3958,7 @@ CREATE VIEW public.view_study_variables AS
     fv.variable,
     ((v.id IS NOT NULL) AND (v.category_id = 1)) AS is_tier1_variable,
     v.label AS variable_label,
-    y.dcc_id,
+    y.center_id,
     c.name AS variable_category,
     v.section,
     v.datatype
@@ -3967,7 +3969,7 @@ CREATE VIEW public.view_study_variables AS
      JOIN public.study_property_value u ON (((y.id = u.study_id) AND (u.entity_property_id = ( SELECT entity_property.id
            FROM public.entity_property
           WHERE ((entity_property.name)::text = 'phs'::text))))))
-     LEFT JOIN public.variables v ON ((((fv.variable)::text = (v.name)::text) AND ((v.dcc_id IS NULL) OR (y.dcc_id = v.dcc_id)))))
+     LEFT JOIN public.variables v ON ((((fv.variable)::text = (v.name)::text) AND ((v.center_id IS NULL) OR (y.center_id = v.center_id)))))
      LEFT JOIN public.lkup_variable_category c ON ((v.category_id = c.id)));
 
 
@@ -3984,7 +3986,7 @@ CREATE VIEW public.view_study_for_es AS
     s.title,
     s.description,
     s.status,
-    s.dcc,
+    s.center,
     s.studystartdate,
     s.studyenddate,
     s.is_multi_center,
@@ -4299,7 +4301,7 @@ ALTER VIEW public.view_study_property_value_display OWNER TO radx_admin;
 CREATE VIEW public.view_submission_activity AS
  SELECT (row_number() OVER ())::integer AS id,
     s.study_id,
-    s.dcc,
+    s.center,
     s.phs AS study_phs,
     s.title AS study_name,
     s.created_at AS study_initiated_date,
@@ -4314,7 +4316,7 @@ CREATE VIEW public.view_submission_activity AS
    FROM ((public.view_study s
      LEFT JOIN public.data_submission d ON ((d.study_id = s.study_id)))
      LEFT JOIN public.data_file f ON ((f.submission_id = d.id)))
-  WHERE (s.dcc IS NOT NULL);
+  WHERE (s.center IS NOT NULL);
 
 
 ALTER VIEW public.view_submission_activity OWNER TO radx_admin;
@@ -4384,12 +4386,12 @@ CREATE VIEW public.view_user_role AS
     u.first_name,
     u.last_name,
     u.email_address,
-    c.name AS dcc,
+    c.name AS center,
     u.internal_user
    FROM (((public.users u
      JOIN public.user_role ur ON ((ur.user_id = u.id)))
      JOIN public.lkup_role r ON ((ur.role_id = r.id)))
-     LEFT JOIN public.lkup_dcc c ON ((u.dcc_id = c.id)))
+     LEFT JOIN public.lkup_center c ON ((u.center_id = c.id)))
   ORDER BY r.id;
 
 
@@ -4432,7 +4434,7 @@ ALTER VIEW public.view_variable_overview_display OWNER TO radx_admin;
 CREATE TABLE public.weekly_hub_content_data (
     id integer NOT NULL,
     report_date date NOT NULL,
-    dcc text,
+    center text,
     study_phs text,
     study_title text,
     study_status text,
@@ -4486,7 +4488,7 @@ CREATE TABLE public.workbench_request (
     id integer NOT NULL,
     requestor_user_id integer NOT NULL,
     analytics_software_request text,
-    dcc_affiliated boolean,
+    center_affiliated boolean,
     research_use_statement text,
     reason_of_request text,
     status_id integer,
@@ -5012,10 +5014,10 @@ ALTER TABLE ONLY public.lkup_data_file_category ALTER COLUMN id SET DEFAULT next
 
 --
 -- TOC entry 4865 (class 2604 OID 16510)
--- Name: lkup_dcc id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_center id; Type: DEFAULT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.lkup_dcc ALTER COLUMN id SET DEFAULT nextval('public.lkup_dcc_id_seq'::regclass);
+ALTER TABLE ONLY public.lkup_center ALTER COLUMN id SET DEFAULT nextval('public.lkup_center_id_seq'::regclass);
 
 
 --
@@ -5598,11 +5600,11 @@ ALTER TABLE ONLY public.lkup_data_file_category
 
 --
 -- TOC entry 5005 (class 2606 OID 16514)
--- Name: lkup_dcc lkup_dcc_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_center lkup_center_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.lkup_dcc
-    ADD CONSTRAINT lkup_dcc_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.lkup_center
+    ADD CONSTRAINT lkup_center_pkey PRIMARY KEY (id);
 
 
 --
@@ -6636,11 +6638,11 @@ ALTER TABLE ONLY public.sas_file_download
 
 --
 -- TOC entry 5140 (class 2606 OID 16587)
--- Name: study fk_study_dcc_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study fk_study_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
 ALTER TABLE ONLY public.study
-    ADD CONSTRAINT fk_study_dcc_id FOREIGN KEY (dcc_id) REFERENCES public.lkup_dcc(id) NOT VALID;
+    ADD CONSTRAINT fk_study_center_id FOREIGN KEY (center_id) REFERENCES public.lkup_center(id) NOT VALID;
 
 
 --
@@ -6726,11 +6728,11 @@ ALTER TABLE ONLY public.support_request
 
 --
 -- TOC entry 5154 (class 2606 OID 22122)
--- Name: users fk_user_dcc_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: users fk_user_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT fk_user_dcc_id FOREIGN KEY (dcc_id) REFERENCES public.lkup_dcc(id) DEFERRABLE INITIALLY DEFERRED;
+    ADD CONSTRAINT fk_user_center_id FOREIGN KEY (center_id) REFERENCES public.lkup_center(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -6888,11 +6890,11 @@ ALTER TABLE ONLY public.variable_mapping
 
 --
 -- TOC entry 5215 (class 2606 OID 58945)
--- Name: lkup_variable_category fk_variable_category_dcc_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_category fk_variable_category_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
 ALTER TABLE ONLY public.lkup_variable_category
-    ADD CONSTRAINT fk_variable_category_dcc_id FOREIGN KEY (dcc_id) REFERENCES public.lkup_dcc(id) NOT VALID;
+    ADD CONSTRAINT fk_variable_category_center_id FOREIGN KEY (center_id) REFERENCES public.lkup_center(id) NOT VALID;
 
 
 --
@@ -6906,11 +6908,11 @@ ALTER TABLE ONLY public.variables
 
 --
 -- TOC entry 5217 (class 2606 OID 58970)
--- Name: variables fk_variable_dcc_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: variables fk_variable_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
 ALTER TABLE ONLY public.variables
-    ADD CONSTRAINT fk_variable_dcc_id FOREIGN KEY (dcc_id) REFERENCES public.lkup_dcc(id) NOT VALID;
+    ADD CONSTRAINT fk_variable_center_id FOREIGN KEY (center_id) REFERENCES public.lkup_center(id) NOT VALID;
 
 
 --
@@ -7316,10 +7318,10 @@ GRANT ALL ON TABLE public.lkup_data_file_category TO radx_user;
 --
 -- TOC entry 5456 (class 0 OID 0)
 -- Dependencies: 236
--- Name: TABLE lkup_dcc; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_center; Type: ACL; Schema: public; Owner: radx_admin
 --
 
-GRANT ALL ON TABLE public.lkup_dcc TO radx_user;
+GRANT ALL ON TABLE public.lkup_center TO radx_user;
 
 
 --
