@@ -70,7 +70,7 @@
                     }
                 }
             },
-            "dcc": {
+            "center": {
                 "type": "text",
                 "fields": {
                     "keyword": {

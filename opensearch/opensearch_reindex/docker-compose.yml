@@ -1,4 +1,3 @@
-version: '3'
 services:
  datahub-opensearch:
    image: opensearchproject/opensearch:2.11.1

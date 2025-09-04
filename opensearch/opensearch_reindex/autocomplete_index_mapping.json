@@ -1,33 +1,34 @@
 {
   "mappings": {
     "properties": {
-      "suggest": {
-        "type": "completion",
-        "analyzer": "simple",
-        "preserve_separators": true,
-        "preserve_position_increments": true,
-        "max_input_length": 50
+      "@timestamp": {
+        "type": "date"
       },
-      "title": {
+      "@version": {
         "type": "text",
-        "analyzer": "standard"
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
       },
-      "study_id": {
-        "type": "long"
-      },
-      "phs": {
-        "type": "keyword"
-      },
-      "dcc": {
-        "type": "keyword"
+      "phrase": {
+        "type": "text",
+        "fields": {
+          "completion": {
+            "type": "completion",
+            "analyzer": "simple",
+            "preserve_separators": true,
+            "preserve_position_increments": true,
+            "max_input_length": 256
+          },
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
       }
-    }
-  },
-  "settings": {
-    "number_of_shards": 1,
-    "number_of_replicas": 0,
-    "index": {
-      "refresh_interval": "1s"
     }
   }
 }

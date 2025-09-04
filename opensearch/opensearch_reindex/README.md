@@ -5,13 +5,53 @@ This is a local version of the OpenSearch refresh application, working with Open
 ## Prerequisites
 
 - Python 3.12
-- Docker and Docker Compose
+- **Docker Desktop** (must be running before executing the application)
 - **PostgreSQL database running locally** (required)
 - pip (Python package manager)
 
+**Note:** This application uses containerized OpenSearch via Docker, so Docker Desktop must be installed and running.
+
 ## Before Running
 
-### Ensure PostgreSQL is Running
+### 1. Ensure Docker Desktop is Running
+
+**Before running the application, make sure Docker Desktop is running on your system:**
+
+#### On macOS:
+```bash
+# Check if Docker Desktop is running
+docker --version && docker-compose --version
+
+# If not running, start Docker Desktop
+open /Applications/Docker.app
+```
+
+#### On Linux:
+```bash
+# Check if Docker is running
+sudo systemctl status docker
+
+# Start Docker if not running
+sudo systemctl start docker
+```
+
+#### On Windows:
+```bash
+# Check if Docker Desktop is running
+docker --version
+
+# If not running, start Docker Desktop from Start Menu or Desktop shortcut
+```
+
+**Verify Docker is working:**
+```bash
+# Test Docker connection
+docker ps
+```
+
+**⚠️ Important:** Wait for Docker Desktop to fully start (the Docker whale icon in your system tray should stop animating) before proceeding.
+
+### 2. Ensure PostgreSQL is Running
 
 **Before running the application, make sure your local PostgreSQL database is running:**
 
@@ -56,13 +96,17 @@ psql -h localhost -p 5432 -U your_dbuser -d your_dbname
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Start Required Services
+
+**Make sure both Docker Desktop and PostgreSQL are running** (see "Before Running" section above).
+
+### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Set Environment Variables
+### 3. Set Environment Variables
 
 #### Option A: Set environment variables manually
 ```bash
@@ -99,7 +143,7 @@ EOF
 source .env
 ```
 
-### 3. Run the Application
+### 4. Run the Application
 
 ```bash
 python opensearch_local_autorefresh.py
@@ -152,4 +196,4 @@ OpenSearch Index AutoRefresh Completed Successfully!
 - `autocomplete_index_mapping.json`: Mapping for autocomplete index
 - `docker-compose.yml`: Docker setup for OpenSearch
 - `requirements.txt`: Python dependencies
-- `README_LOCAL.md`: This documentation
+- `README.md`: This documentation
