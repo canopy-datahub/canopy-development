@@ -249,10 +249,10 @@ INSERT INTO public.entity_property_display_setting VALUES (1, 82, 'study_search'
 INSERT INTO public.entity_property_display_setting VALUES (16, 22, 'study_search', 'Representative', 'Study Design', 60, true, 40, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (14, 20, 'study_search', 'Representative', 'Data Collection Method', 70, true, 50, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (17, 24, 'study_search', 'Representative', 'NIH Institute / Center', 80, true, 60, NULL, NULL, false);
-INSERT INTO public.entity_property_display_setting VALUES (6, 5, 'study_search', 'Representative', 'RADx Data Program', 90, true, 70, NULL, NULL, true);
+INSERT INTO public.entity_property_display_setting VALUES (6, 5, 'study_search', 'Representative', 'Center', 90, true, 70, NULL, NULL, true);
 INSERT INTO public.entity_property_display_setting VALUES (22, 76, 'study_search', 'Representative', 'Has Data Files', 100, true, 80, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (43, 24, 'study_overview', 'Representative', 'NIH Institute/Center', 20, false, NULL, NULL, NULL, false);
-INSERT INTO public.entity_property_display_setting VALUES (32, 5, 'study_overview', 'Representative', 'RADx Data Program', 30, false, NULL, NULL, NULL, false);
+INSERT INTO public.entity_property_display_setting VALUES (32, 5, 'study_overview', 'Representative', 'Center', 30, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (42, 22, 'study_overview', 'Detail', 'Study Design', 160, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (41, 21, 'study_overview', 'Detail', 'Keywords', 150, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (49, 77, 'study_overview', 'Title', 'Study Size (MB)', 30, false, NULL, NULL, NULL, false);

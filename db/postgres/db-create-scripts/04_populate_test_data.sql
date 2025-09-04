@@ -7,8 +7,8 @@ INSERT INTO study (
     public_key_url,
     file_name,
     file_url,
-    dcc_admin_uuid,
-    dcc_id,
+    center_admin_uuid,
+    center_id,
     created_at,
     created_by,
     modified_at,
@@ -21,8 +21,8 @@ INSERT INTO study (
  'https://example.com/public/study1.pub',   -- public_key_url
  'RADx UP study 1',                    -- file_name
  'https://example.com/files/study1.json',   -- file_url
- 'admin-uuid-1',                            -- dcc_admin_uuid
- 1,                                         -- dcc_id (RADx-UP)
+ 'admin-uuid-1',                            -- center_admin_uuid
+ 1,                                         -- center_id (RADx-UP)
  CURRENT_TIMESTAMP,                         -- created_at
  9999,                                      -- created_by
  CURRENT_TIMESTAMP,                         -- modified_at
@@ -35,8 +35,8 @@ INSERT INTO study (
  'https://example.com/public/study2.pub',   -- public_key_url
  'RADx-rad study 1',                    -- file_name
  'https://example.com/files/study2.json',   -- file_url
- 'admin-uuid-2',                            -- dcc_admin_uuid
- 2,                                         -- dcc_id (RADx-rad)
+ 'admin-uuid-2',                            -- center_admin_uuid
+ 2,                                         -- center_id (RADx-rad)
  CURRENT_TIMESTAMP,                         -- created_at
  9999,                                      -- created_by
  CURRENT_TIMESTAMP,                         -- modified_at
@@ -121,7 +121,7 @@ INSERT INTO users (
   sftp_path,
   created_at,
   modified_at,
-  dcc_id
+  center_id
 )
 VALUES
 -- Record 1
@@ -144,7 +144,7 @@ VALUES
   NULL,                                       -- sftp_path
   CURRENT_TIMESTAMP,                          -- created_at
   NULL,                                       -- modified_at
-  1                                           -- dcc_id
+  1                                           -- center_id
 ),
 -- Record 2
 (
@@ -166,7 +166,7 @@ VALUES
   NULL,                                       -- sftp_path
   CURRENT_TIMESTAMP,                          -- created_at
   NULL,                                       -- modified_at
-  1                                           -- dcc_id
+  1                                           -- center_id
 );
 
 
@@ -401,24 +401,24 @@ INSERT INTO data_file (
   null                    -- metadata_file_id
 );
 
--- Create study document
-INSERT INTO study_document (
-    id, 
-    study_id, 
-    document_name, 
-    document_type_id,  -- This references lkup_data_file_category.id
-    document_size, 
-    s3_file_id, 
-    display_order
-) VALUES
--- Study 1 Documents
-(1, 1, 'Study Protocol', 3, 4096, 1, 1),           -- Protocol (category_id: 4)
-(2, 1, 'Consent Form', 4, 2048, 2, 2),             -- Consent Form (category_id: 5)
-(3, 1, 'Study Documentation', 2, 3072, 3, 3),      -- Documentation (category_id: 6)
--- Study 2 Documents
-(4, 2, 'Study Protocol', 3, 5120, 6, 1),           -- Protocol (category_id: 4)
-(5, 2, 'Consent Form', 4, 3072, 7, 2),             -- Consent Form (category_id: 5)
-(6, 2, 'Study Documentation', 2, 4096, 8, 3);      -- Documentation (category_id: 6)
+-- -- Create study document
+-- INSERT INTO study_document (
+--     id,
+--     study_id,
+--     document_name,
+--     document_type_id,  -- This references lkup_data_file_category.id
+--     document_size,
+--     s3_file_id,
+--     display_order
+-- ) VALUES
+-- -- Study 1 Documents
+-- (1, 1, 'Study Protocol', 3, 4096, 1, 1),           -- Protocol (category_id: 4)
+-- (2, 1, 'Consent Form', 4, 2048, 2, 2),             -- Consent Form (category_id: 5)
+-- (3, 1, 'Study Documentation', 2, 3072, 3, 3),      -- Documentation (category_id: 6)
+-- -- Study 2 Documents
+-- (4, 2, 'Study Protocol', 3, 5120, 6, 1),           -- Protocol (category_id: 4)
+-- (5, 2, 'Consent Form', 4, 3072, 7, 2),             -- Consent Form (category_id: 5)
+-- (6, 2, 'Study Documentation', 2, 4096, 8, 3);      -- Documentation (category_id: 6)
 
 ------------------------- Properties related ----------------------------------
 -- Create study property values for two studies
@@ -499,9 +499,9 @@ INSERT INTO events (id, title, slug, description, event_type_id, registration_ur
  CURRENT_TIMESTAMP),
 
 
-(2, 'DCC Monthly Meeting', 'dcc-monthly-meeting',
- 'Monthly DCC coordination meeting...',
- 2, -- dcc meeting
+(2, 'Center Monthly Meeting', 'center-monthly-meeting',
+ 'Monthly center coordination meeting...',
+ 2, -- center meeting
  null,
  CURRENT_DATE + INTERVAL '15 days',
  CURRENT_DATE + INTERVAL '160 days',
@@ -549,7 +549,7 @@ INSERT INTO users (
   sftp_path,
   created_at,
   modified_at,
-  dcc_id
+  center_id
 )
 VALUES
 (
@@ -571,7 +571,7 @@ VALUES
   'local-yan',                                       -- sftp_path
   CURRENT_TIMESTAMP,                          -- created_at
   NULL,                                       -- modified_at
-  1                                           -- dcc_id
+  1                                           -- center_id
 );
 
 INSERT INTO user_role (id, user_id, role_id) VALUES
