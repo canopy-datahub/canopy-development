@@ -1,6 +1,6 @@
 services:
  datahub-opensearch:
-   image: opensearchproject/opensearch:2.11.1
+   image: public.ecr.aws/opensearchproject/opensearch:2.11.1
    environment:
      - discovery.type=single-node
      - bootstrap.memory_lock=true
@@ -18,7 +18,7 @@ services:
      - datahub-opensearch-data:/usr/share/opensearch/data
 
  datahub-opensearch-dashboards:
-   image: opensearchproject/opensearch-dashboards:2.11.1
+   image: public.ecr.aws/opensearchproject/opensearch-dashboards:2.11.1
    ports:
      - "5601:5601"
    environment:
