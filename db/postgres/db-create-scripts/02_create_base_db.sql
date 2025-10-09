@@ -551,21 +551,11 @@ CREATE TABLE public.datafile_harmonization_metrics (
     orig_variable_count integer,
     transform_variable_count integer,
     harmonizable_tier_1_variable_count integer,
-    harmonizable_tier_2_variable_count integer,
-    harmonizable_tier_3_variable_count integer,
-    harmonizable_total integer,
     harmonized_tier_1_variable_count integer,
-    harmonized_tier_2_variable_count integer,
-    harmonized_tier_3_variable_count integer,
-    harmonized_total integer,
     orig_variables text,
     transform_variables text,
     harmonizable_tier_1_variables text,
-    harmonizable_tier_2_variables text,
-    harmonizable_tier_3_variables text,
-    harmonized_tier_1_variables text,
-    harmonized_tier_2_variables text,
-    harmonized_tier_3_variables text
+    harmonized_tier_1_variables text
 );
 
 
@@ -2558,19 +2548,9 @@ CREATE TABLE public.study_harmonization_metrics (
     orig_transform_pairs_count integer,
     variable_count integer,
     harmonizable_tier_1_variable_count integer,
-    harmonizable_tier_2_variable_count integer,
-    harmonizable_tier_3_variable_count integer,
-    harmonizable_total integer,
     harmonized_tier_1_variable_count integer,
-    harmonized_tier_2_variable_count integer,
-    harmonized_tier_3_variable_count integer,
-    harmonized_total integer,
     harmonizable_tier_1_variables text,
-    harmonizable_tier_2_variables text,
-    harmonizable_tier_3_variables text,
     harmonized_tier_1_variables text,
-    harmonized_tier_2_variables text,
-    harmonized_tier_3_variables text,
     variables text
 );
 
