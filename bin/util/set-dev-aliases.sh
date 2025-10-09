@@ -8,6 +8,16 @@ alias godh='cd $DATAHUB_HOME'
 alias envdh='source $DATAHUB_HOME/set-env.sh'
 alias dhcli='source $DATAHUB_HOME/datahub-cli/cli.sh'
 
+alias godhentity='cd $DATAHUB_HOME/datahub-service-entity'
+alias godhsearch='cd $DATAHUB_HOME/datahub-service-search'
+alias godhuser='cd $DATAHUB_HOME/datahub-service-user'
+alias godhsubmission='cd $DATAHUB_HOME/datahub-service-submission'
+alias godhreport='cd $DATAHUB_HOME/datahub-service-report'
+alias godhemail='cd $DATAHUB_HOME/datahub-service-email'
+alias godhdownload='cd $DATAHUB_HOME/datahub-service-download'
+
+alias godhui='cd $DATAHUB_HOME/datahub-ui-main'
+
 alias startdatahubentity='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh entity &'
 alias stopdatahubentity='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh entity'
 
