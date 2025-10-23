@@ -216,9 +216,9 @@ INSERT INTO public.entity_property VALUES (209, 'variable_cardinality', NULL, 2,
 INSERT INTO public.entity_property VALUES (210, 'variable_provenance', NULL, 2, 1, 3, false, true, NULL, false);
 INSERT INTO public.entity_property VALUES (211, 'variable_notes', NULL, 2, 1, 3, false, true, NULL, false);
 INSERT INTO public.entity_property VALUES (212, 'variable_mapping', NULL, 2, 1, 3, false, true, NULL, false);
-INSERT INTO public.entity_property VALUES (202, 'Section', NULL, 2, 1, 3, false, false, NULL, false);
-INSERT INTO public.entity_property VALUES (203, 'Datatype', NULL, 2, 1, 3, false, false, NULL, false);
-INSERT INTO public.entity_property VALUES (214, 'Study Name', NULL, 2, 1, 1, false, false, NULL, false);
+INSERT INTO public.entity_property VALUES (202, 'section', NULL, 2, 1, 3, false, false, NULL, false);
+INSERT INTO public.entity_property VALUES (203, 'datatype', NULL, 2, 1, 3, false, false, NULL, false);
+INSERT INTO public.entity_property VALUES (214, 'study_name', NULL, 2, 1, 1, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (104, 'study_variables', NULL, 1, 1, 3, false, true, NULL, NULL);
 
 
@@ -1197,13 +1197,7 @@ INSERT INTO public.lkup_support_request_type VALUES (5, 'Engagement', NULL, 50);
 -- Data for Name: lkup_variable_category; Type: TABLE DATA; Schema: public; Owner: radx_admin
 --
 
-INSERT INTO public.lkup_variable_category VALUES (1, 'RADx Core Variable', NULL, 'tier 1 variable');
-INSERT INTO public.lkup_variable_category VALUES (4, 'RADx DHT Common Variable', 3, 'tier 2 variable');
-INSERT INTO public.lkup_variable_category VALUES (6, 'RADx Study Level Variable', NULL, 'tier 3 variable');
-INSERT INTO public.lkup_variable_category VALUES (3, 'RADx Tech Common Variable', 2, 'tier 2 variable');
-INSERT INTO public.lkup_variable_category VALUES (2, 'RADx-UP Common Variable', 1, 'tier 2 variable');
-INSERT INTO public.lkup_variable_category VALUES (5, 'RADx-rad Common Variable', 4, 'tier 2 variable');
-
+INSERT INTO public.lkup_variable_category VALUES (1, 'Core Variable', NULL, 'tier 1 variable');
 
 --
 -- TOC entry 5024 (class 0 OID 46715)

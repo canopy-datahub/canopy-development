@@ -19,6 +19,20 @@ autocomplete_query = "SELECT distinct property_value as phrase FROM study_proper
 study_search_index_name = "study_search"
 study_search_index_mapping_file_name = "search_index_mapping.json"
 study_search_query = "SELECT * FROM public.view_study_for_es where status='Approved'"
+variable_index_name = "variable_search"
+variable_index_mapping_file_name = "variable_index_mapping.json"
+variable_query = """
+SELECT 
+    vsv.variable, 
+    vsv.variable_label, 
+    vsv.section, 
+    vsv.variable_id,
+    vs.title as study_name,
+    vsv.datatype
+FROM public.view_study_variables vsv
+LEFT JOIN public.view_study vs ON vsv.study_id = vs.study_id 
+WHERE vsv.is_tier1_variable = true
+"""
 
 def load_index_mapping(index_mapping_file_name):
     """Load index mapping from JSON file"""
@@ -221,6 +235,8 @@ def connect_opensearch_create_index(client, index_name, index_mapping_file_name)
     connection = get_database_connection()
     if index_name == study_search_index_name:
         create_index_from_db(client, index_name, index_mapping_file_name, connection, query=study_search_query)
+    elif index_name == variable_index_name:
+        create_index_from_db(client, index_name, index_mapping_file_name, connection, query=variable_query)
     else:
         create_index_from_db(client, index_name, index_mapping_file_name, connection, query=autocomplete_query, is_autocomplete=True)
 
@@ -260,11 +276,14 @@ def main():
             print("Still cannot connect to OpenSearch after starting containers")
             sys.exit(1)
         
-        print(f"Starting OpenSearch refresh for index: {study_search_index_name}")
-        connect_opensearch_create_index(client, study_search_index_name, study_search_index_mapping_file_name)
+        # print(f"Starting OpenSearch refresh for index: {study_search_index_name}")
+        # connect_opensearch_create_index(client, study_search_index_name, study_search_index_mapping_file_name)
         
-        print(f"Starting OpenSearch refresh for index: {autocomplete_index_name}")
-        connect_opensearch_create_index(client, autocomplete_index_name, autocomplete_index_mapping_file_name)
+        # print(f"Starting OpenSearch refresh for index: {autocomplete_index_name}")
+        # connect_opensearch_create_index(client, autocomplete_index_name, autocomplete_index_mapping_file_name)
+        
+        print(f"Starting OpenSearch refresh for index: {variable_index_name}")
+        connect_opensearch_create_index(client, variable_index_name, variable_index_mapping_file_name)
         
         print("OpenSearch Index AutoRefresh Completed Successfully!")
         

@@ -3596,6 +3596,46 @@ CREATE VIEW public.view_data_file_variables AS
 
 ALTER VIEW public.view_data_file_variables OWNER TO radx_admin;
 
+
+CREATE VIEW public.view_variables AS
+SELECT DISTINCT
+    -- Study information
+    y.id AS study_id,
+    s.title AS study_name,
+    s.center AS center,
+
+    -- File information
+    f.id AS file_id,
+    s3.file_name,
+
+    -- Variable information
+    v.id AS variable_id,
+    fv.variable,
+    v.label AS variable_label,
+    v.section AS variable_section,
+    v.datatype AS variable_datatype,
+
+    -- Category information
+    c.id AS category_id,
+    c.name AS variable_category,
+
+    -- Tier flag
+    ((v.id IS NOT NULL) AND (v.category_id = 1)) AS is_tier1_variable
+
+FROM public.data_file f
+         JOIN public.s3_file s3 ON (f.s3_file_id = s3.id)
+         JOIN public.data_file_variable fv ON ((f.id = fv.data_file_id) AND f.is_current_version)
+         JOIN public.data_submission m ON (f.submission_id = m.id)
+         JOIN public.study y ON (m.study_id = y.id)
+         JOIN public.view_study s ON (m.study_id = s.study_id)
+         LEFT JOIN public.variables v ON (
+    fv.variable = v.name
+        AND (v.center_id IS NULL OR y.center_id = v.center_id)
+    )
+         LEFT JOIN public.lkup_variable_category c ON (v.category_id = c.id);
+
+ALTER VIEW public.view_variables OWNER TO radx_admin;
+
 --
 -- TOC entry 410 (class 1259 OID 42312)
 -- Name: view_study_all; Type: VIEW; Schema: public; Owner: radx_user
