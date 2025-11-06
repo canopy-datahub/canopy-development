@@ -57,50 +57,7 @@ CREATE TYPE public.variableinfotype AS (
 
 ALTER TYPE public.variableinfotype OWNER TO radx_admin;
 
---
--- TOC entry 1509 (class 1247 OID 41204)
--- Name: variablemappingtype; Type: TYPE; Schema: public; Owner: radx_admin
---
 
-CREATE TYPE public.variablemappingtype AS (
-	id character varying,
-	center character varying,
-	program character varying,
-	tier_2_variable_id character varying,
-	label text,
-	description text,
-	section character varying,
-	cardinality character varying,
-	datatype character varying,
-	unit character varying,
-	provenance character varying,
-	enumeration json,
-	enumeration_mapping json,
-	notes text,
-	dataelements json,
-	mapping jsonb
-);
-
-
-ALTER TYPE public.variablemappingtype OWNER TO radx_admin;
-
---
--- TOC entry 1512 (class 1247 OID 41207)
--- Name: variabletermstype; Type: TYPE; Schema: public; Owner: radx_admin
---
-
-CREATE TYPE public.variabletermstype AS (
-	id character varying,
-	tier_1_variable_id character varying,
-	identifier character varying,
-	lookupurl character varying,
-	label character varying,
-	synonyms json,
-	terms jsonb
-);
-
-
-ALTER TYPE public.variabletermstype OWNER TO radx_admin;
 
 -- Install hstore extension
 CREATE EXTENSION IF NOT EXISTS hstore;
@@ -300,41 +257,6 @@ $$;
 
 ALTER PROCEDURE public.sp_generate_hub_content_metrics() OWNER TO radx_admin;
 
---
--- TOC entry 519 (class 1255 OID 22106)
--- Name: sp_parse_variables(); Type: PROCEDURE; Schema: public; Owner: radx_admin
---
-
-CREATE PROCEDURE public.sp_parse_variables()
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-  _id_sq int;
-begin
---select * from data_file_variable
---select * from view_data_file_variables --where is_tier_1
-    truncate table data_file_variable;
-	select setval('data_file_variable_id_seq', 100000) into _id_sq ;
-	INSERT INTO data_file_variable (data_file_id, variable)
-	select a.id, trim('�' FROM (trim(a.t))) from
-        (SELECT id, UNNEST(STRING_TO_ARRAY(file_headers, ';')) as t
-            FROM data_file where  is_current_version and file_category_id in (select id from lkup_data_file_category where category_group='data')
-		 and (file_headers is not NULL and file_headers != 'Unable to determine file headers.')) a
-            WHERE a.t is not NULL and length(trim('�' FROM (trim(a.t)))) > 0;
-	--add new study_level_variables
-	/*INSERT INTO public.study_level_variable(study_id, variable)
- 	select study_id, variable from 
- 	view_study_variables  where variable_id is null;
-  --add new variables to variable table
-  	INSERT INTO public.variable(study_level_variable_id) 
-  	select id from study_level_variable where id not in (select study_level_variable_id from variable where study_level_variable_id is not null);
-	*/
-end; 
-$$;
-
-
-ALTER PROCEDURE public.sp_parse_variables() OWNER TO radx_admin;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -444,46 +366,6 @@ ALTER SEQUENCE public.data_file_id_seq OWNER TO radx_admin;
 --
 
 ALTER SEQUENCE public.data_file_id_seq OWNED BY public.data_file.id;
-
-
---
--- TOC entry 328 (class 1259 OID 22088)
--- Name: data_file_variable; Type: TABLE; Schema: public; Owner: radx_admin
---
-
-CREATE TABLE public.data_file_variable (
-    id integer NOT NULL,
-    data_file_id integer NOT NULL,
-    variable character varying(1024)
-);
-
-
-ALTER TABLE public.data_file_variable OWNER TO radx_admin;
-
---
--- TOC entry 327 (class 1259 OID 22087)
--- Name: data_file_variable_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
---
-
-CREATE SEQUENCE public.data_file_variable_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.data_file_variable_id_seq OWNER TO radx_admin;
-
---
--- TOC entry 5413 (class 0 OID 0)
--- Dependencies: 327
--- Name: data_file_variable_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
---
-
-ALTER SEQUENCE public.data_file_variable_id_seq OWNED BY public.data_file_variable.id;
-
 
 --
 -- TOC entry 283 (class 1259 OID 16921)
@@ -1922,7 +1804,6 @@ ALTER SEQUENCE public.lkup_support_request_type_id_seq OWNED BY public.lkup_supp
 CREATE TABLE public.lkup_variable_category (
     id integer NOT NULL,
     name character varying(255) NOT NULL,
-    center_id integer,
     description text
 );
 
@@ -2709,134 +2590,6 @@ ALTER SEQUENCE public.support_request_id_seq OWNED BY public.support_request.id;
 
 
 --
--- TOC entry 406 (class 1259 OID 41170)
--- Name: tier_1_variable; Type: TABLE; Schema: public; Owner: radx_admin
---
-
-CREATE TABLE public.tier_1_variable (
-    id integer NOT NULL,
-    tier_1_variable_id character varying(256) NOT NULL,
-    label text NOT NULL,
-    description text,
-    section character varying(256),
-    cardinality character varying(50),
-    datatype character varying(50),
-    unit character varying(30),
-    enumeration jsonb
-);
-
-
-ALTER TABLE public.tier_1_variable OWNER TO radx_admin;
-
---
--- TOC entry 405 (class 1259 OID 41169)
--- Name: tier_1_variable_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
---
-
-CREATE SEQUENCE public.tier_1_variable_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.tier_1_variable_id_seq OWNER TO radx_admin;
-
---
--- TOC entry 5554 (class 0 OID 0)
--- Dependencies: 405
--- Name: tier_1_variable_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
---
-
-ALTER SEQUENCE public.tier_1_variable_id_seq OWNED BY public.tier_1_variable.id;
-
-
---
--- TOC entry 437 (class 1259 OID 65307)
--- Name: tier_1_variable_mapping_json; Type: TABLE; Schema: public; Owner: radx_admin
---
-
-CREATE TABLE public.tier_1_variable_mapping_json (
-    id integer NOT NULL,
-    tier_1_variable_id character varying(256) NOT NULL,
-    center_id integer,
-    program character varying(256) NOT NULL,
-    data_elements jsonb
-);
-
-
-ALTER TABLE public.tier_1_variable_mapping_json OWNER TO radx_admin;
-
---
--- TOC entry 436 (class 1259 OID 65306)
--- Name: tier_1_variable_mapping_json_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
---
-
-CREATE SEQUENCE public.tier_1_variable_mapping_json_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.tier_1_variable_mapping_json_id_seq OWNER TO radx_admin;
-
---
--- TOC entry 5557 (class 0 OID 0)
--- Dependencies: 436
--- Name: tier_1_variable_mapping_json_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
---
-
-ALTER SEQUENCE public.tier_1_variable_mapping_json_id_seq OWNED BY public.tier_1_variable_mapping_json.id;
-
-
---
--- TOC entry 404 (class 1259 OID 41152)
--- Name: tier_1_variable_terms; Type: TABLE; Schema: public; Owner: radx_admin
---
-
-CREATE TABLE public.tier_1_variable_terms (
-    id integer NOT NULL,
-    tier_1_variable_id character varying(100) NOT NULL,
-    identifier character varying(50),
-    lookupurl character varying(256),
-    label text,
-    synonyms jsonb
-);
-
-
-ALTER TABLE public.tier_1_variable_terms OWNER TO radx_admin;
-
---
--- TOC entry 403 (class 1259 OID 41151)
--- Name: tier_1_variable_terms_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
---
-
-CREATE SEQUENCE public.tier_1_variable_terms_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.tier_1_variable_terms_id_seq OWNER TO radx_admin;
-
---
--- TOC entry 5560 (class 0 OID 0)
--- Dependencies: 403
--- Name: tier_1_variable_terms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
---
-
-ALTER SEQUENCE public.tier_1_variable_terms_id_seq OWNED BY public.tier_1_variable_terms.id;
-
-
---
 -- TOC entry 412 (class 1259 OID 43523)
 -- Name: user_file_upload; Type: TABLE; Schema: public; Owner: radx_admin
 --
@@ -3149,69 +2902,27 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 435 (class 1259 OID 65288)
--- Name: variable_mapping; Type: TABLE; Schema: public; Owner: radx_admin
---
-
-CREATE TABLE public.variable_mapping (
-    id integer NOT NULL,
-    variable_1_id integer NOT NULL,
-    variable_2_id integer,
-    variable_2_center_id integer,
-    variable_2_program character varying(256),
-    variable_2_name character varying(256) NOT NULL
-);
-
-
-ALTER TABLE public.variable_mapping OWNER TO radx_admin;
-
---
--- TOC entry 434 (class 1259 OID 65287)
--- Name: variable_mapping_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
---
-
-CREATE SEQUENCE public.variable_mapping_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.variable_mapping_id_seq OWNER TO radx_admin;
-
---
--- TOC entry 5584 (class 0 OID 0)
--- Dependencies: 434
--- Name: variable_mapping_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
---
-
-ALTER SEQUENCE public.variable_mapping_id_seq OWNED BY public.variable_mapping.id;
-
-
---
 -- TOC entry 421 (class 1259 OID 46759)
--- Name: variable_permissible_values; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value; Type: TABLE; Schema: public; Owner: radx_admin
 --
 
-CREATE TABLE public.variable_permissible_values (
+CREATE TABLE public.lkup_core_variable_permissible_value (
     id integer NOT NULL,
-    variable_id integer NOT NULL,
+    variable_name integer NOT NULL,
     value integer NOT NULL,
     label character varying(256) NOT NULL,
     map_to_id integer
 );
 
 
-ALTER TABLE public.variable_permissible_values OWNER TO radx_admin;
+ALTER TABLE public.lkup_core_variable_permissible_value OWNER TO radx_admin;
 
 --
 -- TOC entry 420 (class 1259 OID 46758)
--- Name: variable_permissible_values_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
 --
 
-CREATE SEQUENCE public.variable_permissible_values_id_seq
+CREATE SEQUENCE public.lkup_core_variable_permissible_value_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3220,25 +2931,25 @@ CREATE SEQUENCE public.variable_permissible_values_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.variable_permissible_values_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_core_variable_permissible_value_id_seq OWNER TO radx_admin;
 
 --
 -- TOC entry 5587 (class 0 OID 0)
 -- Dependencies: 420
--- Name: variable_permissible_values_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
 --
 
-ALTER SEQUENCE public.variable_permissible_values_id_seq OWNED BY public.variable_permissible_values.id;
+ALTER SEQUENCE public.lkup_core_variable_permissible_value_id_seq OWNED BY public.lkup_core_variable_permissible_value.id;
 
 
 --
 -- TOC entry 423 (class 1259 OID 46776)
--- Name: variable_property_value; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value; Type: TABLE; Schema: public; Owner: radx_admin
 --
 
-CREATE TABLE public.variable_property_value (
+CREATE TABLE public.lkup_core_variable_property_value (
     id integer NOT NULL,
-    variable_id integer NOT NULL,
+    variable_name integer NOT NULL,
     entity_property_id integer NOT NULL,
     property_value text,
     value_index integer,
@@ -3249,14 +2960,14 @@ CREATE TABLE public.variable_property_value (
 );
 
 
-ALTER TABLE public.variable_property_value OWNER TO radx_admin;
+ALTER TABLE public.lkup_core_variable_property_value OWNER TO radx_admin;
 
 --
 -- TOC entry 422 (class 1259 OID 46775)
--- Name: variable_property_value_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
 --
 
-CREATE SEQUENCE public.variable_property_value_id_seq
+CREATE SEQUENCE public.lkup_core_variable_property_value_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -3265,15 +2976,15 @@ CREATE SEQUENCE public.variable_property_value_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.variable_property_value_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_core_variable_property_value_id_seq OWNER TO radx_admin;
 
 --
 -- TOC entry 5590 (class 0 OID 0)
 -- Dependencies: 422
--- Name: variable_property_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
 --
 
-ALTER SEQUENCE public.variable_property_value_id_seq OWNED BY public.variable_property_value.id;
+ALTER SEQUENCE public.lkup_core_variable_property_value_id_seq OWNED BY public.lkup_core_variable_property_value.id;
 
 
 --
@@ -3286,10 +2997,16 @@ CREATE TABLE public.variables (
     category_id integer NOT NULL,
     center_id integer,
     study_id integer,
+    file_id integer,
     name character varying(256) NOT NULL,
     label text,
     section text,
-    datatype text
+    datatype text,
+    description text,
+    unit text,
+    cardinality text,
+    terms text,
+    keywords text
 );
 
 
@@ -3569,35 +3286,8 @@ CREATE VIEW public.view_current_hub_content_data AS
 
 ALTER VIEW public.view_current_hub_content_data OWNER TO radx_admin;
 
---
--- TOC entry 432 (class 1259 OID 58982)
--- Name: view_data_file_variables; Type: VIEW; Schema: public; Owner: radx_admin
---
 
-CREATE VIEW public.view_data_file_variables AS
- SELECT f.id AS file_id,
-    v.variable,
-    (l.id IS NOT NULL) AS is_tier_1,
-    (l2.id IS NOT NULL) AS is_tier_2,
-    s3.file_name,
-    s.study_id,
-    s.title AS study_name,
-    s.phs AS study_phs,
-    s.center AS study_program
-   FROM (((((((public.data_file f
-     JOIN public.s3_file s3 ON ((f.s3_file_id = s3.id)))
-     JOIN public.data_file_variable v ON (((f.id = v.data_file_id) AND f.is_current_version)))
-     JOIN public.data_submission m ON ((f.submission_id = m.id)))
-     JOIN public.study y ON ((m.study_id = y.id)))
-     JOIN public.view_study s ON ((m.study_id = s.study_id)))
-     LEFT JOIN public.variables l ON ((((l.name)::text = (v.variable)::text) AND (l.category_id = 1))))
-     LEFT JOIN public.variables l2 ON ((((l2.name)::text = (v.variable)::text) AND (l2.center_id = y.center_id))));
-
-
-ALTER VIEW public.view_data_file_variables OWNER TO radx_admin;
-
-
-CREATE VIEW public.view_variables AS
+CREATE OR REPLACE VIEW public.view_variables AS
 SELECT DISTINCT
     -- Study information
     y.id AS study_id,
@@ -3610,7 +3300,7 @@ SELECT DISTINCT
 
     -- Variable information
     v.id AS variable_id,
-    fv.variable,
+    v.name,
     v.label AS variable_label,
     v.section AS variable_section,
     v.datatype AS variable_datatype,
@@ -3622,17 +3312,22 @@ SELECT DISTINCT
     -- Tier flag
     ((v.id IS NOT NULL) AND (v.category_id = 1)) AS is_tier1_variable
 
-FROM public.data_file f
-         JOIN public.s3_file s3 ON (f.s3_file_id = s3.id)
-         JOIN public.data_file_variable fv ON ((f.id = fv.data_file_id) AND f.is_current_version)
-         JOIN public.data_submission m ON (f.submission_id = m.id)
-         JOIN public.study y ON (m.study_id = y.id)
-         JOIN public.view_study s ON (m.study_id = s.study_id)
-         LEFT JOIN public.variables v ON (
-    fv.variable = v.name
-        AND (v.center_id IS NULL OR y.center_id = v.center_id)
+FROM public.variables v
+         LEFT JOIN public.lkup_variable_category c ON (v.category_id = c.id)
+         LEFT JOIN public.data_file f ON (
+    f.id = v.file_id
+        AND f.is_current_version
+        AND (v.center_id IS NULL OR f.submission_id IN (
+        SELECT m.id
+        FROM public.data_submission m
+                 JOIN public.study st ON m.study_id = st.id
+        WHERE st.center_id = v.center_id
+    ))
     )
-         LEFT JOIN public.lkup_variable_category c ON (v.category_id = c.id);
+         LEFT JOIN public.s3_file s3 ON (f.s3_file_id = s3.id)
+         LEFT JOIN public.data_submission m ON (f.submission_id = m.id)
+         LEFT JOIN public.study y ON (m.study_id = y.id)
+         LEFT JOIN public.view_study s ON (y.id = s.study_id);
 
 ALTER VIEW public.view_variables OWNER TO radx_admin;
 
@@ -3966,39 +3661,6 @@ CREATE VIEW public.view_study_all AS
 
 ALTER VIEW public.view_study_all OWNER TO radx_user;
 
---
--- TOC entry 431 (class 1259 OID 58977)
--- Name: view_study_variables; Type: VIEW; Schema: public; Owner: radx_admin
---
-
-CREATE VIEW public.view_study_variables AS
- SELECT DISTINCT y.id AS study_id,
-    u.property_value AS study_phs,
-    v.id AS variable_id,
-    fv.variable,
-    ((v.id IS NOT NULL) AND (v.category_id = 1)) AS is_tier1_variable,
-    v.label AS variable_label,
-    y.center_id,
-    c.name AS variable_category,
-    v.section,
-    v.datatype
-   FROM ((((((public.data_file f
-     JOIN public.data_file_variable fv ON (((f.id = fv.data_file_id) AND f.is_current_version)))
-     JOIN public.data_submission m ON ((f.submission_id = m.id)))
-     JOIN public.study y ON ((m.study_id = y.id)))
-     JOIN public.study_property_value u ON (((y.id = u.study_id) AND (u.entity_property_id = ( SELECT entity_property.id
-           FROM public.entity_property
-          WHERE ((entity_property.name)::text = 'phs'::text))))))
-     LEFT JOIN public.variables v ON ((((fv.variable)::text = (v.name)::text) AND ((v.center_id IS NULL) OR (y.center_id = v.center_id)))))
-     LEFT JOIN public.lkup_variable_category c ON ((v.category_id = c.id)));
-
-
-ALTER VIEW public.view_study_variables OWNER TO radx_admin;
-
---
--- TOC entry 433 (class 1259 OID 65280)
--- Name: view_study_for_es; Type: VIEW; Schema: public; Owner: radx_admin
---
 
 CREATE VIEW public.view_study_for_es AS
  SELECT s.study_id,
@@ -4052,15 +3714,15 @@ CREATE VIEW public.view_study_for_es AS
     s."FOA_URL",
     s.created_at
    FROM ((public.view_study s
-     LEFT JOIN ( SELECT view_study_variables.study_id,
-            (array_agg(view_study_variables.variable))::text AS study_variables
-           FROM public.view_study_variables
-          WHERE view_study_variables.is_tier1_variable
-          GROUP BY view_study_variables.study_id) v1 ON ((s.study_id = v1.study_id)))
-     LEFT JOIN ( SELECT view_study_variables.study_id,
+     LEFT JOIN ( SELECT view_variables.study_id,
+            (array_agg(view_variables.variable))::text AS study_variables
+           FROM public.view_variables
+          WHERE view_variables.is_tier1_variable
+          GROUP BY view_variables.study_id) v1 ON ((s.study_id = v1.study_id)))
+     LEFT JOIN ( SELECT view_variables.study_id,
             count(*) AS study_variable_count
-           FROM public.view_study_variables
-          GROUP BY view_study_variables.study_id) v2 ON ((s.study_id = v2.study_id)));
+           FROM public.view_variables
+          GROUP BY view_variables.study_id) v2 ON ((s.study_id = v2.study_id)));
 
 
 ALTER VIEW public.view_study_for_es OWNER TO radx_admin;
@@ -4423,8 +4085,8 @@ ALTER VIEW public.view_user_role OWNER TO radx_admin;
 --
 
 CREATE VIEW public.view_variable_overview_display AS
- SELECT row_number() OVER () AS variable_property_value_id,
-    v.variable_id,
+ SELECT row_number() OVER () AS lkup_core_variable_property_value_id,
+    var.id AS variable_id,
     v.entity_property_id,
     v.property_value,
     p.name AS entity_property_name,
@@ -4438,7 +4100,8 @@ CREATE VIEW public.view_variable_overview_display AS
     st.is_facet,
     st.facet_order,
     st.is_sortable
-   FROM (((public.variable_property_value v
+   FROM (((public.lkup_core_variable_property_value v
+     JOIN public.variables var ON ((v.variable_name = var.name)))
      JOIN public.entity_property p ON ((v.entity_property_id = p.id)))
      JOIN public.entity_property_display_setting st ON (((st.entity_property_id = p.id) AND (st.page = 'variable_overview'::text))))
      LEFT JOIN public.lkup_property_type t ON ((p.property_type_id = t.id)));
@@ -4905,14 +4568,6 @@ ALTER TABLE ONLY public.data_file_download ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 4941 (class 2604 OID 22091)
--- Name: data_file_variable id; Type: DEFAULT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.data_file_variable ALTER COLUMN id SET DEFAULT nextval('public.data_file_variable_id_seq'::regclass);
-
-
---
 -- TOC entry 4905 (class 2604 OID 16924)
 -- Name: data_submission id; Type: DEFAULT; Schema: public; Owner: radx_admin
 --
@@ -5320,29 +4975,6 @@ ALTER TABLE ONLY public.study_property_value ALTER COLUMN id SET DEFAULT nextval
 ALTER TABLE ONLY public.support_request ALTER COLUMN id SET DEFAULT nextval('public.support_request_id_seq'::regclass);
 
 
---
--- TOC entry 4962 (class 2604 OID 41173)
--- Name: tier_1_variable id; Type: DEFAULT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.tier_1_variable ALTER COLUMN id SET DEFAULT nextval('public.tier_1_variable_id_seq'::regclass);
-
-
---
--- TOC entry 4975 (class 2604 OID 65310)
--- Name: tier_1_variable_mapping_json id; Type: DEFAULT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.tier_1_variable_mapping_json ALTER COLUMN id SET DEFAULT nextval('public.tier_1_variable_mapping_json_id_seq'::regclass);
-
-
---
--- TOC entry 4961 (class 2604 OID 41155)
--- Name: tier_1_variable_terms id; Type: DEFAULT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.tier_1_variable_terms ALTER COLUMN id SET DEFAULT nextval('public.tier_1_variable_terms_id_seq'::regclass);
-
 
 --
 -- TOC entry 4963 (class 2604 OID 43526)
@@ -5401,27 +5033,19 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 4974 (class 2604 OID 65291)
--- Name: variable_mapping id; Type: DEFAULT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.variable_mapping ALTER COLUMN id SET DEFAULT nextval('public.variable_mapping_id_seq'::regclass);
-
-
---
 -- TOC entry 4968 (class 2604 OID 46762)
--- Name: variable_permissible_values id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value id; Type: DEFAULT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.variable_permissible_values ALTER COLUMN id SET DEFAULT nextval('public.variable_permissible_values_id_seq'::regclass);
+ALTER TABLE ONLY public.lkup_core_variable_permissible_value ALTER COLUMN id SET DEFAULT nextval('public.lkup_core_variable_permissible_value_id_seq'::regclass);
 
 
 --
 -- TOC entry 4969 (class 2604 OID 46779)
--- Name: variable_property_value id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value id; Type: DEFAULT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.variable_property_value ALTER COLUMN id SET DEFAULT nextval('public.variable_property_value_id_seq'::regclass);
+ALTER TABLE ONLY public.lkup_core_variable_property_value ALTER COLUMN id SET DEFAULT nextval('public.lkup_core_variable_property_value_id_seq'::regclass);
 
 
 --
@@ -5472,15 +5096,6 @@ ALTER TABLE ONLY public.data_file_download
 
 ALTER TABLE ONLY public.data_file
     ADD CONSTRAINT data_file_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5093 (class 2606 OID 22095)
--- Name: data_file_variable data_file_variable_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.data_file_variable
-    ADD CONSTRAINT data_file_variable_pkey PRIMARY KEY (id);
 
 
 --
@@ -5997,33 +5612,6 @@ ALTER TABLE ONLY public.study_property_value
 
 
 --
--- TOC entry 5137 (class 2606 OID 65314)
--- Name: tier_1_variable_mapping_json tier_1_variable_mapping_json_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.tier_1_variable_mapping_json
-    ADD CONSTRAINT tier_1_variable_mapping_json_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5115 (class 2606 OID 41177)
--- Name: tier_1_variable tier_1_variable_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.tier_1_variable
-    ADD CONSTRAINT tier_1_variable_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5113 (class 2606 OID 41159)
--- Name: tier_1_variable_terms tier_1_variable_terms_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.tier_1_variable_terms
-    ADD CONSTRAINT tier_1_variable_terms_pkey PRIMARY KEY (id);
-
-
---
 -- TOC entry 5033 (class 2606 OID 16767)
 -- Name: users user_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
 --
@@ -6060,30 +5648,21 @@ ALTER TABLE ONLY public.user_workspace
 
 
 --
--- TOC entry 5135 (class 2606 OID 65295)
--- Name: variable_mapping variable_mapping_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.variable_mapping
-    ADD CONSTRAINT variable_mapping_pkey PRIMARY KEY (id);
-
-
---
 -- TOC entry 5125 (class 2606 OID 46764)
--- Name: variable_permissible_values variable_permissible_values_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value lkup_core_variable_permissible_value_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.variable_permissible_values
-    ADD CONSTRAINT variable_permissible_values_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.lkup_core_variable_permissible_value
+    ADD CONSTRAINT lkup_core_variable_permissible_value_pkey PRIMARY KEY (id);
 
 
 --
 -- TOC entry 5127 (class 2606 OID 46785)
--- Name: variable_property_value variable_property_value_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value lkup_core_variable_property_value_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.variable_property_value
-    ADD CONSTRAINT variable_property_value_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.lkup_core_variable_property_value
+    ADD CONSTRAINT lkup_core_variable_property_value_pkey PRIMARY KEY (id);
 
 
 --
@@ -6330,15 +5909,6 @@ ALTER TABLE ONLY public.data_file
 
 ALTER TABLE ONLY public.data_file
     ADD CONSTRAINT fk_data_file_type_id FOREIGN KEY (file_category_id) REFERENCES public.lkup_data_file_category(id) NOT VALID;
-
-
---
--- TOC entry 5196 (class 2606 OID 22096)
--- Name: data_file_variable fk_data_file_variable_data_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.data_file_variable
-    ADD CONSTRAINT fk_data_file_variable_data_file_id FOREIGN KEY (data_file_id) REFERENCES public.data_file(id) NOT VALID;
 
 
 --
@@ -6891,24 +6461,6 @@ ALTER TABLE ONLY public.user_workspace
 
 
 --
--- TOC entry 5219 (class 2606 OID 65296)
--- Name: variable_mapping fk_variable_1_variable_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.variable_mapping
-    ADD CONSTRAINT fk_variable_1_variable_id FOREIGN KEY (variable_1_id) REFERENCES public.variables(id) NOT VALID;
-
-
---
--- TOC entry 5220 (class 2606 OID 65301)
--- Name: variable_mapping fk_variable_2_variable_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
---
-
-ALTER TABLE ONLY public.variable_mapping
-    ADD CONSTRAINT fk_variable_2_variable_id FOREIGN KEY (variable_2_id) REFERENCES public.variables(id) NOT VALID;
-
-
---
 -- TOC entry 5215 (class 2606 OID 58945)
 -- Name: lkup_variable_category fk_variable_category_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
 --
@@ -6937,11 +6489,11 @@ ALTER TABLE ONLY public.variables
 
 --
 -- TOC entry 5213 (class 2606 OID 46791)
--- Name: variable_property_value fk_variable_property_value_entity_property_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value fk_lkup_core_variable_property_value_entity_property_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.variable_property_value
-    ADD CONSTRAINT fk_variable_property_value_entity_property_id FOREIGN KEY (entity_property_id) REFERENCES public.entity_property(id) NOT VALID;
+ALTER TABLE ONLY public.lkup_core_variable_property_value
+    ADD CONSTRAINT fk_lkup_core_variable_property_value_entity_property_id FOREIGN KEY (entity_property_id) REFERENCES public.entity_property(id) NOT VALID;
 
 
 --
@@ -7080,24 +6632,6 @@ GRANT ALL ON SEQUENCE public.data_file_download_id_seq TO radx_user;
 --
 
 GRANT ALL ON SEQUENCE public.data_file_id_seq TO radx_user;
-
-
---
--- TOC entry 5412 (class 0 OID 0)
--- Dependencies: 328
--- Name: TABLE data_file_variable; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON TABLE public.data_file_variable TO radx_user;
-
-
---
--- TOC entry 5414 (class 0 OID 0)
--- Dependencies: 327
--- Name: SEQUENCE data_file_variable_id_seq; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON SEQUENCE public.data_file_variable_id_seq TO radx_user;
 
 
 --
@@ -7884,59 +7418,6 @@ GRANT ALL ON TABLE public.support_request TO radx_user;
 GRANT ALL ON SEQUENCE public.support_request_id_seq TO radx_user;
 
 
---
--- TOC entry 5553 (class 0 OID 0)
--- Dependencies: 406
--- Name: TABLE tier_1_variable; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON TABLE public.tier_1_variable TO radx_user;
-
-
---
--- TOC entry 5555 (class 0 OID 0)
--- Dependencies: 405
--- Name: SEQUENCE tier_1_variable_id_seq; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON SEQUENCE public.tier_1_variable_id_seq TO radx_user;
-
-
---
--- TOC entry 5556 (class 0 OID 0)
--- Dependencies: 437
--- Name: TABLE tier_1_variable_mapping_json; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON TABLE public.tier_1_variable_mapping_json TO radx_user;
-
-
---
--- TOC entry 5558 (class 0 OID 0)
--- Dependencies: 436
--- Name: SEQUENCE tier_1_variable_mapping_json_id_seq; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON SEQUENCE public.tier_1_variable_mapping_json_id_seq TO radx_user;
-
-
---
--- TOC entry 5559 (class 0 OID 0)
--- Dependencies: 404
--- Name: TABLE tier_1_variable_terms; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON TABLE public.tier_1_variable_terms TO radx_user;
-
-
---
--- TOC entry 5561 (class 0 OID 0)
--- Dependencies: 403
--- Name: SEQUENCE tier_1_variable_terms_id_seq; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON SEQUENCE public.tier_1_variable_terms_id_seq TO radx_user;
-
 
 --
 -- TOC entry 5562 (class 0 OID 0)
@@ -8065,57 +7546,39 @@ GRANT ALL ON SEQUENCE public.users_id_seq TO radx_user;
 
 
 --
--- TOC entry 5583 (class 0 OID 0)
--- Dependencies: 435
--- Name: TABLE variable_mapping; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON TABLE public.variable_mapping TO radx_user;
-
-
---
--- TOC entry 5585 (class 0 OID 0)
--- Dependencies: 434
--- Name: SEQUENCE variable_mapping_id_seq; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON SEQUENCE public.variable_mapping_id_seq TO radx_user;
-
-
---
 -- TOC entry 5586 (class 0 OID 0)
 -- Dependencies: 421
--- Name: TABLE variable_permissible_values; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_core_variable_permissible_value; Type: ACL; Schema: public; Owner: radx_admin
 --
 
-GRANT ALL ON TABLE public.variable_permissible_values TO radx_user;
+GRANT ALL ON TABLE public.lkup_core_variable_permissible_value TO radx_user;
 
 
 --
 -- TOC entry 5588 (class 0 OID 0)
 -- Dependencies: 420
--- Name: SEQUENCE variable_permissible_values_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_core_variable_permissible_value_id_seq; Type: ACL; Schema: public; Owner: radx_admin
 --
 
-GRANT ALL ON SEQUENCE public.variable_permissible_values_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_core_variable_permissible_value_id_seq TO radx_user;
 
 
 --
 -- TOC entry 5589 (class 0 OID 0)
 -- Dependencies: 423
--- Name: TABLE variable_property_value; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_core_variable_property_value; Type: ACL; Schema: public; Owner: radx_admin
 --
 
-GRANT ALL ON TABLE public.variable_property_value TO radx_user;
+GRANT ALL ON TABLE public.lkup_core_variable_property_value TO radx_user;
 
 
 --
 -- TOC entry 5591 (class 0 OID 0)
 -- Dependencies: 422
--- Name: SEQUENCE variable_property_value_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_core_variable_property_value_id_seq; Type: ACL; Schema: public; Owner: radx_admin
 --
 
-GRANT ALL ON SEQUENCE public.variable_property_value_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_core_variable_property_value_id_seq TO radx_user;
 
 
 --
@@ -8161,24 +7624,6 @@ GRANT ALL ON TABLE public.view_current_hub_content TO radx_user;
 --
 
 GRANT ALL ON TABLE public.view_current_hub_content_data TO radx_user;
-
-
---
--- TOC entry 5598 (class 0 OID 0)
--- Dependencies: 432
--- Name: TABLE view_data_file_variables; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON TABLE public.view_data_file_variables TO radx_user;
-
-
---
--- TOC entry 5599 (class 0 OID 0)
--- Dependencies: 431
--- Name: TABLE view_study_variables; Type: ACL; Schema: public; Owner: radx_admin
---
-
-GRANT ALL ON TABLE public.view_study_variables TO radx_user;
 
 
 --

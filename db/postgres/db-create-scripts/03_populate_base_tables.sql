@@ -232,13 +232,12 @@ INSERT INTO public.entity_property_display_setting VALUES (89, 4, 'study_overvie
 INSERT INTO public.entity_property_display_setting VALUES (3, 2, 'study_search', 'Title', 'Study Name', 10, false, 10, NULL, NULL, true);
 INSERT INTO public.entity_property_display_setting VALUES (50, 78, 'study_overview', 'Representative', 'Release Date', 40, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (90, 103, 'study_overview', 'Detail', 'Consent/Data Use Limitations', 320, false, NULL, NULL, NULL, false);
-INSERT INTO public.entity_property_display_setting VALUES (2, 1, 'study_search', 'Representative', 'dbGaP Study Accession', 20, false, NULL, NULL, NULL, true);
 INSERT INTO public.entity_property_display_setting VALUES (11, 10, 'study_search', 'Detail', 'Principal Investigator', 220, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (104, 200, 'variable_overview', 'Title', 'Name', 10, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (105, 201, 'variable_overview', 'Representative', 'Label', 10, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (106, 202, 'variable_overview', 'Representative', 'Section', 20, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (107, 203, 'variable_overview', 'Representative', 'Data Type', 30, false, NULL, NULL, NULL, false);
-INSERT INTO public.entity_property_display_setting VALUES (108, 204, 'variable_overview', 'Representative', 'RADx Variable Category', 40, false, NULL, NULL, NULL, false);
+INSERT INTO public.entity_property_display_setting VALUES (108, 204, 'variable_overview', 'Representative', 'Variable Category', 40, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (109, 205, 'variable_overview', 'Representative', 'Description', 50, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (110, 206, 'variable_overview', 'Representative', 'Keywords', 60, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (111, 207, 'variable_overview', 'Representative', 'Term', 70, false, NULL, NULL, NULL, false);
@@ -259,7 +258,6 @@ INSERT INTO public.entity_property_display_setting VALUES (49, 77, 'study_overvi
 INSERT INTO public.entity_property_display_setting VALUES (59, 75, 'study_overview', 'Detail', 'Citation', 125, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (61, 95, 'study_overview', 'Detail', 'Study Website URL', 240, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (4, 3, 'study_search', 'Detail', 'Study Description', 100, false, NULL, NULL, NULL, false);
-INSERT INTO public.entity_property_display_setting VALUES (28, 1, 'study_overview', 'Representative', 'dbGaP Study Accession', 5, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (58, 74, 'study_overview', 'Representative', 'DOI', 40, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (51, 79, 'study_overview', 'Representative', 'Updated Date', 50, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (37, 10, 'study_overview', 'Representative', 'Principal Investigator', 60, false, NULL, NULL, NULL, false);
@@ -1197,7 +1195,8 @@ INSERT INTO public.lkup_support_request_type VALUES (5, 'Engagement', NULL, 50);
 -- Data for Name: lkup_variable_category; Type: TABLE DATA; Schema: public; Owner: radx_admin
 --
 
-INSERT INTO public.lkup_variable_category VALUES (1, 'Core Variable', NULL, 'tier 1 variable');
+INSERT INTO public.lkup_variable_category VALUES (1, 'Core Variable', 'core variable');
+INSERT INTO public.lkup_variable_category VALUES (2, 'Non-core Variable', 'non core variable');
 
 --
 -- TOC entry 5024 (class 0 OID 46715)

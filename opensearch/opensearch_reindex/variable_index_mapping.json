@@ -40,6 +40,9 @@
           }
         }
       },
+      "study_id": {
+        "type": "long"
+      },
       "datatype": {
         "type": "text",
         "fields": {
