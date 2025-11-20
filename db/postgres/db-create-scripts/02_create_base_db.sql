@@ -3717,7 +3717,6 @@ CREATE VIEW public.view_study_for_es AS
      LEFT JOIN ( SELECT view_variables.study_id,
             (array_agg(view_variables.variable))::text AS study_variables
            FROM public.view_variables
-          WHERE view_variables.is_tier1_variable
           GROUP BY view_variables.study_id) v1 ON ((s.study_id = v1.study_id)))
      LEFT JOIN ( SELECT view_variables.study_id,
             count(*) AS study_variable_count
