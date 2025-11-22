@@ -21,26 +21,26 @@ SET search_path = 'public';
 
 --
 -- TOC entry 8 (class 2615 OID 16853)
--- Name: radx_history; Type: SCHEMA; Schema: -; Owner: radx_admin
+-- Name: datahub_history; Type: SCHEMA; Schema: -; Owner: datahub_admin
 --
 
-CREATE SCHEMA radx_history;
+CREATE SCHEMA datahub_history;
 
 
-ALTER SCHEMA radx_history OWNER TO radx_admin;
+ALTER SCHEMA datahub_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 5399 (class 0 OID 0)
 -- Dependencies: 8
--- Name: SCHEMA radx_history; Type: COMMENT; Schema: -; Owner: radx_admin
+-- Name: SCHEMA datahub_history; Type: COMMENT; Schema: -; Owner: datahub_admin
 --
 
-COMMENT ON SCHEMA radx_history IS 'radx_history schema';
+COMMENT ON SCHEMA datahub_history IS 'datahub_history schema';
 
 
 --
 -- TOC entry 1506 (class 1247 OID 41201)
--- Name: variableinfotype; Type: TYPE; Schema: public; Owner: radx_admin
+-- Name: variableinfotype; Type: TYPE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TYPE public.variableinfotype AS (
@@ -55,7 +55,7 @@ CREATE TYPE public.variableinfotype AS (
 );
 
 
-ALTER TYPE public.variableinfotype OWNER TO radx_admin;
+ALTER TYPE public.variableinfotype OWNER TO datahub_admin;
 
 
 
@@ -64,7 +64,7 @@ CREATE EXTENSION IF NOT EXISTS hstore;
 
 --
 -- TOC entry 486 (class 1255 OID 28416)
--- Name: after_operation_trigger_fnc(); Type: FUNCTION; Schema: public; Owner: radx_admin
+-- Name: after_operation_trigger_fnc(); Type: FUNCTION; Schema: public; Owner: datahub_admin
 --
 
 CREATE FUNCTION public.after_operation_trigger_fnc() RETURNS trigger
@@ -72,7 +72,7 @@ CREATE FUNCTION public.after_operation_trigger_fnc() RETURNS trigger
     AS $$
             DECLARE
                 _operated_at timestamp := CURRENT_TIMESTAMP AT TIME ZONE 'UTC';
-				_history_table_name text :=  'radx_history.' || TG_TABLE_NAME || '_history';
+				_history_table_name text :=  'datahub_history.' || TG_TABLE_NAME || '_history';
 				_column_name text;
 				_new_h hstore = hstore(new);
     			_old_h hstore = hstore(old);
@@ -122,11 +122,11 @@ CREATE FUNCTION public.after_operation_trigger_fnc() RETURNS trigger
 $$;
 
 
-ALTER FUNCTION public.after_operation_trigger_fnc() OWNER TO radx_admin;
+ALTER FUNCTION public.after_operation_trigger_fnc() OWNER TO datahub_admin;
 
 --
 -- TOC entry 465 (class 1255 OID 28415)
--- Name: before_operation_trigger_fnc(); Type: FUNCTION; Schema: public; Owner: radx_admin
+-- Name: before_operation_trigger_fnc(); Type: FUNCTION; Schema: public; Owner: datahub_admin
 --
 
 CREATE FUNCTION public.before_operation_trigger_fnc() RETURNS trigger
@@ -166,11 +166,11 @@ CREATE FUNCTION public.before_operation_trigger_fnc() RETURNS trigger
 $$;
 
 
-ALTER FUNCTION public.before_operation_trigger_fnc() OWNER TO radx_admin;
+ALTER FUNCTION public.before_operation_trigger_fnc() OWNER TO datahub_admin;
 
 --
 -- TOC entry 524 (class 1255 OID 61772)
--- Name: get_filename(text); Type: FUNCTION; Schema: public; Owner: radx_admin
+-- Name: get_filename(text); Type: FUNCTION; Schema: public; Owner: datahub_admin
 --
 
 CREATE FUNCTION public.get_filename(_path text) RETURNS text
@@ -184,11 +184,11 @@ end;
 $$;
 
 
-ALTER FUNCTION public.get_filename(_path text) OWNER TO radx_admin;
+ALTER FUNCTION public.get_filename(_path text) OWNER TO datahub_admin;
 
 --
 -- TOC entry 513 (class 1255 OID 22067)
--- Name: ras_tracking_after_delete_trigger_fnc(); Type: FUNCTION; Schema: public; Owner: radx_admin
+-- Name: ras_tracking_after_delete_trigger_fnc(); Type: FUNCTION; Schema: public; Owner: datahub_admin
 --
 
 CREATE FUNCTION public.ras_tracking_after_delete_trigger_fnc() RETURNS trigger
@@ -198,7 +198,7 @@ CREATE FUNCTION public.ras_tracking_after_delete_trigger_fnc() RETURNS trigger
                 _delete_at timestamp := CURRENT_TIMESTAMP AT TIME ZONE 'UTC';
             BEGIN		
 				IF (TG_OP = 'DELETE') THEN
-					EXECUTE format( 'INSERT INTO radx_history.ras_tracking_history(id, authorization_code, correlation_id, session_id, access_token, refresh_token, id_token, passport, first_name, last_name, email, institution_name, expire_at, created_at, modified_at, deleted_at)
+					EXECUTE format( 'INSERT INTO datahub_history.ras_tracking_history(id, authorization_code, correlation_id, session_id, access_token, refresh_token, id_token, passport, first_name, last_name, email, institution_name, expire_at, created_at, modified_at, deleted_at)
 						VALUES (%s, %L, %L,  %L,  %L, %L,   %L, %L, %L, %L, %L, %L, %L, %L, %L, %L);',
 						old.id, old.authorization_code, old.correlation_id, old.session_id, old.access_token, old.refresh_token, old.id_token, old.passport, old.first_name, old.last_name, old.email, old.institution_name, old.expire_at, old.created_at, old.modified_at, _delete_at);
 				END IF;
@@ -214,11 +214,11 @@ CREATE FUNCTION public.ras_tracking_after_delete_trigger_fnc() RETURNS trigger
 $$;
 
 
-ALTER FUNCTION public.ras_tracking_after_delete_trigger_fnc() OWNER TO radx_admin;
+ALTER FUNCTION public.ras_tracking_after_delete_trigger_fnc() OWNER TO datahub_admin;
 
 --
 -- TOC entry 518 (class 1255 OID 29429)
--- Name: sp_generate_hub_content_metrics(); Type: PROCEDURE; Schema: public; Owner: radx_admin
+-- Name: sp_generate_hub_content_metrics(); Type: PROCEDURE; Schema: public; Owner: datahub_admin
 --
 
 CREATE PROCEDURE public.sp_generate_hub_content_metrics()
@@ -255,7 +255,7 @@ END;
 $$;
 
 
-ALTER PROCEDURE public.sp_generate_hub_content_metrics() OWNER TO radx_admin;
+ALTER PROCEDURE public.sp_generate_hub_content_metrics() OWNER TO datahub_admin;
 
 SET default_tablespace = '';
 
@@ -263,7 +263,7 @@ SET default_table_access_method = heap;
 
 --
 -- TOC entry 285 (class 1259 OID 16953)
--- Name: data_file; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: data_file; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.data_file (
@@ -301,11 +301,11 @@ CREATE TABLE public.data_file (
 );
 
 
-ALTER TABLE public.data_file OWNER TO radx_admin;
+ALTER TABLE public.data_file OWNER TO datahub_admin;
 
 --
 -- TOC entry 293 (class 1259 OID 17069)
--- Name: data_file_download; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: data_file_download; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.data_file_download (
@@ -316,11 +316,11 @@ CREATE TABLE public.data_file_download (
 );
 
 
-ALTER TABLE public.data_file_download OWNER TO radx_admin;
+ALTER TABLE public.data_file_download OWNER TO datahub_admin;
 
 --
 -- TOC entry 292 (class 1259 OID 17068)
--- Name: data_file_download_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: data_file_download_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.data_file_download_id_seq
@@ -332,12 +332,12 @@ CREATE SEQUENCE public.data_file_download_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.data_file_download_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.data_file_download_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5408 (class 0 OID 0)
 -- Dependencies: 292
--- Name: data_file_download_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: data_file_download_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.data_file_download_id_seq OWNED BY public.data_file_download.id;
@@ -345,7 +345,7 @@ ALTER SEQUENCE public.data_file_download_id_seq OWNED BY public.data_file_downlo
 
 --
 -- TOC entry 284 (class 1259 OID 16952)
--- Name: data_file_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: data_file_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.data_file_id_seq
@@ -357,19 +357,19 @@ CREATE SEQUENCE public.data_file_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.data_file_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.data_file_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5410 (class 0 OID 0)
 -- Dependencies: 284
--- Name: data_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: data_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.data_file_id_seq OWNED BY public.data_file.id;
 
 --
 -- TOC entry 283 (class 1259 OID 16921)
--- Name: data_submission; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: data_submission; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.data_submission (
@@ -391,11 +391,11 @@ CREATE TABLE public.data_submission (
 );
 
 
-ALTER TABLE public.data_submission OWNER TO radx_admin;
+ALTER TABLE public.data_submission OWNER TO datahub_admin;
 
 --
 -- TOC entry 282 (class 1259 OID 16920)
--- Name: data_submission_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: data_submission_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.data_submission_id_seq
@@ -407,12 +407,12 @@ CREATE SEQUENCE public.data_submission_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.data_submission_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.data_submission_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5416 (class 0 OID 0)
 -- Dependencies: 282
--- Name: data_submission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: data_submission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.data_submission_id_seq OWNED BY public.data_submission.id;
@@ -420,7 +420,7 @@ ALTER SEQUENCE public.data_submission_id_seq OWNED BY public.data_submission.id;
 
 --
 -- TOC entry 313 (class 1259 OID 17282)
--- Name: datafile_harmonization_metrics; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: datafile_harmonization_metrics; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.datafile_harmonization_metrics (
@@ -441,11 +441,11 @@ CREATE TABLE public.datafile_harmonization_metrics (
 );
 
 
-ALTER TABLE public.datafile_harmonization_metrics OWNER TO radx_admin;
+ALTER TABLE public.datafile_harmonization_metrics OWNER TO datahub_admin;
 
 --
 -- TOC entry 312 (class 1259 OID 17281)
--- Name: datafile_harmonization_metrics_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: datafile_harmonization_metrics_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.datafile_harmonization_metrics_id_seq
@@ -457,12 +457,12 @@ CREATE SEQUENCE public.datafile_harmonization_metrics_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.datafile_harmonization_metrics_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.datafile_harmonization_metrics_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5419 (class 0 OID 0)
 -- Dependencies: 312
--- Name: datafile_harmonization_metrics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: datafile_harmonization_metrics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.datafile_harmonization_metrics_id_seq OWNED BY public.datafile_harmonization_metrics.id;
@@ -470,7 +470,7 @@ ALTER SEQUENCE public.datafile_harmonization_metrics_id_seq OWNED BY public.data
 
 --
 -- TOC entry 252 (class 1259 OID 16623)
--- Name: entity_property; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: entity_property; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.entity_property (
@@ -487,11 +487,11 @@ CREATE TABLE public.entity_property (
 );
 
 
-ALTER TABLE public.entity_property OWNER TO radx_admin;
+ALTER TABLE public.entity_property OWNER TO datahub_admin;
 
 --
 -- TOC entry 254 (class 1259 OID 16654)
--- Name: entity_property_display_setting; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: entity_property_display_setting; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.entity_property_display_setting (
@@ -509,11 +509,11 @@ CREATE TABLE public.entity_property_display_setting (
 );
 
 
-ALTER TABLE public.entity_property_display_setting OWNER TO radx_admin;
+ALTER TABLE public.entity_property_display_setting OWNER TO datahub_admin;
 
 --
 -- TOC entry 253 (class 1259 OID 16653)
--- Name: entity_property_display_setting_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: entity_property_display_setting_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.entity_property_display_setting_id_seq
@@ -525,12 +525,12 @@ CREATE SEQUENCE public.entity_property_display_setting_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.entity_property_display_setting_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.entity_property_display_setting_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5423 (class 0 OID 0)
 -- Dependencies: 253
--- Name: entity_property_display_setting_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: entity_property_display_setting_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.entity_property_display_setting_id_seq OWNED BY public.entity_property_display_setting.id;
@@ -538,7 +538,7 @@ ALTER SEQUENCE public.entity_property_display_setting_id_seq OWNED BY public.ent
 
 --
 -- TOC entry 251 (class 1259 OID 16622)
--- Name: entity_property_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: entity_property_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.entity_property_id_seq
@@ -550,12 +550,12 @@ CREATE SEQUENCE public.entity_property_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.entity_property_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.entity_property_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5424 (class 0 OID 0)
 -- Dependencies: 251
--- Name: entity_property_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: entity_property_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.entity_property_id_seq OWNED BY public.entity_property.id;
@@ -563,7 +563,7 @@ ALTER SEQUENCE public.entity_property_id_seq OWNED BY public.entity_property.id;
 
 --
 -- TOC entry 295 (class 1259 OID 17087)
--- Name: entity_property_mta_mapping; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.entity_property_mta_mapping (
@@ -576,11 +576,11 @@ CREATE TABLE public.entity_property_mta_mapping (
 );
 
 
-ALTER TABLE public.entity_property_mta_mapping OWNER TO radx_admin;
+ALTER TABLE public.entity_property_mta_mapping OWNER TO datahub_admin;
 
 --
 -- TOC entry 294 (class 1259 OID 17086)
--- Name: entity_property_mta_mapping_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.entity_property_mta_mapping_id_seq
@@ -592,12 +592,12 @@ CREATE SEQUENCE public.entity_property_mta_mapping_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.entity_property_mta_mapping_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.entity_property_mta_mapping_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5426 (class 0 OID 0)
 -- Dependencies: 294
--- Name: entity_property_mta_mapping_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.entity_property_mta_mapping_id_seq OWNED BY public.entity_property_mta_mapping.id;
@@ -605,7 +605,7 @@ ALTER SEQUENCE public.entity_property_mta_mapping_id_seq OWNED BY public.entity_
 
 --
 -- TOC entry 303 (class 1259 OID 17178)
--- Name: event_link; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: event_link; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.event_link (
@@ -621,11 +621,11 @@ CREATE TABLE public.event_link (
 );
 
 
-ALTER TABLE public.event_link OWNER TO radx_admin;
+ALTER TABLE public.event_link OWNER TO datahub_admin;
 
 --
 -- TOC entry 302 (class 1259 OID 17177)
--- Name: event_link_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: event_link_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.event_link_id_seq
@@ -637,12 +637,12 @@ CREATE SEQUENCE public.event_link_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.event_link_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.event_link_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5429 (class 0 OID 0)
 -- Dependencies: 302
--- Name: event_link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: event_link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.event_link_id_seq OWNED BY public.event_link.id;
@@ -650,7 +650,7 @@ ALTER SEQUENCE public.event_link_id_seq OWNED BY public.event_link.id;
 
 --
 -- TOC entry 301 (class 1259 OID 17162)
--- Name: events; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: events; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.events (
@@ -669,11 +669,11 @@ CREATE TABLE public.events (
 );
 
 
-ALTER TABLE public.events OWNER TO radx_admin;
+ALTER TABLE public.events OWNER TO datahub_admin;
 
 --
 -- TOC entry 300 (class 1259 OID 17161)
--- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: events_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.events_id_seq
@@ -685,12 +685,12 @@ CREATE SEQUENCE public.events_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.events_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.events_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5432 (class 0 OID 0)
 -- Dependencies: 300
--- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: events_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
@@ -698,7 +698,7 @@ ALTER SEQUENCE public.events_id_seq OWNED BY public.events.id;
 
 --
 -- TOC entry 398 (class 1259 OID 40537)
--- Name: funding; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: funding; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.funding (
@@ -718,11 +718,11 @@ CREATE TABLE public.funding (
 );
 
 
-ALTER TABLE public.funding OWNER TO radx_admin;
+ALTER TABLE public.funding OWNER TO datahub_admin;
 
 --
 -- TOC entry 397 (class 1259 OID 40536)
--- Name: funding_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: funding_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.funding_id_seq
@@ -734,12 +734,12 @@ CREATE SEQUENCE public.funding_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.funding_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.funding_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5435 (class 0 OID 0)
 -- Dependencies: 397
--- Name: funding_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: funding_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.funding_id_seq OWNED BY public.funding.id;
@@ -747,7 +747,7 @@ ALTER SEQUENCE public.funding_id_seq OWNED BY public.funding.id;
 
 --
 -- TOC entry 330 (class 1259 OID 22320)
--- Name: hub_content_metrics; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: hub_content_metrics; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.hub_content_metrics (
@@ -771,11 +771,11 @@ CREATE TABLE public.hub_content_metrics (
 );
 
 
-ALTER TABLE public.hub_content_metrics OWNER TO radx_admin;
+ALTER TABLE public.hub_content_metrics OWNER TO datahub_admin;
 
 --
 -- TOC entry 329 (class 1259 OID 22319)
--- Name: hub_content_metrics_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: hub_content_metrics_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.hub_content_metrics_id_seq
@@ -787,12 +787,12 @@ CREATE SEQUENCE public.hub_content_metrics_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.hub_content_metrics_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.hub_content_metrics_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5438 (class 0 OID 0)
 -- Dependencies: 329
--- Name: hub_content_metrics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: hub_content_metrics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.hub_content_metrics_id_seq OWNED BY public.hub_content_metrics.id;
@@ -800,7 +800,7 @@ ALTER SEQUENCE public.hub_content_metrics_id_seq OWNED BY public.hub_content_met
 
 --
 -- TOC entry 258 (class 1259 OID 16713)
--- Name: institution; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: institution; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.institution (
@@ -822,11 +822,11 @@ CREATE TABLE public.institution (
 );
 
 
-ALTER TABLE public.institution OWNER TO radx_admin;
+ALTER TABLE public.institution OWNER TO datahub_admin;
 
 --
 -- TOC entry 257 (class 1259 OID 16712)
--- Name: institution_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: institution_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.institution_id_seq
@@ -838,12 +838,12 @@ CREATE SEQUENCE public.institution_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.institution_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.institution_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5441 (class 0 OID 0)
 -- Dependencies: 257
--- Name: institution_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: institution_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.institution_id_seq OWNED BY public.institution.id;
@@ -851,7 +851,7 @@ ALTER SEQUENCE public.institution_id_seq OWNED BY public.institution.id;
 
 --
 -- TOC entry 270 (class 1259 OID 16827)
--- Name: jwt_token; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: jwt_token; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.jwt_token (
@@ -862,11 +862,11 @@ CREATE TABLE public.jwt_token (
 );
 
 
-ALTER TABLE public.jwt_token OWNER TO radx_admin;
+ALTER TABLE public.jwt_token OWNER TO datahub_admin;
 
 --
 -- TOC entry 269 (class 1259 OID 16826)
--- Name: jwt_token_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: jwt_token_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.jwt_token_id_seq
@@ -878,12 +878,12 @@ CREATE SEQUENCE public.jwt_token_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.jwt_token_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.jwt_token_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5444 (class 0 OID 0)
 -- Dependencies: 269
--- Name: jwt_token_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: jwt_token_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.jwt_token_id_seq OWNED BY public.jwt_token.id;
@@ -891,7 +891,7 @@ ALTER SEQUENCE public.jwt_token_id_seq OWNED BY public.jwt_token.id;
 
 --
 -- TOC entry 289 (class 1259 OID 17008)
--- Name: lkup_cde_codelist; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_cde_codelist (
@@ -901,11 +901,11 @@ CREATE TABLE public.lkup_cde_codelist (
 );
 
 
-ALTER TABLE public.lkup_cde_codelist OWNER TO radx_admin;
+ALTER TABLE public.lkup_cde_codelist OWNER TO datahub_admin;
 
 --
 -- TOC entry 288 (class 1259 OID 17007)
--- Name: lkup_cde_codelist_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_cde_codelist_id_seq
@@ -917,12 +917,12 @@ CREATE SEQUENCE public.lkup_cde_codelist_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_cde_codelist_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_cde_codelist_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5447 (class 0 OID 0)
 -- Dependencies: 288
--- Name: lkup_cde_codelist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_cde_codelist_id_seq OWNED BY public.lkup_cde_codelist.id;
@@ -930,7 +930,7 @@ ALTER SEQUENCE public.lkup_cde_codelist_id_seq OWNED BY public.lkup_cde_codelist
 
 --
 -- TOC entry 291 (class 1259 OID 17017)
--- Name: lkup_cde_codelist_value; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist_value; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_cde_codelist_value (
@@ -943,11 +943,11 @@ CREATE TABLE public.lkup_cde_codelist_value (
 );
 
 
-ALTER TABLE public.lkup_cde_codelist_value OWNER TO radx_admin;
+ALTER TABLE public.lkup_cde_codelist_value OWNER TO datahub_admin;
 
 --
 -- TOC entry 290 (class 1259 OID 17016)
--- Name: lkup_cde_codelist_value_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist_value_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_cde_codelist_value_id_seq
@@ -959,12 +959,12 @@ CREATE SEQUENCE public.lkup_cde_codelist_value_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_cde_codelist_value_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_cde_codelist_value_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5450 (class 0 OID 0)
 -- Dependencies: 290
--- Name: lkup_cde_codelist_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_cde_codelist_value_id_seq OWNED BY public.lkup_cde_codelist_value.id;
@@ -972,7 +972,7 @@ ALTER SEQUENCE public.lkup_cde_codelist_value_id_seq OWNED BY public.lkup_cde_co
 
 --
 -- TOC entry 222 (class 1259 OID 16430)
--- Name: lkup_country; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_country; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_country (
@@ -982,11 +982,11 @@ CREATE TABLE public.lkup_country (
 );
 
 
-ALTER TABLE public.lkup_country OWNER TO radx_admin;
+ALTER TABLE public.lkup_country OWNER TO datahub_admin;
 
 --
 -- TOC entry 221 (class 1259 OID 16429)
--- Name: lkup_country_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_country_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_country_id_seq
@@ -998,12 +998,12 @@ CREATE SEQUENCE public.lkup_country_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_country_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_country_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5453 (class 0 OID 0)
 -- Dependencies: 221
--- Name: lkup_country_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_country_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_country_id_seq OWNED BY public.lkup_country.id;
@@ -1011,7 +1011,7 @@ ALTER SEQUENCE public.lkup_country_id_seq OWNED BY public.lkup_country.id;
 
 --
 -- TOC entry 234 (class 1259 OID 16498)
--- Name: lkup_data_file_category; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_data_file_category; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_data_file_category (
@@ -1023,11 +1023,11 @@ CREATE TABLE public.lkup_data_file_category (
 );
 
 
-ALTER TABLE public.lkup_data_file_category OWNER TO radx_admin;
+ALTER TABLE public.lkup_data_file_category OWNER TO datahub_admin;
 
 --
 -- TOC entry 233 (class 1259 OID 16497)
--- Name: lkup_data_file_category_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_data_file_category_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_data_file_category_id_seq
@@ -1039,12 +1039,12 @@ CREATE SEQUENCE public.lkup_data_file_category_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_data_file_category_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_data_file_category_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5455 (class 0 OID 0)
 -- Dependencies: 233
--- Name: lkup_data_file_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_data_file_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_data_file_category_id_seq OWNED BY public.lkup_data_file_category.id;
@@ -1052,7 +1052,7 @@ ALTER SEQUENCE public.lkup_data_file_category_id_seq OWNED BY public.lkup_data_f
 
 --
 -- TOC entry 236 (class 1259 OID 16507)
--- Name: lkup_center; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_center; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_center (
@@ -1062,11 +1062,11 @@ CREATE TABLE public.lkup_center (
 );
 
 
-ALTER TABLE public.lkup_center OWNER TO radx_admin;
+ALTER TABLE public.lkup_center OWNER TO datahub_admin;
 
 --
 -- TOC entry 235 (class 1259 OID 16506)
--- Name: lkup_center_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_center_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_center_id_seq
@@ -1078,12 +1078,12 @@ CREATE SEQUENCE public.lkup_center_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_center_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_center_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5457 (class 0 OID 0)
 -- Dependencies: 235
--- Name: lkup_center_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_center_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_center_id_seq OWNED BY public.lkup_center.id;
@@ -1091,7 +1091,7 @@ ALTER SEQUENCE public.lkup_center_id_seq OWNED BY public.lkup_center.id;
 
 --
 -- TOC entry 238 (class 1259 OID 16517)
--- Name: lkup_entity_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_entity_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_entity_type (
@@ -1101,11 +1101,11 @@ CREATE TABLE public.lkup_entity_type (
 );
 
 
-ALTER TABLE public.lkup_entity_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_entity_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 237 (class 1259 OID 16516)
--- Name: lkup_entity_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_entity_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_entity_type_id_seq
@@ -1117,12 +1117,12 @@ CREATE SEQUENCE public.lkup_entity_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_entity_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_entity_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5459 (class 0 OID 0)
 -- Dependencies: 237
--- Name: lkup_entity_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_entity_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_entity_type_id_seq OWNED BY public.lkup_entity_type.id;
@@ -1130,7 +1130,7 @@ ALTER SEQUENCE public.lkup_entity_type_id_seq OWNED BY public.lkup_entity_type.i
 
 --
 -- TOC entry 297 (class 1259 OID 17111)
--- Name: lkup_event_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_event_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_event_type (
@@ -1139,11 +1139,11 @@ CREATE TABLE public.lkup_event_type (
 );
 
 
-ALTER TABLE public.lkup_event_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_event_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 296 (class 1259 OID 17110)
--- Name: lkup_event_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_event_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_event_type_id_seq
@@ -1155,12 +1155,12 @@ CREATE SEQUENCE public.lkup_event_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_event_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_event_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5461 (class 0 OID 0)
 -- Dependencies: 296
--- Name: lkup_event_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_event_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_event_type_id_seq OWNED BY public.lkup_event_type.id;
@@ -1168,7 +1168,7 @@ ALTER SEQUENCE public.lkup_event_type_id_seq OWNED BY public.lkup_event_type.id;
 
 --
 -- TOC entry 240 (class 1259 OID 16526)
--- Name: lkup_file_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_file_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_file_type (
@@ -1178,11 +1178,11 @@ CREATE TABLE public.lkup_file_type (
 );
 
 
-ALTER TABLE public.lkup_file_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_file_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 239 (class 1259 OID 16525)
--- Name: lkup_file_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_file_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_file_type_id_seq
@@ -1194,12 +1194,12 @@ CREATE SEQUENCE public.lkup_file_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_file_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_file_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5464 (class 0 OID 0)
 -- Dependencies: 239
--- Name: lkup_file_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_file_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_file_type_id_seq OWNED BY public.lkup_file_type.id;
@@ -1207,7 +1207,7 @@ ALTER SEQUENCE public.lkup_file_type_id_seq OWNED BY public.lkup_file_type.id;
 
 --
 -- TOC entry 224 (class 1259 OID 16437)
--- Name: lkup_institution_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_institution_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_institution_type (
@@ -1217,11 +1217,11 @@ CREATE TABLE public.lkup_institution_type (
 );
 
 
-ALTER TABLE public.lkup_institution_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_institution_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 223 (class 1259 OID 16436)
--- Name: lkup_institution_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_institution_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_institution_type_id_seq
@@ -1233,12 +1233,12 @@ CREATE SEQUENCE public.lkup_institution_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_institution_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_institution_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5466 (class 0 OID 0)
 -- Dependencies: 223
--- Name: lkup_institution_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_institution_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_institution_type_id_seq OWNED BY public.lkup_institution_type.id;
@@ -1246,7 +1246,7 @@ ALTER SEQUENCE public.lkup_institution_type_id_seq OWNED BY public.lkup_institut
 
 --
 -- TOC entry 309 (class 1259 OID 17259)
--- Name: lkup_metrics_report_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_metrics_report_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_metrics_report_type (
@@ -1256,11 +1256,11 @@ CREATE TABLE public.lkup_metrics_report_type (
 );
 
 
-ALTER TABLE public.lkup_metrics_report_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_metrics_report_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 308 (class 1259 OID 17258)
--- Name: lkup_metrics_report_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_metrics_report_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_metrics_report_type_id_seq
@@ -1272,12 +1272,12 @@ CREATE SEQUENCE public.lkup_metrics_report_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_metrics_report_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_metrics_report_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5468 (class 0 OID 0)
 -- Dependencies: 308
--- Name: lkup_metrics_report_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_metrics_report_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_metrics_report_type_id_seq OWNED BY public.lkup_metrics_report_type.id;
@@ -1285,7 +1285,7 @@ ALTER SEQUENCE public.lkup_metrics_report_type_id_seq OWNED BY public.lkup_metri
 
 --
 -- TOC entry 299 (class 1259 OID 17120)
--- Name: lkup_news_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_news_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_news_type (
@@ -1294,11 +1294,11 @@ CREATE TABLE public.lkup_news_type (
 );
 
 
-ALTER TABLE public.lkup_news_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_news_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 298 (class 1259 OID 17119)
--- Name: lkup_news_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_news_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_news_type_id_seq
@@ -1310,12 +1310,12 @@ CREATE SEQUENCE public.lkup_news_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_news_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_news_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5471 (class 0 OID 0)
 -- Dependencies: 298
--- Name: lkup_news_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_news_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_news_type_id_seq OWNED BY public.lkup_news_type.id;
@@ -1323,7 +1323,7 @@ ALTER SEQUENCE public.lkup_news_type_id_seq OWNED BY public.lkup_news_type.id;
 
 --
 -- TOC entry 230 (class 1259 OID 16475)
--- Name: lkup_property_codelist; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_property_codelist (
@@ -1333,11 +1333,11 @@ CREATE TABLE public.lkup_property_codelist (
 );
 
 
-ALTER TABLE public.lkup_property_codelist OWNER TO radx_admin;
+ALTER TABLE public.lkup_property_codelist OWNER TO datahub_admin;
 
 --
 -- TOC entry 229 (class 1259 OID 16474)
--- Name: lkup_property_codelist_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_property_codelist_id_seq
@@ -1349,12 +1349,12 @@ CREATE SEQUENCE public.lkup_property_codelist_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_property_codelist_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_property_codelist_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5474 (class 0 OID 0)
 -- Dependencies: 229
--- Name: lkup_property_codelist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_property_codelist_id_seq OWNED BY public.lkup_property_codelist.id;
@@ -1362,7 +1362,7 @@ ALTER SEQUENCE public.lkup_property_codelist_id_seq OWNED BY public.lkup_propert
 
 --
 -- TOC entry 232 (class 1259 OID 16484)
--- Name: lkup_property_codelist_value; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_value; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_property_codelist_value (
@@ -1373,11 +1373,11 @@ CREATE TABLE public.lkup_property_codelist_value (
 );
 
 
-ALTER TABLE public.lkup_property_codelist_value OWNER TO radx_admin;
+ALTER TABLE public.lkup_property_codelist_value OWNER TO datahub_admin;
 
 --
 -- TOC entry 231 (class 1259 OID 16483)
--- Name: lkup_property_codelist_value_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_value_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_property_codelist_value_id_seq
@@ -1389,12 +1389,12 @@ CREATE SEQUENCE public.lkup_property_codelist_value_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_property_codelist_value_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_property_codelist_value_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5476 (class 0 OID 0)
 -- Dependencies: 231
--- Name: lkup_property_codelist_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_property_codelist_value_id_seq OWNED BY public.lkup_property_codelist_value.id;
@@ -1402,7 +1402,7 @@ ALTER SEQUENCE public.lkup_property_codelist_value_id_seq OWNED BY public.lkup_p
 
 --
 -- TOC entry 244 (class 1259 OID 16544)
--- Name: lkup_property_source; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_property_source; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_property_source (
@@ -1412,11 +1412,11 @@ CREATE TABLE public.lkup_property_source (
 );
 
 
-ALTER TABLE public.lkup_property_source OWNER TO radx_admin;
+ALTER TABLE public.lkup_property_source OWNER TO datahub_admin;
 
 --
 -- TOC entry 243 (class 1259 OID 16543)
--- Name: lkup_property_source_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_property_source_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_property_source_id_seq
@@ -1428,12 +1428,12 @@ CREATE SEQUENCE public.lkup_property_source_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_property_source_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_property_source_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5478 (class 0 OID 0)
 -- Dependencies: 243
--- Name: lkup_property_source_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_property_source_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_property_source_id_seq OWNED BY public.lkup_property_source.id;
@@ -1441,7 +1441,7 @@ ALTER SEQUENCE public.lkup_property_source_id_seq OWNED BY public.lkup_property_
 
 --
 -- TOC entry 242 (class 1259 OID 16535)
--- Name: lkup_property_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_property_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_property_type (
@@ -1451,11 +1451,11 @@ CREATE TABLE public.lkup_property_type (
 );
 
 
-ALTER TABLE public.lkup_property_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_property_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 241 (class 1259 OID 16534)
--- Name: lkup_property_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_property_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_property_type_id_seq
@@ -1467,12 +1467,12 @@ CREATE SEQUENCE public.lkup_property_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_property_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_property_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5480 (class 0 OID 0)
 -- Dependencies: 241
--- Name: lkup_property_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_property_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_property_type_id_seq OWNED BY public.lkup_property_type.id;
@@ -1480,7 +1480,7 @@ ALTER SEQUENCE public.lkup_property_type_id_seq OWNED BY public.lkup_property_ty
 
 --
 -- TOC entry 415 (class 1259 OID 46679)
--- Name: lkup_referrer; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_referrer; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_referrer (
@@ -1492,11 +1492,11 @@ CREATE TABLE public.lkup_referrer (
 );
 
 
-ALTER TABLE public.lkup_referrer OWNER TO radx_admin;
+ALTER TABLE public.lkup_referrer OWNER TO datahub_admin;
 
 --
 -- TOC entry 414 (class 1259 OID 46678)
--- Name: lkup_referrer_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_referrer_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_referrer_id_seq
@@ -1508,12 +1508,12 @@ CREATE SEQUENCE public.lkup_referrer_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_referrer_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_referrer_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5482 (class 0 OID 0)
 -- Dependencies: 414
--- Name: lkup_referrer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_referrer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_referrer_id_seq OWNED BY public.lkup_referrer.id;
@@ -1521,7 +1521,7 @@ ALTER SEQUENCE public.lkup_referrer_id_seq OWNED BY public.lkup_referrer.id;
 
 --
 -- TOC entry 262 (class 1259 OID 16750)
--- Name: lkup_researcher_level; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_researcher_level; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_researcher_level (
@@ -1531,11 +1531,11 @@ CREATE TABLE public.lkup_researcher_level (
 );
 
 
-ALTER TABLE public.lkup_researcher_level OWNER TO radx_admin;
+ALTER TABLE public.lkup_researcher_level OWNER TO datahub_admin;
 
 --
 -- TOC entry 261 (class 1259 OID 16749)
--- Name: lkup_researcher_level_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_researcher_level_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_researcher_level_id_seq
@@ -1547,12 +1547,12 @@ CREATE SEQUENCE public.lkup_researcher_level_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_researcher_level_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_researcher_level_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5485 (class 0 OID 0)
 -- Dependencies: 261
--- Name: lkup_researcher_level_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_researcher_level_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_researcher_level_id_seq OWNED BY public.lkup_researcher_level.id;
@@ -1560,7 +1560,7 @@ ALTER SEQUENCE public.lkup_researcher_level_id_seq OWNED BY public.lkup_research
 
 --
 -- TOC entry 315 (class 1259 OID 17296)
--- Name: lkup_resolution_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_resolution_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_resolution_type (
@@ -1571,11 +1571,11 @@ CREATE TABLE public.lkup_resolution_type (
 );
 
 
-ALTER TABLE public.lkup_resolution_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_resolution_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 314 (class 1259 OID 17295)
--- Name: lkup_resolution_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_resolution_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_resolution_type_id_seq
@@ -1587,12 +1587,12 @@ CREATE SEQUENCE public.lkup_resolution_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_resolution_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_resolution_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5487 (class 0 OID 0)
 -- Dependencies: 314
--- Name: lkup_resolution_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_resolution_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_resolution_type_id_seq OWNED BY public.lkup_resolution_type.id;
@@ -1600,7 +1600,7 @@ ALTER SEQUENCE public.lkup_resolution_type_id_seq OWNED BY public.lkup_resolutio
 
 --
 -- TOC entry 260 (class 1259 OID 16743)
--- Name: lkup_role; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_role; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_role (
@@ -1610,11 +1610,11 @@ CREATE TABLE public.lkup_role (
 );
 
 
-ALTER TABLE public.lkup_role OWNER TO radx_admin;
+ALTER TABLE public.lkup_role OWNER TO datahub_admin;
 
 --
 -- TOC entry 259 (class 1259 OID 16742)
--- Name: lkup_role_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_role_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_role_id_seq
@@ -1626,12 +1626,12 @@ CREATE SEQUENCE public.lkup_role_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_role_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_role_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5490 (class 0 OID 0)
 -- Dependencies: 259
--- Name: lkup_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_role_id_seq OWNED BY public.lkup_role.id;
@@ -1639,7 +1639,7 @@ ALTER SEQUENCE public.lkup_role_id_seq OWNED BY public.lkup_role.id;
 
 --
 -- TOC entry 226 (class 1259 OID 16444)
--- Name: lkup_state; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_state; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_state (
@@ -1650,11 +1650,11 @@ CREATE TABLE public.lkup_state (
 );
 
 
-ALTER TABLE public.lkup_state OWNER TO radx_admin;
+ALTER TABLE public.lkup_state OWNER TO datahub_admin;
 
 --
 -- TOC entry 225 (class 1259 OID 16443)
--- Name: lkup_state_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_state_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_state_id_seq
@@ -1666,12 +1666,12 @@ CREATE SEQUENCE public.lkup_state_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_state_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_state_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5492 (class 0 OID 0)
 -- Dependencies: 225
--- Name: lkup_state_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_state_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_state_id_seq OWNED BY public.lkup_state.id;
@@ -1679,7 +1679,7 @@ ALTER SEQUENCE public.lkup_state_id_seq OWNED BY public.lkup_state.id;
 
 --
 -- TOC entry 228 (class 1259 OID 16466)
--- Name: lkup_status; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_status; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_status (
@@ -1691,11 +1691,11 @@ CREATE TABLE public.lkup_status (
 );
 
 
-ALTER TABLE public.lkup_status OWNER TO radx_admin;
+ALTER TABLE public.lkup_status OWNER TO datahub_admin;
 
 --
 -- TOC entry 227 (class 1259 OID 16465)
--- Name: lkup_status_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_status_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_status_id_seq
@@ -1707,12 +1707,12 @@ CREATE SEQUENCE public.lkup_status_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_status_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_status_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5494 (class 0 OID 0)
 -- Dependencies: 227
--- Name: lkup_status_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_status_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_status_id_seq OWNED BY public.lkup_status.id;
@@ -1720,7 +1720,7 @@ ALTER SEQUENCE public.lkup_status_id_seq OWNED BY public.lkup_status.id;
 
 --
 -- TOC entry 246 (class 1259 OID 16553)
--- Name: lkup_submission_step; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_submission_step; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_submission_step (
@@ -1729,11 +1729,11 @@ CREATE TABLE public.lkup_submission_step (
 );
 
 
-ALTER TABLE public.lkup_submission_step OWNER TO radx_admin;
+ALTER TABLE public.lkup_submission_step OWNER TO datahub_admin;
 
 --
 -- TOC entry 245 (class 1259 OID 16552)
--- Name: lkup_submission_step_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_submission_step_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_submission_step_id_seq
@@ -1745,12 +1745,12 @@ CREATE SEQUENCE public.lkup_submission_step_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_submission_step_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_submission_step_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5496 (class 0 OID 0)
 -- Dependencies: 245
--- Name: lkup_submission_step_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_submission_step_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_submission_step_id_seq OWNED BY public.lkup_submission_step.id;
@@ -1758,7 +1758,7 @@ ALTER SEQUENCE public.lkup_submission_step_id_seq OWNED BY public.lkup_submissio
 
 --
 -- TOC entry 317 (class 1259 OID 17303)
--- Name: lkup_support_request_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_support_request_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_support_request_type (
@@ -1769,11 +1769,11 @@ CREATE TABLE public.lkup_support_request_type (
 );
 
 
-ALTER TABLE public.lkup_support_request_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_support_request_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 316 (class 1259 OID 17302)
--- Name: lkup_support_request_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_support_request_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_support_request_type_id_seq
@@ -1785,12 +1785,12 @@ CREATE SEQUENCE public.lkup_support_request_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_support_request_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_support_request_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5498 (class 0 OID 0)
 -- Dependencies: 316
--- Name: lkup_support_request_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_support_request_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_support_request_type_id_seq OWNED BY public.lkup_support_request_type.id;
@@ -1798,7 +1798,7 @@ ALTER SEQUENCE public.lkup_support_request_type_id_seq OWNED BY public.lkup_supp
 
 --
 -- TOC entry 428 (class 1259 OID 58938)
--- Name: lkup_variable_category; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_category; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_variable_category (
@@ -1808,11 +1808,11 @@ CREATE TABLE public.lkup_variable_category (
 );
 
 
-ALTER TABLE public.lkup_variable_category OWNER TO radx_admin;
+ALTER TABLE public.lkup_variable_category OWNER TO datahub_admin;
 
 --
 -- TOC entry 419 (class 1259 OID 46715)
--- Name: lkup_variable_datatype; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_datatype; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_variable_datatype (
@@ -1822,11 +1822,11 @@ CREATE TABLE public.lkup_variable_datatype (
 );
 
 
-ALTER TABLE public.lkup_variable_datatype OWNER TO radx_admin;
+ALTER TABLE public.lkup_variable_datatype OWNER TO datahub_admin;
 
 --
 -- TOC entry 287 (class 1259 OID 16999)
--- Name: lkup_variable_type; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_type; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_variable_type (
@@ -1836,11 +1836,11 @@ CREATE TABLE public.lkup_variable_type (
 );
 
 
-ALTER TABLE public.lkup_variable_type OWNER TO radx_admin;
+ALTER TABLE public.lkup_variable_type OWNER TO datahub_admin;
 
 --
 -- TOC entry 286 (class 1259 OID 16998)
--- Name: lkup_variable_type_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_variable_type_id_seq
@@ -1852,12 +1852,12 @@ CREATE SEQUENCE public.lkup_variable_type_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_variable_type_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_variable_type_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5503 (class 0 OID 0)
 -- Dependencies: 286
--- Name: lkup_variable_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_variable_type_id_seq OWNED BY public.lkup_variable_type.id;
@@ -1865,7 +1865,7 @@ ALTER SEQUENCE public.lkup_variable_type_id_seq OWNED BY public.lkup_variable_ty
 
 --
 -- TOC entry 277 (class 1259 OID 16875)
--- Name: lkup_workbench_interest; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_workbench_interest; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_workbench_interest (
@@ -1875,11 +1875,11 @@ CREATE TABLE public.lkup_workbench_interest (
 );
 
 
-ALTER TABLE public.lkup_workbench_interest OWNER TO radx_admin;
+ALTER TABLE public.lkup_workbench_interest OWNER TO datahub_admin;
 
 --
 -- TOC entry 276 (class 1259 OID 16874)
--- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_workbench_interest_id_seq
@@ -1891,12 +1891,12 @@ CREATE SEQUENCE public.lkup_workbench_interest_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_workbench_interest_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_workbench_interest_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5506 (class 0 OID 0)
 -- Dependencies: 276
--- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_workbench_interest_id_seq OWNED BY public.lkup_workbench_interest.id;
@@ -1904,7 +1904,7 @@ ALTER SEQUENCE public.lkup_workbench_interest_id_seq OWNED BY public.lkup_workbe
 
 --
 -- TOC entry 311 (class 1259 OID 17268)
--- Name: metrics_report; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: metrics_report; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.metrics_report (
@@ -1915,11 +1915,11 @@ CREATE TABLE public.metrics_report (
 );
 
 
-ALTER TABLE public.metrics_report OWNER TO radx_admin;
+ALTER TABLE public.metrics_report OWNER TO datahub_admin;
 
 --
 -- TOC entry 310 (class 1259 OID 17267)
--- Name: metrics_report_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: metrics_report_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.metrics_report_id_seq
@@ -1931,12 +1931,12 @@ CREATE SEQUENCE public.metrics_report_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.metrics_report_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.metrics_report_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5509 (class 0 OID 0)
 -- Dependencies: 310
--- Name: metrics_report_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: metrics_report_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.metrics_report_id_seq OWNED BY public.metrics_report.id;
@@ -1944,7 +1944,7 @@ ALTER SEQUENCE public.metrics_report_id_seq OWNED BY public.metrics_report.id;
 
 --
 -- TOC entry 305 (class 1259 OID 17226)
--- Name: news; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: news; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.news (
@@ -1963,11 +1963,11 @@ CREATE TABLE public.news (
 );
 
 
-ALTER TABLE public.news OWNER TO radx_admin;
+ALTER TABLE public.news OWNER TO datahub_admin;
 
 --
 -- TOC entry 304 (class 1259 OID 17225)
--- Name: news_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: news_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.news_id_seq
@@ -1979,12 +1979,12 @@ CREATE SEQUENCE public.news_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.news_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.news_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5512 (class 0 OID 0)
 -- Dependencies: 304
--- Name: news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.news_id_seq OWNED BY public.news.id;
@@ -1992,7 +1992,7 @@ ALTER SEQUENCE public.news_id_seq OWNED BY public.news.id;
 
 --
 -- TOC entry 307 (class 1259 OID 17242)
--- Name: news_link; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: news_link; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.news_link (
@@ -2008,11 +2008,11 @@ CREATE TABLE public.news_link (
 );
 
 
-ALTER TABLE public.news_link OWNER TO radx_admin;
+ALTER TABLE public.news_link OWNER TO datahub_admin;
 
 --
 -- TOC entry 306 (class 1259 OID 17241)
--- Name: news_link_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: news_link_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.news_link_id_seq
@@ -2024,12 +2024,12 @@ CREATE SEQUENCE public.news_link_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.news_link_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.news_link_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5515 (class 0 OID 0)
 -- Dependencies: 306
--- Name: news_link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: news_link_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.news_link_id_seq OWNED BY public.news_link.id;
@@ -2037,7 +2037,7 @@ ALTER SEQUENCE public.news_link_id_seq OWNED BY public.news_link.id;
 
 --
 -- TOC entry 400 (class 1259 OID 40548)
--- Name: newsletter; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: newsletter; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.newsletter (
@@ -2052,11 +2052,11 @@ CREATE TABLE public.newsletter (
 );
 
 
-ALTER TABLE public.newsletter OWNER TO radx_admin;
+ALTER TABLE public.newsletter OWNER TO datahub_admin;
 
 --
 -- TOC entry 399 (class 1259 OID 40547)
--- Name: newsletter_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: newsletter_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.newsletter_id_seq
@@ -2068,12 +2068,12 @@ CREATE SEQUENCE public.newsletter_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.newsletter_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.newsletter_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5518 (class 0 OID 0)
 -- Dependencies: 399
--- Name: newsletter_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: newsletter_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.newsletter_id_seq OWNED BY public.newsletter.id;
@@ -2081,7 +2081,7 @@ ALTER SEQUENCE public.newsletter_id_seq OWNED BY public.newsletter.id;
 
 --
 -- TOC entry 340 (class 1259 OID 22733)
--- Name: public_data; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: public_data; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.public_data (
@@ -2100,11 +2100,11 @@ CREATE TABLE public.public_data (
 );
 
 
-ALTER TABLE public.public_data OWNER TO radx_admin;
+ALTER TABLE public.public_data OWNER TO datahub_admin;
 
 --
 -- TOC entry 338 (class 1259 OID 22425)
--- Name: public_data_collection; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: public_data_collection; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.public_data_collection (
@@ -2115,11 +2115,11 @@ CREATE TABLE public.public_data_collection (
 );
 
 
-ALTER TABLE public.public_data_collection OWNER TO radx_admin;
+ALTER TABLE public.public_data_collection OWNER TO datahub_admin;
 
 --
 -- TOC entry 337 (class 1259 OID 22424)
--- Name: public_data_collection_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: public_data_collection_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.public_data_collection_id_seq
@@ -2131,12 +2131,12 @@ CREATE SEQUENCE public.public_data_collection_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.public_data_collection_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.public_data_collection_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5522 (class 0 OID 0)
 -- Dependencies: 337
--- Name: public_data_collection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: public_data_collection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.public_data_collection_id_seq OWNED BY public.public_data_collection.id;
@@ -2144,7 +2144,7 @@ ALTER SEQUENCE public.public_data_collection_id_seq OWNED BY public.public_data_
 
 --
 -- TOC entry 339 (class 1259 OID 22732)
--- Name: public_data_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: public_data_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.public_data_id_seq
@@ -2156,12 +2156,12 @@ CREATE SEQUENCE public.public_data_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.public_data_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.public_data_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5524 (class 0 OID 0)
 -- Dependencies: 339
--- Name: public_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: public_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.public_data_id_seq OWNED BY public.public_data.id;
@@ -2169,7 +2169,7 @@ ALTER SEQUENCE public.public_data_id_seq OWNED BY public.public_data.id;
 
 --
 -- TOC entry 268 (class 1259 OID 16802)
--- Name: ras_tracking; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: ras_tracking; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.ras_tracking (
@@ -2191,11 +2191,11 @@ CREATE TABLE public.ras_tracking (
 );
 
 
-ALTER TABLE public.ras_tracking OWNER TO radx_admin;
+ALTER TABLE public.ras_tracking OWNER TO datahub_admin;
 
 --
 -- TOC entry 267 (class 1259 OID 16801)
--- Name: ras_tracking_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: ras_tracking_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.ras_tracking_id_seq
@@ -2207,12 +2207,12 @@ CREATE SEQUENCE public.ras_tracking_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.ras_tracking_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.ras_tracking_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5527 (class 0 OID 0)
 -- Dependencies: 267
--- Name: ras_tracking_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: ras_tracking_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.ras_tracking_id_seq OWNED BY public.ras_tracking.id;
@@ -2220,7 +2220,7 @@ ALTER SEQUENCE public.ras_tracking_id_seq OWNED BY public.ras_tracking.id;
 
 --
 -- TOC entry 248 (class 1259 OID 16560)
--- Name: s3_file; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: s3_file; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.s3_file (
@@ -2240,11 +2240,11 @@ CREATE TABLE public.s3_file (
 );
 
 
-ALTER TABLE public.s3_file OWNER TO radx_admin;
+ALTER TABLE public.s3_file OWNER TO datahub_admin;
 
 --
 -- TOC entry 247 (class 1259 OID 16559)
--- Name: s3_file_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: s3_file_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.s3_file_id_seq
@@ -2256,12 +2256,12 @@ CREATE SEQUENCE public.s3_file_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.s3_file_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.s3_file_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5530 (class 0 OID 0)
 -- Dependencies: 247
--- Name: s3_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: s3_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.s3_file_id_seq OWNED BY public.s3_file.id;
@@ -2269,7 +2269,7 @@ ALTER SEQUENCE public.s3_file_id_seq OWNED BY public.s3_file.id;
 
 --
 -- TOC entry 387 (class 1259 OID 29115)
--- Name: sas_data_file; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: sas_data_file; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.sas_data_file (
@@ -2287,11 +2287,11 @@ CREATE TABLE public.sas_data_file (
 );
 
 
-ALTER TABLE public.sas_data_file OWNER TO radx_admin;
+ALTER TABLE public.sas_data_file OWNER TO datahub_admin;
 
 --
 -- TOC entry 386 (class 1259 OID 29114)
--- Name: sas_data_file_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: sas_data_file_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.sas_data_file_id_seq
@@ -2303,12 +2303,12 @@ CREATE SEQUENCE public.sas_data_file_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.sas_data_file_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.sas_data_file_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5533 (class 0 OID 0)
 -- Dependencies: 386
--- Name: sas_data_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: sas_data_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.sas_data_file_id_seq OWNED BY public.sas_data_file.id;
@@ -2316,7 +2316,7 @@ ALTER SEQUENCE public.sas_data_file_id_seq OWNED BY public.sas_data_file.id;
 
 --
 -- TOC entry 389 (class 1259 OID 29146)
--- Name: sas_file_download; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: sas_file_download; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.sas_file_download (
@@ -2327,11 +2327,11 @@ CREATE TABLE public.sas_file_download (
 );
 
 
-ALTER TABLE public.sas_file_download OWNER TO radx_admin;
+ALTER TABLE public.sas_file_download OWNER TO datahub_admin;
 
 --
 -- TOC entry 388 (class 1259 OID 29145)
--- Name: sas_file_download_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: sas_file_download_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.sas_file_download_id_seq
@@ -2343,12 +2343,12 @@ CREATE SEQUENCE public.sas_file_download_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.sas_file_download_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.sas_file_download_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5536 (class 0 OID 0)
 -- Dependencies: 388
--- Name: sas_file_download_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: sas_file_download_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.sas_file_download_id_seq OWNED BY public.sas_file_download.id;
@@ -2356,7 +2356,7 @@ ALTER SEQUENCE public.sas_file_download_id_seq OWNED BY public.sas_file_download
 
 --
 -- TOC entry 402 (class 1259 OID 40559)
--- Name: search_log; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: search_log; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.search_log (
@@ -2366,11 +2366,11 @@ CREATE TABLE public.search_log (
 );
 
 
-ALTER TABLE public.search_log OWNER TO radx_admin;
+ALTER TABLE public.search_log OWNER TO datahub_admin;
 
 --
 -- TOC entry 401 (class 1259 OID 40558)
--- Name: search_log_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: search_log_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.search_log_id_seq
@@ -2381,12 +2381,12 @@ CREATE SEQUENCE public.search_log_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.search_log_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.search_log_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5539 (class 0 OID 0)
 -- Dependencies: 401
--- Name: search_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: search_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.search_log_id_seq OWNED BY public.search_log.id;
@@ -2394,7 +2394,7 @@ ALTER SEQUENCE public.search_log_id_seq OWNED BY public.search_log.id;
 
 --
 -- TOC entry 250 (class 1259 OID 16577)
--- Name: study; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: study; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.study (
@@ -2414,11 +2414,11 @@ CREATE TABLE public.study (
 );
 
 
-ALTER TABLE public.study OWNER TO radx_admin;
+ALTER TABLE public.study OWNER TO datahub_admin;
 
 --
 -- TOC entry 321 (class 1259 OID 17359)
--- Name: study_harmonization_metrics; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: study_harmonization_metrics; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.study_harmonization_metrics (
@@ -2436,11 +2436,11 @@ CREATE TABLE public.study_harmonization_metrics (
 );
 
 
-ALTER TABLE public.study_harmonization_metrics OWNER TO radx_admin;
+ALTER TABLE public.study_harmonization_metrics OWNER TO datahub_admin;
 
 --
 -- TOC entry 320 (class 1259 OID 17358)
--- Name: study_harmonization_metrics_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: study_harmonization_metrics_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.study_harmonization_metrics_id_seq
@@ -2452,12 +2452,12 @@ CREATE SEQUENCE public.study_harmonization_metrics_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.study_harmonization_metrics_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.study_harmonization_metrics_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5543 (class 0 OID 0)
 -- Dependencies: 320
--- Name: study_harmonization_metrics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: study_harmonization_metrics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.study_harmonization_metrics_id_seq OWNED BY public.study_harmonization_metrics.id;
@@ -2465,7 +2465,7 @@ ALTER SEQUENCE public.study_harmonization_metrics_id_seq OWNED BY public.study_h
 
 --
 -- TOC entry 249 (class 1259 OID 16576)
--- Name: study_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: study_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.study_id_seq
@@ -2477,12 +2477,12 @@ CREATE SEQUENCE public.study_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.study_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.study_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5545 (class 0 OID 0)
 -- Dependencies: 249
--- Name: study_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: study_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.study_id_seq OWNED BY public.study.id;
@@ -2490,7 +2490,7 @@ ALTER SEQUENCE public.study_id_seq OWNED BY public.study.id;
 
 --
 -- TOC entry 256 (class 1259 OID 16675)
--- Name: study_property_value; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: study_property_value; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.study_property_value (
@@ -2506,11 +2506,11 @@ CREATE TABLE public.study_property_value (
 );
 
 
-ALTER TABLE public.study_property_value OWNER TO radx_admin;
+ALTER TABLE public.study_property_value OWNER TO datahub_admin;
 
 --
 -- TOC entry 255 (class 1259 OID 16674)
--- Name: study_property_value_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: study_property_value_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.study_property_value_id_seq
@@ -2522,12 +2522,12 @@ CREATE SEQUENCE public.study_property_value_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.study_property_value_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.study_property_value_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5548 (class 0 OID 0)
 -- Dependencies: 255
--- Name: study_property_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: study_property_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.study_property_value_id_seq OWNED BY public.study_property_value.id;
@@ -2535,7 +2535,7 @@ ALTER SEQUENCE public.study_property_value_id_seq OWNED BY public.study_property
 
 --
 -- TOC entry 319 (class 1259 OID 17310)
--- Name: support_request; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: support_request; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.support_request (
@@ -2562,11 +2562,11 @@ CREATE TABLE public.support_request (
 );
 
 
-ALTER TABLE public.support_request OWNER TO radx_admin;
+ALTER TABLE public.support_request OWNER TO datahub_admin;
 
 --
 -- TOC entry 318 (class 1259 OID 17309)
--- Name: support_request_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: support_request_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.support_request_id_seq
@@ -2578,12 +2578,12 @@ CREATE SEQUENCE public.support_request_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.support_request_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.support_request_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5551 (class 0 OID 0)
 -- Dependencies: 318
--- Name: support_request_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: support_request_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.support_request_id_seq OWNED BY public.support_request.id;
@@ -2591,7 +2591,7 @@ ALTER SEQUENCE public.support_request_id_seq OWNED BY public.support_request.id;
 
 --
 -- TOC entry 412 (class 1259 OID 43523)
--- Name: user_file_upload; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: user_file_upload; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.user_file_upload (
@@ -2608,11 +2608,11 @@ CREATE TABLE public.user_file_upload (
 );
 
 
-ALTER TABLE public.user_file_upload OWNER TO radx_admin;
+ALTER TABLE public.user_file_upload OWNER TO datahub_admin;
 
 --
 -- TOC entry 411 (class 1259 OID 43522)
--- Name: user_file_upload_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: user_file_upload_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.user_file_upload_id_seq
@@ -2624,12 +2624,12 @@ CREATE SEQUENCE public.user_file_upload_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.user_file_upload_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.user_file_upload_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5563 (class 0 OID 0)
 -- Dependencies: 411
--- Name: user_file_upload_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: user_file_upload_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.user_file_upload_id_seq OWNED BY public.user_file_upload.id;
@@ -2637,7 +2637,7 @@ ALTER SEQUENCE public.user_file_upload_id_seq OWNED BY public.user_file_upload.i
 
 --
 -- TOC entry 275 (class 1259 OID 16862)
--- Name: user_login; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: user_login; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.user_login (
@@ -2647,11 +2647,11 @@ CREATE TABLE public.user_login (
 );
 
 
-ALTER TABLE public.user_login OWNER TO radx_admin;
+ALTER TABLE public.user_login OWNER TO datahub_admin;
 
 --
 -- TOC entry 274 (class 1259 OID 16861)
--- Name: user_login_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: user_login_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.user_login_id_seq
@@ -2663,12 +2663,12 @@ CREATE SEQUENCE public.user_login_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.user_login_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.user_login_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5566 (class 0 OID 0)
 -- Dependencies: 274
--- Name: user_login_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: user_login_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.user_login_id_seq OWNED BY public.user_login.id;
@@ -2676,7 +2676,7 @@ ALTER SEQUENCE public.user_login_id_seq OWNED BY public.user_login.id;
 
 --
 -- TOC entry 272 (class 1259 OID 16839)
--- Name: user_ras; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: user_ras; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.user_ras (
@@ -2690,11 +2690,11 @@ CREATE TABLE public.user_ras (
 );
 
 
-ALTER TABLE public.user_ras OWNER TO radx_admin;
+ALTER TABLE public.user_ras OWNER TO datahub_admin;
 
 --
 -- TOC entry 271 (class 1259 OID 16838)
--- Name: user_ras_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: user_ras_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.user_ras_id_seq
@@ -2706,12 +2706,12 @@ CREATE SEQUENCE public.user_ras_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.user_ras_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.user_ras_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5569 (class 0 OID 0)
 -- Dependencies: 271
--- Name: user_ras_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: user_ras_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.user_ras_id_seq OWNED BY public.user_ras.id;
@@ -2719,7 +2719,7 @@ ALTER SEQUENCE public.user_ras_id_seq OWNED BY public.user_ras.id;
 
 --
 -- TOC entry 417 (class 1259 OID 46689)
--- Name: user_referrer; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: user_referrer; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.user_referrer (
@@ -2734,11 +2734,11 @@ CREATE TABLE public.user_referrer (
 );
 
 
-ALTER TABLE public.user_referrer OWNER TO radx_admin;
+ALTER TABLE public.user_referrer OWNER TO datahub_admin;
 
 --
 -- TOC entry 416 (class 1259 OID 46688)
--- Name: user_referrer_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: user_referrer_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.user_referrer_id_seq
@@ -2750,12 +2750,12 @@ CREATE SEQUENCE public.user_referrer_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.user_referrer_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.user_referrer_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5572 (class 0 OID 0)
 -- Dependencies: 416
--- Name: user_referrer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: user_referrer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.user_referrer_id_seq OWNED BY public.user_referrer.id;
@@ -2763,7 +2763,7 @@ ALTER SEQUENCE public.user_referrer_id_seq OWNED BY public.user_referrer.id;
 
 --
 -- TOC entry 266 (class 1259 OID 16784)
--- Name: user_role; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: user_role; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.user_role (
@@ -2777,11 +2777,11 @@ CREATE TABLE public.user_role (
 );
 
 
-ALTER TABLE public.user_role OWNER TO radx_admin;
+ALTER TABLE public.user_role OWNER TO datahub_admin;
 
 --
 -- TOC entry 265 (class 1259 OID 16783)
--- Name: user_role_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: user_role_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.user_role_id_seq
@@ -2793,12 +2793,12 @@ CREATE SEQUENCE public.user_role_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.user_role_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.user_role_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5575 (class 0 OID 0)
 -- Dependencies: 265
--- Name: user_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: user_role_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.user_role_id_seq OWNED BY public.user_role.id;
@@ -2806,7 +2806,7 @@ ALTER SEQUENCE public.user_role_id_seq OWNED BY public.user_role.id;
 
 --
 -- TOC entry 426 (class 1259 OID 47335)
--- Name: user_workspace; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: user_workspace; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.user_workspace (
@@ -2819,11 +2819,11 @@ CREATE TABLE public.user_workspace (
 );
 
 
-ALTER TABLE public.user_workspace OWNER TO radx_admin;
+ALTER TABLE public.user_workspace OWNER TO datahub_admin;
 
 --
 -- TOC entry 425 (class 1259 OID 47334)
--- Name: user_workspace_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: user_workspace_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.user_workspace_id_seq
@@ -2835,12 +2835,12 @@ CREATE SEQUENCE public.user_workspace_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.user_workspace_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.user_workspace_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5578 (class 0 OID 0)
 -- Dependencies: 425
--- Name: user_workspace_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: user_workspace_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.user_workspace_id_seq OWNED BY public.user_workspace.id;
@@ -2848,7 +2848,7 @@ ALTER SEQUENCE public.user_workspace_id_seq OWNED BY public.user_workspace.id;
 
 --
 -- TOC entry 264 (class 1259 OID 16758)
--- Name: users; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: users; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.users (
@@ -2874,11 +2874,11 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO radx_admin;
+ALTER TABLE public.users OWNER TO datahub_admin;
 
 --
 -- TOC entry 263 (class 1259 OID 16757)
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -2890,12 +2890,12 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.users_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.users_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5581 (class 0 OID 0)
 -- Dependencies: 263
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
@@ -2903,7 +2903,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 --
 -- TOC entry 421 (class 1259 OID 46759)
--- Name: lkup_core_variable_permissible_value; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_core_variable_permissible_value (
@@ -2915,11 +2915,11 @@ CREATE TABLE public.lkup_core_variable_permissible_value (
 );
 
 
-ALTER TABLE public.lkup_core_variable_permissible_value OWNER TO radx_admin;
+ALTER TABLE public.lkup_core_variable_permissible_value OWNER TO datahub_admin;
 
 --
 -- TOC entry 420 (class 1259 OID 46758)
--- Name: lkup_core_variable_permissible_value_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_core_variable_permissible_value_id_seq
@@ -2931,12 +2931,12 @@ CREATE SEQUENCE public.lkup_core_variable_permissible_value_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_core_variable_permissible_value_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_core_variable_permissible_value_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5587 (class 0 OID 0)
 -- Dependencies: 420
--- Name: lkup_core_variable_permissible_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_core_variable_permissible_value_id_seq OWNED BY public.lkup_core_variable_permissible_value.id;
@@ -2944,7 +2944,7 @@ ALTER SEQUENCE public.lkup_core_variable_permissible_value_id_seq OWNED BY publi
 
 --
 -- TOC entry 423 (class 1259 OID 46776)
--- Name: lkup_core_variable_property_value; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.lkup_core_variable_property_value (
@@ -2960,11 +2960,11 @@ CREATE TABLE public.lkup_core_variable_property_value (
 );
 
 
-ALTER TABLE public.lkup_core_variable_property_value OWNER TO radx_admin;
+ALTER TABLE public.lkup_core_variable_property_value OWNER TO datahub_admin;
 
 --
 -- TOC entry 422 (class 1259 OID 46775)
--- Name: lkup_core_variable_property_value_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.lkup_core_variable_property_value_id_seq
@@ -2976,12 +2976,12 @@ CREATE SEQUENCE public.lkup_core_variable_property_value_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.lkup_core_variable_property_value_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.lkup_core_variable_property_value_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5590 (class 0 OID 0)
 -- Dependencies: 422
--- Name: lkup_core_variable_property_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.lkup_core_variable_property_value_id_seq OWNED BY public.lkup_core_variable_property_value.id;
@@ -2989,7 +2989,7 @@ ALTER SEQUENCE public.lkup_core_variable_property_value_id_seq OWNED BY public.l
 
 --
 -- TOC entry 430 (class 1259 OID 58952)
--- Name: variables; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: variables; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.variables (
@@ -3010,11 +3010,11 @@ CREATE TABLE public.variables (
 );
 
 
-ALTER TABLE public.variables OWNER TO radx_admin;
+ALTER TABLE public.variables OWNER TO datahub_admin;
 
 --
 -- TOC entry 429 (class 1259 OID 58951)
--- Name: variables_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: variables_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.variables_id_seq
@@ -3026,12 +3026,12 @@ CREATE SEQUENCE public.variables_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.variables_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.variables_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5593 (class 0 OID 0)
 -- Dependencies: 429
--- Name: variables_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: variables_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.variables_id_seq OWNED BY public.variables.id;
@@ -3039,7 +3039,7 @@ ALTER SEQUENCE public.variables_id_seq OWNED BY public.variables.id;
 
 --
 -- TOC entry 333 (class 1259 OID 22387)
--- Name: view_study; Type: VIEW; Schema: public; Owner: radx_user
+-- Name: view_study; Type: VIEW; Schema: public; Owner: datahub_user
 --
 
 CREATE VIEW public.view_study AS
@@ -3167,11 +3167,11 @@ CREATE VIEW public.view_study AS
 	'::text) crosstab(study_id integer, phs text, title text, description text, center text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, estimated_participants text, source text, subject text, types text, institutes_supporting_study text, data_general_types text, acknowledgement_statement text, data_species text, disease_specific_group text, disease_specific_related_conditions text, general_research_group text, grant_number text, health_biomed_group text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text)) p ON ((s.id = p.study_id)));
 
 
-ALTER VIEW public.view_study OWNER TO radx_user;
+ALTER VIEW public.view_study OWNER TO datahub_user;
 
 --
 -- TOC entry 385 (class 1259 OID 29109)
--- Name: view_current_data_file; Type: VIEW; Schema: public; Owner: radx_admin
+-- Name: view_current_data_file; Type: VIEW; Schema: public; Owner: datahub_admin
 --
 
 CREATE VIEW public.view_current_data_file AS
@@ -3199,11 +3199,11 @@ CREATE VIEW public.view_current_data_file AS
   WHERE ((l.category_group = 'data'::text) AND d.is_current_version);
 
 
-ALTER VIEW public.view_current_data_file OWNER TO radx_admin;
+ALTER VIEW public.view_current_data_file OWNER TO datahub_admin;
 
 --
 -- TOC entry 334 (class 1259 OID 22404)
--- Name: view_current_hub_content; Type: VIEW; Schema: public; Owner: radx_admin
+-- Name: view_current_hub_content; Type: VIEW; Schema: public; Owner: datahub_admin
 --
 
 CREATE VIEW public.view_current_hub_content AS
@@ -3247,11 +3247,11 @@ CREATE VIEW public.view_current_hub_content AS
           ORDER BY s.study_id) a;
 
 
-ALTER VIEW public.view_current_hub_content OWNER TO radx_admin;
+ALTER VIEW public.view_current_hub_content OWNER TO datahub_admin;
 
 --
 -- TOC entry 336 (class 1259 OID 22419)
--- Name: view_current_hub_content_data; Type: VIEW; Schema: public; Owner: radx_admin
+-- Name: view_current_hub_content_data; Type: VIEW; Schema: public; Owner: datahub_admin
 --
 
 CREATE VIEW public.view_current_hub_content_data AS
@@ -3284,7 +3284,7 @@ CREATE VIEW public.view_current_hub_content_data AS
      LEFT JOIN public.lkup_status k ON ((d.status_id = k.id)));
 
 
-ALTER VIEW public.view_current_hub_content_data OWNER TO radx_admin;
+ALTER VIEW public.view_current_hub_content_data OWNER TO datahub_admin;
 
 
 CREATE OR REPLACE VIEW public.view_variables AS
@@ -3329,11 +3329,11 @@ FROM public.variables v
          LEFT JOIN public.study y ON (m.study_id = y.id)
          LEFT JOIN public.view_study s ON (y.id = s.study_id);
 
-ALTER VIEW public.view_variables OWNER TO radx_admin;
+ALTER VIEW public.view_variables OWNER TO datahub_admin;
 
 --
 -- TOC entry 410 (class 1259 OID 42312)
--- Name: view_study_all; Type: VIEW; Schema: public; Owner: radx_user
+-- Name: view_study_all; Type: VIEW; Schema: public; Owner: datahub_user
 --
 
 CREATE VIEW public.view_study_all AS
@@ -3659,7 +3659,7 @@ CREATE VIEW public.view_study_all AS
 	'::text) crosstab(study_id integer, phs text, title text, description text, "RAPIDS_link" text, center text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, pi_email text, pi_assistant_name text, pi_assistant_email text, pi_institution text, pi_sign_date text, po_name text, officer_sign_date text, estimated_participants text, public_access_data text, source text, subject text, types text, unrestricted_access text, institutes_supporting_study text, needs_institutional_certifications text, data_general_types text, data_genomic text, data_genotype text, data_sample_types text, data_sequencing text, user_agreement_accepted text, data_policy_accepted text, reject_comments text, study_approved_date text, acknowledgement_statement text, aggregate_appropriate_for_general_use text, awardee text, consent_to_add_aggregate text, consent_to_add_individual text, controlled_access text, controlled_access_data text, data_access_points text, data_analyses text, data_array_data text, data_from_repository_name text, data_phenotype text, data_sample_collection text, data_sharing_info text, data_species text, data_storage_size text, data_submission_date text, data_submission_method text, data_submission_timeline_details text, data_target_delivery_date text, data_target_release_date text, disease_specific_group text, disease_specific_related_conditions text, eua text, expected_data_format text, general_research_group text, geno_seq_platform_info text, geno_seq_platform_url text, geno_seq_platform_probes text, geno_seq_platform_vendor text, geno_seq_platform_description text, geno_seq_platform_name_version text, grant_number text, has_era_account text, has_ic text, health_biomed_group text, individual_appropriate_for_general_use text, other_group_description text, project_number text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, types_other_specify text, source_other_specify text, data_general_types_other_specify text, data_genomic_other_specify text, data_phenotype_other_specify text, data_sample_types_other_specify text, data_genotype_other_specify text, data_sequencing_other_specify text, data_analyses_other_specify text, data_array_data_other_specify text, data_access_points_other text, topics_other_specify text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, access_type text, data_access_type text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text, data_use_limitations text)) p ON ((s.id = p.study_id)));
 
 
-ALTER VIEW public.view_study_all OWNER TO radx_user;
+ALTER VIEW public.view_study_all OWNER TO datahub_user;
 
 
 CREATE VIEW public.view_study_for_es AS
@@ -3724,11 +3724,11 @@ CREATE VIEW public.view_study_for_es AS
           GROUP BY view_variables.study_id) v2 ON ((s.study_id = v2.study_id)));
 
 
-ALTER VIEW public.view_study_for_es OWNER TO radx_admin;
+ALTER VIEW public.view_study_for_es OWNER TO datahub_admin;
 
 --
 -- TOC entry 326 (class 1259 OID 22038)
--- Name: view_study_mta_import; Type: VIEW; Schema: public; Owner: radx_user
+-- Name: view_study_mta_import; Type: VIEW; Schema: public; Owner: datahub_user
 --
 
 CREATE VIEW public.view_study_mta_import AS
@@ -3943,11 +3943,11 @@ CREATE VIEW public.view_study_mta_import AS
 	'::text) crosstab(study_id integer, title text, description text, is_multi_center text, multi_center_sites text, pi_name text, pi_email text, pi_assistant_name text, pi_assistant_email text, pi_institution text, pi_sign_date text, po_name text, officer_sign_date text, estimated_participants text, types text, institutes_supporting_study text, needs_institutional_certifications text, data_general_types text, data_genomic text, data_genotype text, data_sample_types text, data_sequencing text, acknowledgement_statement text, aggregate_appropriate_for_general_use text, consent_to_add_aggregate text, consent_to_add_individual text, data_access_points text, data_analyses text, data_array_data text, data_from_repository_name text, data_phenotype text, data_sample_collection text, data_sharing_info text, data_species text, data_storage_size text, data_submission_date text, data_submission_method text, data_submission_timeline_details text, data_target_delivery_date text, data_target_release_date text, disease_specific_group text, disease_specific_related_conditions text, general_research_group text, geno_seq_platform_info text, geno_seq_platform_url text, geno_seq_platform_probes text, geno_seq_platform_vendor text, geno_seq_platform_description text, geno_seq_platform_name_version text, grant_number text, has_era_account text, has_ic text, health_biomed_group text, individual_appropriate_for_general_use text, other_group_description text, types_other_specify text, data_general_types_other_specify text, data_genomic_other_specify text, data_phenotype_other_specify text, data_sample_types_other_specify text, data_genotype_other_specify text, data_sequencing_other_specify text, data_analyses_other_specify text, data_array_data_other_specify text, data_access_points_other text, access_type text, data_access_type text)) p ON ((s.id = p.study_id)));
 
 
-ALTER VIEW public.view_study_mta_import OWNER TO radx_user;
+ALTER VIEW public.view_study_mta_import OWNER TO datahub_user;
 
 --
 -- TOC entry 325 (class 1259 OID 22023)
--- Name: view_study_property_value_display; Type: VIEW; Schema: public; Owner: radx_admin
+-- Name: view_study_property_value_display; Type: VIEW; Schema: public; Owner: datahub_admin
 --
 
 CREATE VIEW public.view_study_property_value_display AS
@@ -3972,11 +3972,11 @@ CREATE VIEW public.view_study_property_value_display AS
      LEFT JOIN public.lkup_property_type t ON ((p.property_type_id = t.id)));
 
 
-ALTER VIEW public.view_study_property_value_display OWNER TO radx_admin;
+ALTER VIEW public.view_study_property_value_display OWNER TO datahub_admin;
 
 --
 -- TOC entry 335 (class 1259 OID 22409)
--- Name: view_submission_activity; Type: VIEW; Schema: public; Owner: radx_admin
+-- Name: view_submission_activity; Type: VIEW; Schema: public; Owner: datahub_admin
 --
 
 CREATE VIEW public.view_submission_activity AS
@@ -4000,11 +4000,11 @@ CREATE VIEW public.view_submission_activity AS
   WHERE (s.center IS NOT NULL);
 
 
-ALTER VIEW public.view_submission_activity OWNER TO radx_admin;
+ALTER VIEW public.view_submission_activity OWNER TO datahub_admin;
 
 --
 -- TOC entry 427 (class 1259 OID 54536)
--- Name: view_user_population; Type: VIEW; Schema: public; Owner: radx_admin
+-- Name: view_user_population; Type: VIEW; Schema: public; Owner: datahub_admin
 --
 
 CREATE VIEW public.view_user_population AS
@@ -4055,11 +4055,11 @@ CREATE VIEW public.view_user_population AS
   ORDER BY u.id;
 
 
-ALTER VIEW public.view_user_population OWNER TO radx_admin;
+ALTER VIEW public.view_user_population OWNER TO datahub_admin;
 
 --
 -- TOC entry 396 (class 1259 OID 29939)
--- Name: view_user_role; Type: VIEW; Schema: public; Owner: radx_admin
+-- Name: view_user_role; Type: VIEW; Schema: public; Owner: datahub_admin
 --
 
 CREATE VIEW public.view_user_role AS
@@ -4076,11 +4076,11 @@ CREATE VIEW public.view_user_role AS
   ORDER BY r.id;
 
 
-ALTER VIEW public.view_user_role OWNER TO radx_admin;
+ALTER VIEW public.view_user_role OWNER TO datahub_admin;
 
 --
 -- TOC entry 424 (class 1259 OID 46796)
--- Name: view_variable_overview_display; Type: VIEW; Schema: public; Owner: radx_admin
+-- Name: view_variable_overview_display; Type: VIEW; Schema: public; Owner: datahub_admin
 --
 
 CREATE VIEW public.view_variable_overview_display AS
@@ -4106,11 +4106,11 @@ CREATE VIEW public.view_variable_overview_display AS
      LEFT JOIN public.lkup_property_type t ON ((p.property_type_id = t.id)));
 
 
-ALTER VIEW public.view_variable_overview_display OWNER TO radx_admin;
+ALTER VIEW public.view_variable_overview_display OWNER TO datahub_admin;
 
 --
 -- TOC entry 332 (class 1259 OID 22337)
--- Name: weekly_hub_content_data; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: weekly_hub_content_data; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.weekly_hub_content_data (
@@ -4134,11 +4134,11 @@ CREATE TABLE public.weekly_hub_content_data (
 );
 
 
-ALTER TABLE public.weekly_hub_content_data OWNER TO radx_admin;
+ALTER TABLE public.weekly_hub_content_data OWNER TO datahub_admin;
 
 --
 -- TOC entry 331 (class 1259 OID 22336)
--- Name: weekly_hub_content_data_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: weekly_hub_content_data_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.weekly_hub_content_data_id_seq
@@ -4150,12 +4150,12 @@ CREATE SEQUENCE public.weekly_hub_content_data_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.weekly_hub_content_data_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.weekly_hub_content_data_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5607 (class 0 OID 0)
 -- Dependencies: 331
--- Name: weekly_hub_content_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: weekly_hub_content_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.weekly_hub_content_data_id_seq OWNED BY public.weekly_hub_content_data.id;
@@ -4163,7 +4163,7 @@ ALTER SEQUENCE public.weekly_hub_content_data_id_seq OWNED BY public.weekly_hub_
 
 --
 -- TOC entry 279 (class 1259 OID 16883)
--- Name: workbench_request; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: workbench_request; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.workbench_request (
@@ -4186,11 +4186,11 @@ CREATE TABLE public.workbench_request (
 );
 
 
-ALTER TABLE public.workbench_request OWNER TO radx_admin;
+ALTER TABLE public.workbench_request OWNER TO datahub_admin;
 
 --
 -- TOC entry 278 (class 1259 OID 16882)
--- Name: workbench_request_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: workbench_request_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.workbench_request_id_seq
@@ -4202,12 +4202,12 @@ CREATE SEQUENCE public.workbench_request_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.workbench_request_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.workbench_request_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5610 (class 0 OID 0)
 -- Dependencies: 278
--- Name: workbench_request_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: workbench_request_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.workbench_request_id_seq OWNED BY public.workbench_request.id;
@@ -4215,7 +4215,7 @@ ALTER SEQUENCE public.workbench_request_id_seq OWNED BY public.workbench_request
 
 --
 -- TOC entry 281 (class 1259 OID 16902)
--- Name: workbench_request_interest; Type: TABLE; Schema: public; Owner: radx_admin
+-- Name: workbench_request_interest; Type: TABLE; Schema: public; Owner: datahub_admin
 --
 
 CREATE TABLE public.workbench_request_interest (
@@ -4230,11 +4230,11 @@ CREATE TABLE public.workbench_request_interest (
 );
 
 
-ALTER TABLE public.workbench_request_interest OWNER TO radx_admin;
+ALTER TABLE public.workbench_request_interest OWNER TO datahub_admin;
 
 --
 -- TOC entry 280 (class 1259 OID 16901)
--- Name: workbench_request_interest_id_seq; Type: SEQUENCE; Schema: public; Owner: radx_admin
+-- Name: workbench_request_interest_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
 --
 
 CREATE SEQUENCE public.workbench_request_interest_id_seq
@@ -4246,12 +4246,12 @@ CREATE SEQUENCE public.workbench_request_interest_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.workbench_request_interest_id_seq OWNER TO radx_admin;
+ALTER SEQUENCE public.workbench_request_interest_id_seq OWNER TO datahub_admin;
 
 --
 -- TOC entry 5613 (class 0 OID 0)
 -- Dependencies: 280
--- Name: workbench_request_interest_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
+-- Name: workbench_request_interest_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
 --
 
 ALTER SEQUENCE public.workbench_request_interest_id_seq OWNED BY public.workbench_request_interest.id;
@@ -4259,10 +4259,10 @@ ALTER SEQUENCE public.workbench_request_interest_id_seq OWNED BY public.workbenc
 
 --
 -- TOC entry 379 (class 1259 OID 28417)
--- Name: data_file_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: data_file_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.data_file_history (
+CREATE TABLE datahub_history.data_file_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4274,14 +4274,14 @@ CREATE TABLE radx_history.data_file_history (
 );
 
 
-ALTER TABLE radx_history.data_file_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.data_file_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 382 (class 1259 OID 29081)
--- Name: data_submission_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: data_submission_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.data_submission_history (
+CREATE TABLE datahub_history.data_submission_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4293,14 +4293,14 @@ CREATE TABLE radx_history.data_submission_history (
 );
 
 
-ALTER TABLE radx_history.data_submission_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.data_submission_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 390 (class 1259 OID 29201)
--- Name: institution_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: institution_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.institution_history (
+CREATE TABLE datahub_history.institution_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4312,14 +4312,14 @@ CREATE TABLE radx_history.institution_history (
 );
 
 
-ALTER TABLE radx_history.institution_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.institution_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 273 (class 1259 OID 16854)
--- Name: ras_tracking_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: ras_tracking_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.ras_tracking_history (
+CREATE TABLE datahub_history.ras_tracking_history (
     id bigint NOT NULL,
     authorization_code character varying(36),
     correlation_id character varying(39),
@@ -4339,14 +4339,14 @@ CREATE TABLE radx_history.ras_tracking_history (
 );
 
 
-ALTER TABLE radx_history.ras_tracking_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.ras_tracking_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 380 (class 1259 OID 29013)
--- Name: s3_file_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: s3_file_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.s3_file_history (
+CREATE TABLE datahub_history.s3_file_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4358,14 +4358,14 @@ CREATE TABLE radx_history.s3_file_history (
 );
 
 
-ALTER TABLE radx_history.s3_file_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.s3_file_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 395 (class 1259 OID 29694)
--- Name: sas_data_file_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: sas_data_file_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.sas_data_file_history (
+CREATE TABLE datahub_history.sas_data_file_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4377,14 +4377,14 @@ CREATE TABLE radx_history.sas_data_file_history (
 );
 
 
-ALTER TABLE radx_history.sas_data_file_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.sas_data_file_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 381 (class 1259 OID 29057)
--- Name: study_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: study_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.study_history (
+CREATE TABLE datahub_history.study_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4396,14 +4396,14 @@ CREATE TABLE radx_history.study_history (
 );
 
 
-ALTER TABLE radx_history.study_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.study_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 383 (class 1259 OID 29088)
--- Name: study_property_value_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: study_property_value_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.study_property_value_history (
+CREATE TABLE datahub_history.study_property_value_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4415,14 +4415,14 @@ CREATE TABLE radx_history.study_property_value_history (
 );
 
 
-ALTER TABLE radx_history.study_property_value_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.study_property_value_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 391 (class 1259 OID 29663)
--- Name: support_request_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: support_request_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.support_request_history (
+CREATE TABLE datahub_history.support_request_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4434,14 +4434,14 @@ CREATE TABLE radx_history.support_request_history (
 );
 
 
-ALTER TABLE radx_history.support_request_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.support_request_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 413 (class 1259 OID 43557)
--- Name: user_file_upload_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: user_file_upload_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.user_file_upload_history (
+CREATE TABLE datahub_history.user_file_upload_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4453,14 +4453,14 @@ CREATE TABLE radx_history.user_file_upload_history (
 );
 
 
-ALTER TABLE radx_history.user_file_upload_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.user_file_upload_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 418 (class 1259 OID 46708)
--- Name: user_referrer_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: user_referrer_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.user_referrer_history (
+CREATE TABLE datahub_history.user_referrer_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4472,14 +4472,14 @@ CREATE TABLE radx_history.user_referrer_history (
 );
 
 
-ALTER TABLE radx_history.user_referrer_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.user_referrer_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 392 (class 1259 OID 29671)
--- Name: user_role_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: user_role_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.user_role_history (
+CREATE TABLE datahub_history.user_role_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4491,14 +4491,14 @@ CREATE TABLE radx_history.user_role_history (
 );
 
 
-ALTER TABLE radx_history.user_role_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.user_role_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 384 (class 1259 OID 29095)
--- Name: users_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: users_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.users_history (
+CREATE TABLE datahub_history.users_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4510,14 +4510,14 @@ CREATE TABLE radx_history.users_history (
 );
 
 
-ALTER TABLE radx_history.users_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.users_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 393 (class 1259 OID 29678)
--- Name: workbench_request_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: workbench_request_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.workbench_request_history (
+CREATE TABLE datahub_history.workbench_request_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4529,14 +4529,14 @@ CREATE TABLE radx_history.workbench_request_history (
 );
 
 
-ALTER TABLE radx_history.workbench_request_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.workbench_request_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 394 (class 1259 OID 29685)
--- Name: workbench_request_interest_history; Type: TABLE; Schema: radx_history; Owner: radx_admin
+-- Name: workbench_request_interest_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
 
-CREATE TABLE radx_history.workbench_request_interest_history (
+CREATE TABLE datahub_history.workbench_request_interest_history (
     id integer NOT NULL,
     column_name character varying(256) NOT NULL,
     old_value text,
@@ -4548,11 +4548,11 @@ CREATE TABLE radx_history.workbench_request_interest_history (
 );
 
 
-ALTER TABLE radx_history.workbench_request_interest_history OWNER TO radx_admin;
+ALTER TABLE datahub_history.workbench_request_interest_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 4909 (class 2604 OID 16956)
--- Name: data_file id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: data_file id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file ALTER COLUMN id SET DEFAULT nextval('public.data_file_id_seq'::regclass);
@@ -4560,7 +4560,7 @@ ALTER TABLE ONLY public.data_file ALTER COLUMN id SET DEFAULT nextval('public.da
 
 --
 -- TOC entry 4915 (class 2604 OID 17072)
--- Name: data_file_download id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: data_file_download id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file_download ALTER COLUMN id SET DEFAULT nextval('public.data_file_download_id_seq'::regclass);
@@ -4568,7 +4568,7 @@ ALTER TABLE ONLY public.data_file_download ALTER COLUMN id SET DEFAULT nextval('
 
 --
 -- TOC entry 4905 (class 2604 OID 16924)
--- Name: data_submission id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: data_submission id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_submission ALTER COLUMN id SET DEFAULT nextval('public.data_submission_id_seq'::regclass);
@@ -4576,7 +4576,7 @@ ALTER TABLE ONLY public.data_submission ALTER COLUMN id SET DEFAULT nextval('pub
 
 --
 -- TOC entry 4935 (class 2604 OID 17285)
--- Name: datafile_harmonization_metrics id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: datafile_harmonization_metrics id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.datafile_harmonization_metrics ALTER COLUMN id SET DEFAULT nextval('public.datafile_harmonization_metrics_id_seq'::regclass);
@@ -4584,7 +4584,7 @@ ALTER TABLE ONLY public.datafile_harmonization_metrics ALTER COLUMN id SET DEFAU
 
 --
 -- TOC entry 4878 (class 2604 OID 16626)
--- Name: entity_property id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: entity_property id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property ALTER COLUMN id SET DEFAULT nextval('public.entity_property_id_seq'::regclass);
@@ -4592,7 +4592,7 @@ ALTER TABLE ONLY public.entity_property ALTER COLUMN id SET DEFAULT nextval('pub
 
 --
 -- TOC entry 4881 (class 2604 OID 16657)
--- Name: entity_property_display_setting id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: entity_property_display_setting id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_display_setting ALTER COLUMN id SET DEFAULT nextval('public.entity_property_display_setting_id_seq'::regclass);
@@ -4600,7 +4600,7 @@ ALTER TABLE ONLY public.entity_property_display_setting ALTER COLUMN id SET DEFA
 
 --
 -- TOC entry 4917 (class 2604 OID 17090)
--- Name: entity_property_mta_mapping id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_mta_mapping ALTER COLUMN id SET DEFAULT nextval('public.entity_property_mta_mapping_id_seq'::regclass);
@@ -4608,7 +4608,7 @@ ALTER TABLE ONLY public.entity_property_mta_mapping ALTER COLUMN id SET DEFAULT 
 
 --
 -- TOC entry 4923 (class 2604 OID 17181)
--- Name: event_link id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: event_link id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.event_link ALTER COLUMN id SET DEFAULT nextval('public.event_link_id_seq'::regclass);
@@ -4616,7 +4616,7 @@ ALTER TABLE ONLY public.event_link ALTER COLUMN id SET DEFAULT nextval('public.e
 
 --
 -- TOC entry 4920 (class 2604 OID 17165)
--- Name: events id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: events id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.events_id_seq'::regclass);
@@ -4624,7 +4624,7 @@ ALTER TABLE ONLY public.events ALTER COLUMN id SET DEFAULT nextval('public.event
 
 --
 -- TOC entry 4953 (class 2604 OID 40540)
--- Name: funding id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: funding id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.funding ALTER COLUMN id SET DEFAULT nextval('public.funding_id_seq'::regclass);
@@ -4632,7 +4632,7 @@ ALTER TABLE ONLY public.funding ALTER COLUMN id SET DEFAULT nextval('public.fund
 
 --
 -- TOC entry 4942 (class 2604 OID 22323)
--- Name: hub_content_metrics id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: hub_content_metrics id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.hub_content_metrics ALTER COLUMN id SET DEFAULT nextval('public.hub_content_metrics_id_seq'::regclass);
@@ -4640,7 +4640,7 @@ ALTER TABLE ONLY public.hub_content_metrics ALTER COLUMN id SET DEFAULT nextval(
 
 --
 -- TOC entry 4887 (class 2604 OID 16716)
--- Name: institution id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: institution id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.institution ALTER COLUMN id SET DEFAULT nextval('public.institution_id_seq'::regclass);
@@ -4648,7 +4648,7 @@ ALTER TABLE ONLY public.institution ALTER COLUMN id SET DEFAULT nextval('public.
 
 --
 -- TOC entry 4897 (class 2604 OID 16830)
--- Name: jwt_token id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: jwt_token id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.jwt_token ALTER COLUMN id SET DEFAULT nextval('public.jwt_token_id_seq'::regclass);
@@ -4656,7 +4656,7 @@ ALTER TABLE ONLY public.jwt_token ALTER COLUMN id SET DEFAULT nextval('public.jw
 
 --
 -- TOC entry 4913 (class 2604 OID 17011)
--- Name: lkup_cde_codelist id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_cde_codelist ALTER COLUMN id SET DEFAULT nextval('public.lkup_cde_codelist_id_seq'::regclass);
@@ -4664,7 +4664,7 @@ ALTER TABLE ONLY public.lkup_cde_codelist ALTER COLUMN id SET DEFAULT nextval('p
 
 --
 -- TOC entry 4914 (class 2604 OID 17020)
--- Name: lkup_cde_codelist_value id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist_value id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_cde_codelist_value ALTER COLUMN id SET DEFAULT nextval('public.lkup_cde_codelist_value_id_seq'::regclass);
@@ -4672,7 +4672,7 @@ ALTER TABLE ONLY public.lkup_cde_codelist_value ALTER COLUMN id SET DEFAULT next
 
 --
 -- TOC entry 4858 (class 2604 OID 16433)
--- Name: lkup_country id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_country id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_country ALTER COLUMN id SET DEFAULT nextval('public.lkup_country_id_seq'::regclass);
@@ -4680,7 +4680,7 @@ ALTER TABLE ONLY public.lkup_country ALTER COLUMN id SET DEFAULT nextval('public
 
 --
 -- TOC entry 4864 (class 2604 OID 16501)
--- Name: lkup_data_file_category id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_data_file_category id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_data_file_category ALTER COLUMN id SET DEFAULT nextval('public.lkup_data_file_category_id_seq'::regclass);
@@ -4688,7 +4688,7 @@ ALTER TABLE ONLY public.lkup_data_file_category ALTER COLUMN id SET DEFAULT next
 
 --
 -- TOC entry 4865 (class 2604 OID 16510)
--- Name: lkup_center id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_center id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_center ALTER COLUMN id SET DEFAULT nextval('public.lkup_center_id_seq'::regclass);
@@ -4696,7 +4696,7 @@ ALTER TABLE ONLY public.lkup_center ALTER COLUMN id SET DEFAULT nextval('public.
 
 --
 -- TOC entry 4866 (class 2604 OID 16520)
--- Name: lkup_entity_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_entity_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_entity_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_entity_type_id_seq'::regclass);
@@ -4704,7 +4704,7 @@ ALTER TABLE ONLY public.lkup_entity_type ALTER COLUMN id SET DEFAULT nextval('pu
 
 --
 -- TOC entry 4918 (class 2604 OID 17114)
--- Name: lkup_event_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_event_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_event_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_event_type_id_seq'::regclass);
@@ -4712,7 +4712,7 @@ ALTER TABLE ONLY public.lkup_event_type ALTER COLUMN id SET DEFAULT nextval('pub
 
 --
 -- TOC entry 4867 (class 2604 OID 16529)
--- Name: lkup_file_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_file_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_file_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_file_type_id_seq'::regclass);
@@ -4720,7 +4720,7 @@ ALTER TABLE ONLY public.lkup_file_type ALTER COLUMN id SET DEFAULT nextval('publ
 
 --
 -- TOC entry 4859 (class 2604 OID 16440)
--- Name: lkup_institution_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_institution_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_institution_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_institution_type_id_seq'::regclass);
@@ -4728,7 +4728,7 @@ ALTER TABLE ONLY public.lkup_institution_type ALTER COLUMN id SET DEFAULT nextva
 
 --
 -- TOC entry 4933 (class 2604 OID 17262)
--- Name: lkup_metrics_report_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_metrics_report_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_metrics_report_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_metrics_report_type_id_seq'::regclass);
@@ -4736,7 +4736,7 @@ ALTER TABLE ONLY public.lkup_metrics_report_type ALTER COLUMN id SET DEFAULT nex
 
 --
 -- TOC entry 4919 (class 2604 OID 17123)
--- Name: lkup_news_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_news_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_news_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_news_type_id_seq'::regclass);
@@ -4744,7 +4744,7 @@ ALTER TABLE ONLY public.lkup_news_type ALTER COLUMN id SET DEFAULT nextval('publ
 
 --
 -- TOC entry 4862 (class 2604 OID 16478)
--- Name: lkup_property_codelist id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_codelist ALTER COLUMN id SET DEFAULT nextval('public.lkup_property_codelist_id_seq'::regclass);
@@ -4752,7 +4752,7 @@ ALTER TABLE ONLY public.lkup_property_codelist ALTER COLUMN id SET DEFAULT nextv
 
 --
 -- TOC entry 4863 (class 2604 OID 16487)
--- Name: lkup_property_codelist_value id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_value id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_codelist_value ALTER COLUMN id SET DEFAULT nextval('public.lkup_property_codelist_value_id_seq'::regclass);
@@ -4760,7 +4760,7 @@ ALTER TABLE ONLY public.lkup_property_codelist_value ALTER COLUMN id SET DEFAULT
 
 --
 -- TOC entry 4869 (class 2604 OID 16547)
--- Name: lkup_property_source id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_source id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_source ALTER COLUMN id SET DEFAULT nextval('public.lkup_property_source_id_seq'::regclass);
@@ -4768,7 +4768,7 @@ ALTER TABLE ONLY public.lkup_property_source ALTER COLUMN id SET DEFAULT nextval
 
 --
 -- TOC entry 4868 (class 2604 OID 16538)
--- Name: lkup_property_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_property_type_id_seq'::regclass);
@@ -4776,7 +4776,7 @@ ALTER TABLE ONLY public.lkup_property_type ALTER COLUMN id SET DEFAULT nextval('
 
 --
 -- TOC entry 4965 (class 2604 OID 46682)
--- Name: lkup_referrer id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_referrer id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_referrer ALTER COLUMN id SET DEFAULT nextval('public.lkup_referrer_id_seq'::regclass);
@@ -4784,7 +4784,7 @@ ALTER TABLE ONLY public.lkup_referrer ALTER COLUMN id SET DEFAULT nextval('publi
 
 --
 -- TOC entry 4890 (class 2604 OID 16753)
--- Name: lkup_researcher_level id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_researcher_level id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_researcher_level ALTER COLUMN id SET DEFAULT nextval('public.lkup_researcher_level_id_seq'::regclass);
@@ -4792,7 +4792,7 @@ ALTER TABLE ONLY public.lkup_researcher_level ALTER COLUMN id SET DEFAULT nextva
 
 --
 -- TOC entry 4936 (class 2604 OID 17299)
--- Name: lkup_resolution_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_resolution_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_resolution_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_resolution_type_id_seq'::regclass);
@@ -4800,7 +4800,7 @@ ALTER TABLE ONLY public.lkup_resolution_type ALTER COLUMN id SET DEFAULT nextval
 
 --
 -- TOC entry 4889 (class 2604 OID 16746)
--- Name: lkup_role id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_role id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_role ALTER COLUMN id SET DEFAULT nextval('public.lkup_role_id_seq'::regclass);
@@ -4808,7 +4808,7 @@ ALTER TABLE ONLY public.lkup_role ALTER COLUMN id SET DEFAULT nextval('public.lk
 
 --
 -- TOC entry 4860 (class 2604 OID 16447)
--- Name: lkup_state id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_state id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_state ALTER COLUMN id SET DEFAULT nextval('public.lkup_state_id_seq'::regclass);
@@ -4816,7 +4816,7 @@ ALTER TABLE ONLY public.lkup_state ALTER COLUMN id SET DEFAULT nextval('public.l
 
 --
 -- TOC entry 4861 (class 2604 OID 16469)
--- Name: lkup_status id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_status id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_status ALTER COLUMN id SET DEFAULT nextval('public.lkup_status_id_seq'::regclass);
@@ -4824,7 +4824,7 @@ ALTER TABLE ONLY public.lkup_status ALTER COLUMN id SET DEFAULT nextval('public.
 
 --
 -- TOC entry 4870 (class 2604 OID 16556)
--- Name: lkup_submission_step id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_submission_step id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_submission_step ALTER COLUMN id SET DEFAULT nextval('public.lkup_submission_step_id_seq'::regclass);
@@ -4832,7 +4832,7 @@ ALTER TABLE ONLY public.lkup_submission_step ALTER COLUMN id SET DEFAULT nextval
 
 --
 -- TOC entry 4937 (class 2604 OID 17306)
--- Name: lkup_support_request_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_support_request_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_support_request_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_support_request_type_id_seq'::regclass);
@@ -4840,7 +4840,7 @@ ALTER TABLE ONLY public.lkup_support_request_type ALTER COLUMN id SET DEFAULT ne
 
 --
 -- TOC entry 4912 (class 2604 OID 17002)
--- Name: lkup_variable_type id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_variable_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_variable_type_id_seq'::regclass);
@@ -4848,7 +4848,7 @@ ALTER TABLE ONLY public.lkup_variable_type ALTER COLUMN id SET DEFAULT nextval('
 
 --
 -- TOC entry 4902 (class 2604 OID 16878)
--- Name: lkup_workbench_interest id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_workbench_interest id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_workbench_interest ALTER COLUMN id SET DEFAULT nextval('public.lkup_workbench_interest_id_seq'::regclass);
@@ -4856,7 +4856,7 @@ ALTER TABLE ONLY public.lkup_workbench_interest ALTER COLUMN id SET DEFAULT next
 
 --
 -- TOC entry 4934 (class 2604 OID 17271)
--- Name: metrics_report id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: metrics_report id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.metrics_report ALTER COLUMN id SET DEFAULT nextval('public.metrics_report_id_seq'::regclass);
@@ -4864,7 +4864,7 @@ ALTER TABLE ONLY public.metrics_report ALTER COLUMN id SET DEFAULT nextval('publ
 
 --
 -- TOC entry 4926 (class 2604 OID 17229)
--- Name: news id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: news id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.news ALTER COLUMN id SET DEFAULT nextval('public.news_id_seq'::regclass);
@@ -4872,7 +4872,7 @@ ALTER TABLE ONLY public.news ALTER COLUMN id SET DEFAULT nextval('public.news_id
 
 --
 -- TOC entry 4930 (class 2604 OID 17245)
--- Name: news_link id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: news_link id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.news_link ALTER COLUMN id SET DEFAULT nextval('public.news_link_id_seq'::regclass);
@@ -4880,7 +4880,7 @@ ALTER TABLE ONLY public.news_link ALTER COLUMN id SET DEFAULT nextval('public.ne
 
 --
 -- TOC entry 4956 (class 2604 OID 40551)
--- Name: newsletter id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: newsletter id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.newsletter ALTER COLUMN id SET DEFAULT nextval('public.newsletter_id_seq'::regclass);
@@ -4888,7 +4888,7 @@ ALTER TABLE ONLY public.newsletter ALTER COLUMN id SET DEFAULT nextval('public.n
 
 --
 -- TOC entry 4945 (class 2604 OID 22736)
--- Name: public_data id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: public_data id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.public_data ALTER COLUMN id SET DEFAULT nextval('public.public_data_id_seq'::regclass);
@@ -4896,7 +4896,7 @@ ALTER TABLE ONLY public.public_data ALTER COLUMN id SET DEFAULT nextval('public.
 
 --
 -- TOC entry 4944 (class 2604 OID 22428)
--- Name: public_data_collection id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: public_data_collection id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.public_data_collection ALTER COLUMN id SET DEFAULT nextval('public.public_data_collection_id_seq'::regclass);
@@ -4904,7 +4904,7 @@ ALTER TABLE ONLY public.public_data_collection ALTER COLUMN id SET DEFAULT nextv
 
 --
 -- TOC entry 4896 (class 2604 OID 16805)
--- Name: ras_tracking id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: ras_tracking id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.ras_tracking ALTER COLUMN id SET DEFAULT nextval('public.ras_tracking_id_seq'::regclass);
@@ -4912,7 +4912,7 @@ ALTER TABLE ONLY public.ras_tracking ALTER COLUMN id SET DEFAULT nextval('public
 
 --
 -- TOC entry 4871 (class 2604 OID 16563)
--- Name: s3_file id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: s3_file id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.s3_file ALTER COLUMN id SET DEFAULT nextval('public.s3_file_id_seq'::regclass);
@@ -4920,7 +4920,7 @@ ALTER TABLE ONLY public.s3_file ALTER COLUMN id SET DEFAULT nextval('public.s3_f
 
 --
 -- TOC entry 4948 (class 2604 OID 29118)
--- Name: sas_data_file id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: sas_data_file id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_data_file ALTER COLUMN id SET DEFAULT nextval('public.sas_data_file_id_seq'::regclass);
@@ -4928,7 +4928,7 @@ ALTER TABLE ONLY public.sas_data_file ALTER COLUMN id SET DEFAULT nextval('publi
 
 --
 -- TOC entry 4951 (class 2604 OID 29149)
--- Name: sas_file_download id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: sas_file_download id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_file_download ALTER COLUMN id SET DEFAULT nextval('public.sas_file_download_id_seq'::regclass);
@@ -4936,7 +4936,7 @@ ALTER TABLE ONLY public.sas_file_download ALTER COLUMN id SET DEFAULT nextval('p
 
 --
 -- TOC entry 4959 (class 2604 OID 40562)
--- Name: search_log id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: search_log id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.search_log ALTER COLUMN id SET DEFAULT nextval('public.search_log_id_seq'::regclass);
@@ -4944,7 +4944,7 @@ ALTER TABLE ONLY public.search_log ALTER COLUMN id SET DEFAULT nextval('public.s
 
 --
 -- TOC entry 4875 (class 2604 OID 16580)
--- Name: study id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: study id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study ALTER COLUMN id SET DEFAULT nextval('public.study_id_seq'::regclass);
@@ -4952,7 +4952,7 @@ ALTER TABLE ONLY public.study ALTER COLUMN id SET DEFAULT nextval('public.study_
 
 --
 -- TOC entry 4940 (class 2604 OID 17362)
--- Name: study_harmonization_metrics id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: study_harmonization_metrics id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study_harmonization_metrics ALTER COLUMN id SET DEFAULT nextval('public.study_harmonization_metrics_id_seq'::regclass);
@@ -4960,7 +4960,7 @@ ALTER TABLE ONLY public.study_harmonization_metrics ALTER COLUMN id SET DEFAULT 
 
 --
 -- TOC entry 4884 (class 2604 OID 16678)
--- Name: study_property_value id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: study_property_value id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study_property_value ALTER COLUMN id SET DEFAULT nextval('public.study_property_value_id_seq'::regclass);
@@ -4968,7 +4968,7 @@ ALTER TABLE ONLY public.study_property_value ALTER COLUMN id SET DEFAULT nextval
 
 --
 -- TOC entry 4938 (class 2604 OID 17313)
--- Name: support_request id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: support_request id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.support_request ALTER COLUMN id SET DEFAULT nextval('public.support_request_id_seq'::regclass);
@@ -4977,7 +4977,7 @@ ALTER TABLE ONLY public.support_request ALTER COLUMN id SET DEFAULT nextval('pub
 
 --
 -- TOC entry 4963 (class 2604 OID 43526)
--- Name: user_file_upload id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: user_file_upload id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_file_upload ALTER COLUMN id SET DEFAULT nextval('public.user_file_upload_id_seq'::regclass);
@@ -4985,7 +4985,7 @@ ALTER TABLE ONLY public.user_file_upload ALTER COLUMN id SET DEFAULT nextval('pu
 
 --
 -- TOC entry 4900 (class 2604 OID 16865)
--- Name: user_login id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: user_login id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_login ALTER COLUMN id SET DEFAULT nextval('public.user_login_id_seq'::regclass);
@@ -4993,7 +4993,7 @@ ALTER TABLE ONLY public.user_login ALTER COLUMN id SET DEFAULT nextval('public.u
 
 --
 -- TOC entry 4898 (class 2604 OID 16842)
--- Name: user_ras id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: user_ras id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_ras ALTER COLUMN id SET DEFAULT nextval('public.user_ras_id_seq'::regclass);
@@ -5001,7 +5001,7 @@ ALTER TABLE ONLY public.user_ras ALTER COLUMN id SET DEFAULT nextval('public.use
 
 --
 -- TOC entry 4966 (class 2604 OID 46692)
--- Name: user_referrer id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: user_referrer id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_referrer ALTER COLUMN id SET DEFAULT nextval('public.user_referrer_id_seq'::regclass);
@@ -5009,7 +5009,7 @@ ALTER TABLE ONLY public.user_referrer ALTER COLUMN id SET DEFAULT nextval('publi
 
 --
 -- TOC entry 4894 (class 2604 OID 16787)
--- Name: user_role id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: user_role id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_role ALTER COLUMN id SET DEFAULT nextval('public.user_role_id_seq'::regclass);
@@ -5017,7 +5017,7 @@ ALTER TABLE ONLY public.user_role ALTER COLUMN id SET DEFAULT nextval('public.us
 
 --
 -- TOC entry 4972 (class 2604 OID 47338)
--- Name: user_workspace id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: user_workspace id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_workspace ALTER COLUMN id SET DEFAULT nextval('public.user_workspace_id_seq'::regclass);
@@ -5025,7 +5025,7 @@ ALTER TABLE ONLY public.user_workspace ALTER COLUMN id SET DEFAULT nextval('publ
 
 --
 -- TOC entry 4891 (class 2604 OID 16761)
--- Name: users id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
@@ -5033,7 +5033,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 --
 -- TOC entry 4968 (class 2604 OID 46762)
--- Name: lkup_core_variable_permissible_value id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_core_variable_permissible_value ALTER COLUMN id SET DEFAULT nextval('public.lkup_core_variable_permissible_value_id_seq'::regclass);
@@ -5041,7 +5041,7 @@ ALTER TABLE ONLY public.lkup_core_variable_permissible_value ALTER COLUMN id SET
 
 --
 -- TOC entry 4969 (class 2604 OID 46779)
--- Name: lkup_core_variable_property_value id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_core_variable_property_value ALTER COLUMN id SET DEFAULT nextval('public.lkup_core_variable_property_value_id_seq'::regclass);
@@ -5049,7 +5049,7 @@ ALTER TABLE ONLY public.lkup_core_variable_property_value ALTER COLUMN id SET DE
 
 --
 -- TOC entry 4973 (class 2604 OID 58955)
--- Name: variables id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: variables id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.variables ALTER COLUMN id SET DEFAULT nextval('public.variables_id_seq'::regclass);
@@ -5057,7 +5057,7 @@ ALTER TABLE ONLY public.variables ALTER COLUMN id SET DEFAULT nextval('public.va
 
 --
 -- TOC entry 4943 (class 2604 OID 22340)
--- Name: weekly_hub_content_data id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: weekly_hub_content_data id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.weekly_hub_content_data ALTER COLUMN id SET DEFAULT nextval('public.weekly_hub_content_data_id_seq'::regclass);
@@ -5065,7 +5065,7 @@ ALTER TABLE ONLY public.weekly_hub_content_data ALTER COLUMN id SET DEFAULT next
 
 --
 -- TOC entry 4903 (class 2604 OID 16886)
--- Name: workbench_request id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: workbench_request id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.workbench_request ALTER COLUMN id SET DEFAULT nextval('public.workbench_request_id_seq'::regclass);
@@ -5073,7 +5073,7 @@ ALTER TABLE ONLY public.workbench_request ALTER COLUMN id SET DEFAULT nextval('p
 
 --
 -- TOC entry 4904 (class 2604 OID 16905)
--- Name: workbench_request_interest id; Type: DEFAULT; Schema: public; Owner: radx_admin
+-- Name: workbench_request_interest id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.workbench_request_interest ALTER COLUMN id SET DEFAULT nextval('public.workbench_request_interest_id_seq'::regclass);
@@ -5081,7 +5081,7 @@ ALTER TABLE ONLY public.workbench_request_interest ALTER COLUMN id SET DEFAULT n
 
 --
 -- TOC entry 5063 (class 2606 OID 17075)
--- Name: data_file_download data_file_download_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file_download data_file_download_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file_download
@@ -5090,7 +5090,7 @@ ALTER TABLE ONLY public.data_file_download
 
 --
 -- TOC entry 5055 (class 2606 OID 16962)
--- Name: data_file data_file_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file data_file_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file
@@ -5099,7 +5099,7 @@ ALTER TABLE ONLY public.data_file
 
 --
 -- TOC entry 5053 (class 2606 OID 16931)
--- Name: data_submission data_submission_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_submission data_submission_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_submission
@@ -5108,7 +5108,7 @@ ALTER TABLE ONLY public.data_submission
 
 --
 -- TOC entry 5083 (class 2606 OID 17289)
--- Name: datafile_harmonization_metrics datafile_harmonization_metrics_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: datafile_harmonization_metrics datafile_harmonization_metrics_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.datafile_harmonization_metrics
@@ -5117,7 +5117,7 @@ ALTER TABLE ONLY public.datafile_harmonization_metrics
 
 --
 -- TOC entry 5023 (class 2606 OID 16663)
--- Name: entity_property_display_setting entity_property_display_setting_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property_display_setting entity_property_display_setting_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_display_setting
@@ -5126,7 +5126,7 @@ ALTER TABLE ONLY public.entity_property_display_setting
 
 --
 -- TOC entry 5065 (class 2606 OID 17094)
--- Name: entity_property_mta_mapping entity_property_mta_mapping_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping entity_property_mta_mapping_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_mta_mapping
@@ -5135,7 +5135,7 @@ ALTER TABLE ONLY public.entity_property_mta_mapping
 
 --
 -- TOC entry 5021 (class 2606 OID 16632)
--- Name: entity_property entity_property_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property entity_property_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property
@@ -5144,7 +5144,7 @@ ALTER TABLE ONLY public.entity_property
 
 --
 -- TOC entry 5073 (class 2606 OID 17187)
--- Name: event_link event_link_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: event_link event_link_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.event_link
@@ -5153,7 +5153,7 @@ ALTER TABLE ONLY public.event_link
 
 --
 -- TOC entry 5071 (class 2606 OID 17171)
--- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: events events_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.events
@@ -5162,7 +5162,7 @@ ALTER TABLE ONLY public.events
 
 --
 -- TOC entry 5107 (class 2606 OID 40546)
--- Name: funding funding_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: funding funding_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.funding
@@ -5171,7 +5171,7 @@ ALTER TABLE ONLY public.funding
 
 --
 -- TOC entry 5095 (class 2606 OID 22327)
--- Name: hub_content_metrics hub_content_metrics_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: hub_content_metrics hub_content_metrics_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.hub_content_metrics
@@ -5180,7 +5180,7 @@ ALTER TABLE ONLY public.hub_content_metrics
 
 --
 -- TOC entry 5027 (class 2606 OID 16721)
--- Name: institution institution_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: institution institution_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.institution
@@ -5189,7 +5189,7 @@ ALTER TABLE ONLY public.institution
 
 --
 -- TOC entry 5039 (class 2606 OID 16832)
--- Name: jwt_token jwt_token_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: jwt_token jwt_token_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.jwt_token
@@ -5198,7 +5198,7 @@ ALTER TABLE ONLY public.jwt_token
 
 --
 -- TOC entry 5059 (class 2606 OID 17015)
--- Name: lkup_cde_codelist lkup_cde_codelist_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist lkup_cde_codelist_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_cde_codelist
@@ -5207,7 +5207,7 @@ ALTER TABLE ONLY public.lkup_cde_codelist
 
 --
 -- TOC entry 5061 (class 2606 OID 17024)
--- Name: lkup_cde_codelist_value lkup_cde_codelist_value_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist_value lkup_cde_codelist_value_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_cde_codelist_value
@@ -5216,7 +5216,7 @@ ALTER TABLE ONLY public.lkup_cde_codelist_value
 
 --
 -- TOC entry 4991 (class 2606 OID 16435)
--- Name: lkup_country lkup_country_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_country lkup_country_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_country
@@ -5225,7 +5225,7 @@ ALTER TABLE ONLY public.lkup_country
 
 --
 -- TOC entry 5003 (class 2606 OID 16505)
--- Name: lkup_data_file_category lkup_data_file_category_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_data_file_category lkup_data_file_category_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_data_file_category
@@ -5234,7 +5234,7 @@ ALTER TABLE ONLY public.lkup_data_file_category
 
 --
 -- TOC entry 5005 (class 2606 OID 16514)
--- Name: lkup_center lkup_center_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_center lkup_center_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_center
@@ -5243,7 +5243,7 @@ ALTER TABLE ONLY public.lkup_center
 
 --
 -- TOC entry 5007 (class 2606 OID 16524)
--- Name: lkup_entity_type lkup_entity_type_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_entity_type lkup_entity_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_entity_type
@@ -5252,7 +5252,7 @@ ALTER TABLE ONLY public.lkup_entity_type
 
 --
 -- TOC entry 5067 (class 2606 OID 17118)
--- Name: lkup_event_type lkup_event_type_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_event_type lkup_event_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_event_type
@@ -5261,7 +5261,7 @@ ALTER TABLE ONLY public.lkup_event_type
 
 --
 -- TOC entry 5009 (class 2606 OID 16533)
--- Name: lkup_file_type lkup_file_type_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_file_type lkup_file_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_file_type
@@ -5270,7 +5270,7 @@ ALTER TABLE ONLY public.lkup_file_type
 
 --
 -- TOC entry 4993 (class 2606 OID 16442)
--- Name: lkup_institution_type lkup_institution_type_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_institution_type lkup_institution_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_institution_type
@@ -5279,7 +5279,7 @@ ALTER TABLE ONLY public.lkup_institution_type
 
 --
 -- TOC entry 5079 (class 2606 OID 17266)
--- Name: lkup_metrics_report_type lkup_metrics_report_type_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_metrics_report_type lkup_metrics_report_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_metrics_report_type
@@ -5288,7 +5288,7 @@ ALTER TABLE ONLY public.lkup_metrics_report_type
 
 --
 -- TOC entry 5069 (class 2606 OID 17127)
--- Name: lkup_news_type lkup_news_type_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_news_type lkup_news_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_news_type
@@ -5297,7 +5297,7 @@ ALTER TABLE ONLY public.lkup_news_type
 
 --
 -- TOC entry 4999 (class 2606 OID 16482)
--- Name: lkup_property_codelist lkup_property_codelist_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist lkup_property_codelist_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_codelist
@@ -5306,7 +5306,7 @@ ALTER TABLE ONLY public.lkup_property_codelist
 
 --
 -- TOC entry 5001 (class 2606 OID 16491)
--- Name: lkup_property_codelist_value lkup_property_codelist_value_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_value lkup_property_codelist_value_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_codelist_value
@@ -5315,7 +5315,7 @@ ALTER TABLE ONLY public.lkup_property_codelist_value
 
 --
 -- TOC entry 5013 (class 2606 OID 16551)
--- Name: lkup_property_source lkup_property_source_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_source lkup_property_source_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_source
@@ -5324,7 +5324,7 @@ ALTER TABLE ONLY public.lkup_property_source
 
 --
 -- TOC entry 5011 (class 2606 OID 16542)
--- Name: lkup_property_type lkup_property_type_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_type lkup_property_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_type
@@ -5333,7 +5333,7 @@ ALTER TABLE ONLY public.lkup_property_type
 
 --
 -- TOC entry 4995 (class 2606 OID 16449)
--- Name: lkup_state lkup_state_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_state lkup_state_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_state
@@ -5342,7 +5342,7 @@ ALTER TABLE ONLY public.lkup_state
 
 --
 -- TOC entry 4997 (class 2606 OID 16473)
--- Name: lkup_status lkup_status_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_status lkup_status_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_status
@@ -5351,7 +5351,7 @@ ALTER TABLE ONLY public.lkup_status
 
 --
 -- TOC entry 5015 (class 2606 OID 16558)
--- Name: lkup_submission_step lkup_submission_step_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_submission_step lkup_submission_step_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_submission_step
@@ -5360,7 +5360,7 @@ ALTER TABLE ONLY public.lkup_submission_step
 
 --
 -- TOC entry 5131 (class 2606 OID 58944)
--- Name: lkup_variable_category lkup_variable_category_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_category lkup_variable_category_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_variable_category
@@ -5369,7 +5369,7 @@ ALTER TABLE ONLY public.lkup_variable_category
 
 --
 -- TOC entry 5123 (class 2606 OID 46721)
--- Name: lkup_variable_datatype lkup_variable_datatype_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_datatype lkup_variable_datatype_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_variable_datatype
@@ -5378,7 +5378,7 @@ ALTER TABLE ONLY public.lkup_variable_datatype
 
 --
 -- TOC entry 5057 (class 2606 OID 17006)
--- Name: lkup_variable_type lkup_variable_type_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_type lkup_variable_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_variable_type
@@ -5387,7 +5387,7 @@ ALTER TABLE ONLY public.lkup_variable_type
 
 --
 -- TOC entry 5081 (class 2606 OID 17275)
--- Name: metrics_report metrics_report_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: metrics_report metrics_report_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.metrics_report
@@ -5396,7 +5396,7 @@ ALTER TABLE ONLY public.metrics_report
 
 --
 -- TOC entry 5077 (class 2606 OID 17251)
--- Name: news_link news_link_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: news_link news_link_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.news_link
@@ -5405,7 +5405,7 @@ ALTER TABLE ONLY public.news_link
 
 --
 -- TOC entry 5075 (class 2606 OID 17235)
--- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.news
@@ -5414,7 +5414,7 @@ ALTER TABLE ONLY public.news
 
 --
 -- TOC entry 5109 (class 2606 OID 40557)
--- Name: newsletter newsletter_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: newsletter newsletter_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.newsletter
@@ -5423,7 +5423,7 @@ ALTER TABLE ONLY public.newsletter
 
 --
 -- TOC entry 5085 (class 2606 OID 17301)
--- Name: lkup_resolution_type pk_lkup_resolution_type; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_resolution_type pk_lkup_resolution_type; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_resolution_type
@@ -5432,7 +5432,7 @@ ALTER TABLE ONLY public.lkup_resolution_type
 
 --
 -- TOC entry 5087 (class 2606 OID 17308)
--- Name: lkup_support_request_type pk_lkup_support_request_type; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_support_request_type pk_lkup_support_request_type; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_support_request_type
@@ -5441,7 +5441,7 @@ ALTER TABLE ONLY public.lkup_support_request_type
 
 --
 -- TOC entry 5119 (class 2606 OID 46686)
--- Name: lkup_referrer pk_referrer; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_referrer pk_referrer; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_referrer
@@ -5450,7 +5450,7 @@ ALTER TABLE ONLY public.lkup_referrer
 
 --
 -- TOC entry 5031 (class 2606 OID 16755)
--- Name: lkup_researcher_level pk_researcher_level; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_researcher_level pk_researcher_level; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_researcher_level
@@ -5459,7 +5459,7 @@ ALTER TABLE ONLY public.lkup_researcher_level
 
 --
 -- TOC entry 5029 (class 2606 OID 16748)
--- Name: lkup_role pk_role; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_role pk_role; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_role
@@ -5468,7 +5468,7 @@ ALTER TABLE ONLY public.lkup_role
 
 --
 -- TOC entry 5089 (class 2606 OID 17318)
--- Name: support_request pk_support_request; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: support_request pk_support_request; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.support_request
@@ -5477,7 +5477,7 @@ ALTER TABLE ONLY public.support_request
 
 --
 -- TOC entry 5117 (class 2606 OID 43531)
--- Name: user_file_upload pk_user_file_upload_id; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_file_upload pk_user_file_upload_id; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_file_upload
@@ -5486,7 +5486,7 @@ ALTER TABLE ONLY public.user_file_upload
 
 --
 -- TOC entry 5045 (class 2606 OID 16868)
--- Name: user_login pk_user_login_id; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_login pk_user_login_id; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_login
@@ -5495,7 +5495,7 @@ ALTER TABLE ONLY public.user_login
 
 --
 -- TOC entry 5121 (class 2606 OID 46697)
--- Name: user_referrer pk_user_referrer_id; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_referrer pk_user_referrer_id; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_referrer
@@ -5504,7 +5504,7 @@ ALTER TABLE ONLY public.user_referrer
 
 --
 -- TOC entry 5047 (class 2606 OID 16880)
--- Name: lkup_workbench_interest pk_workbench_interest; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_workbench_interest pk_workbench_interest; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_workbench_interest
@@ -5513,7 +5513,7 @@ ALTER TABLE ONLY public.lkup_workbench_interest
 
 --
 -- TOC entry 5051 (class 2606 OID 16909)
--- Name: workbench_request_interest pk_workbench_request_interest; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: workbench_request_interest pk_workbench_request_interest; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.workbench_request_interest
@@ -5522,7 +5522,7 @@ ALTER TABLE ONLY public.workbench_request_interest
 
 --
 -- TOC entry 5099 (class 2606 OID 22432)
--- Name: public_data_collection public_data_collection_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: public_data_collection public_data_collection_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.public_data_collection
@@ -5531,7 +5531,7 @@ ALTER TABLE ONLY public.public_data_collection
 
 --
 -- TOC entry 5101 (class 2606 OID 22742)
--- Name: public_data public_data_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: public_data public_data_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.public_data
@@ -5540,7 +5540,7 @@ ALTER TABLE ONLY public.public_data
 
 --
 -- TOC entry 5037 (class 2606 OID 16809)
--- Name: ras_tracking ras_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: ras_tracking ras_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.ras_tracking
@@ -5549,7 +5549,7 @@ ALTER TABLE ONLY public.ras_tracking
 
 --
 -- TOC entry 5017 (class 2606 OID 16570)
--- Name: s3_file s3_file_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: s3_file s3_file_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.s3_file
@@ -5558,7 +5558,7 @@ ALTER TABLE ONLY public.s3_file
 
 --
 -- TOC entry 5103 (class 2606 OID 29124)
--- Name: sas_data_file sas_data_file_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: sas_data_file sas_data_file_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_data_file
@@ -5567,7 +5567,7 @@ ALTER TABLE ONLY public.sas_data_file
 
 --
 -- TOC entry 5105 (class 2606 OID 29152)
--- Name: sas_file_download sas_file_download_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: sas_file_download sas_file_download_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_file_download
@@ -5576,7 +5576,7 @@ ALTER TABLE ONLY public.sas_file_download
 
 --
 -- TOC entry 5111 (class 2606 OID 40567)
--- Name: search_log search_log_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: search_log search_log_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.search_log
@@ -5585,7 +5585,7 @@ ALTER TABLE ONLY public.search_log
 
 --
 -- TOC entry 5091 (class 2606 OID 17364)
--- Name: study_harmonization_metrics study_harmonization_metrics_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study_harmonization_metrics study_harmonization_metrics_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study_harmonization_metrics
@@ -5594,7 +5594,7 @@ ALTER TABLE ONLY public.study_harmonization_metrics
 
 --
 -- TOC entry 5019 (class 2606 OID 16586)
--- Name: study study_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study study_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study
@@ -5603,7 +5603,7 @@ ALTER TABLE ONLY public.study
 
 --
 -- TOC entry 5025 (class 2606 OID 16684)
--- Name: study_property_value study_property_value_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study_property_value study_property_value_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study_property_value
@@ -5612,7 +5612,7 @@ ALTER TABLE ONLY public.study_property_value
 
 --
 -- TOC entry 5033 (class 2606 OID 16767)
--- Name: users user_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: users user_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.users
@@ -5621,7 +5621,7 @@ ALTER TABLE ONLY public.users
 
 --
 -- TOC entry 5041 (class 2606 OID 16847)
--- Name: user_ras user_ras_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_ras user_ras_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_ras
@@ -5630,7 +5630,7 @@ ALTER TABLE ONLY public.user_ras
 
 --
 -- TOC entry 5035 (class 2606 OID 16790)
--- Name: user_role user_role_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_role user_role_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_role
@@ -5639,7 +5639,7 @@ ALTER TABLE ONLY public.user_role
 
 --
 -- TOC entry 5129 (class 2606 OID 47342)
--- Name: user_workspace user_workspace_id; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_workspace user_workspace_id; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_workspace
@@ -5648,7 +5648,7 @@ ALTER TABLE ONLY public.user_workspace
 
 --
 -- TOC entry 5125 (class 2606 OID 46764)
--- Name: lkup_core_variable_permissible_value lkup_core_variable_permissible_value_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_permissible_value lkup_core_variable_permissible_value_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_core_variable_permissible_value
@@ -5657,7 +5657,7 @@ ALTER TABLE ONLY public.lkup_core_variable_permissible_value
 
 --
 -- TOC entry 5127 (class 2606 OID 46785)
--- Name: lkup_core_variable_property_value lkup_core_variable_property_value_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value lkup_core_variable_property_value_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_core_variable_property_value
@@ -5666,7 +5666,7 @@ ALTER TABLE ONLY public.lkup_core_variable_property_value
 
 --
 -- TOC entry 5133 (class 2606 OID 58959)
--- Name: variables variables_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: variables variables_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.variables
@@ -5675,7 +5675,7 @@ ALTER TABLE ONLY public.variables
 
 --
 -- TOC entry 5097 (class 2606 OID 22344)
--- Name: weekly_hub_content_data weekly_hub_content_data_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: weekly_hub_content_data weekly_hub_content_data_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.weekly_hub_content_data
@@ -5684,7 +5684,7 @@ ALTER TABLE ONLY public.weekly_hub_content_data
 
 --
 -- TOC entry 5049 (class 2606 OID 16890)
--- Name: workbench_request workbench_request_form_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: workbench_request workbench_request_form_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.workbench_request
@@ -5693,16 +5693,16 @@ ALTER TABLE ONLY public.workbench_request
 
 --
 -- TOC entry 5043 (class 2606 OID 16860)
--- Name: ras_tracking_history ras_tracking_history_pkey; Type: CONSTRAINT; Schema: radx_history; Owner: radx_admin
+-- Name: ras_tracking_history ras_tracking_history_pkey; Type: CONSTRAINT; Schema: datahub_history; Owner: datahub_admin
 --
 
-ALTER TABLE ONLY radx_history.ras_tracking_history
+ALTER TABLE ONLY datahub_history.ras_tracking_history
     ADD CONSTRAINT ras_tracking_history_pkey PRIMARY KEY (id);
 
 
 --
 -- TOC entry 5231 (class 2620 OID 28424)
--- Name: data_file data_file_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: data_file data_file_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER data_file_after_operation_trigger AFTER DELETE OR UPDATE ON public.data_file FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5710,7 +5710,7 @@ CREATE TRIGGER data_file_after_operation_trigger AFTER DELETE OR UPDATE ON publi
 
 --
 -- TOC entry 5230 (class 2620 OID 29087)
--- Name: data_submission data_submission_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: data_submission data_submission_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER data_submission_after_operation_trigger AFTER DELETE OR UPDATE ON public.data_submission FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5718,7 +5718,7 @@ CREATE TRIGGER data_submission_after_operation_trigger AFTER DELETE OR UPDATE ON
 
 --
 -- TOC entry 5224 (class 2620 OID 29207)
--- Name: institution institution_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: institution institution_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER institution_after_operation_trigger AFTER DELETE OR UPDATE ON public.institution FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5726,7 +5726,7 @@ CREATE TRIGGER institution_after_operation_trigger AFTER DELETE OR UPDATE ON pub
 
 --
 -- TOC entry 5227 (class 2620 OID 22068)
--- Name: ras_tracking ras_tracking_after_delete_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: ras_tracking ras_tracking_after_delete_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER ras_tracking_after_delete_trigger AFTER DELETE ON public.ras_tracking FOR EACH ROW EXECUTE FUNCTION public.ras_tracking_after_delete_trigger_fnc();
@@ -5734,7 +5734,7 @@ CREATE TRIGGER ras_tracking_after_delete_trigger AFTER DELETE ON public.ras_trac
 
 --
 -- TOC entry 5221 (class 2620 OID 29020)
--- Name: s3_file s3_file_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: s3_file s3_file_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER s3_file_after_operation_trigger AFTER DELETE OR UPDATE ON public.s3_file FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5742,7 +5742,7 @@ CREATE TRIGGER s3_file_after_operation_trigger AFTER DELETE OR UPDATE ON public.
 
 --
 -- TOC entry 5233 (class 2620 OID 29700)
--- Name: sas_data_file sas_data_file_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: sas_data_file sas_data_file_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER sas_data_file_after_operation_trigger AFTER DELETE OR UPDATE ON public.sas_data_file FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5750,7 +5750,7 @@ CREATE TRIGGER sas_data_file_after_operation_trigger AFTER DELETE OR UPDATE ON p
 
 --
 -- TOC entry 5222 (class 2620 OID 29064)
--- Name: study study_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: study study_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER study_after_operation_trigger AFTER DELETE OR UPDATE ON public.study FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5758,7 +5758,7 @@ CREATE TRIGGER study_after_operation_trigger AFTER DELETE OR UPDATE ON public.st
 
 --
 -- TOC entry 5223 (class 2620 OID 29094)
--- Name: study_property_value study_property_value_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: study_property_value study_property_value_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER study_property_value_after_operation_trigger AFTER DELETE OR UPDATE ON public.study_property_value FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5766,7 +5766,7 @@ CREATE TRIGGER study_property_value_after_operation_trigger AFTER DELETE OR UPDA
 
 --
 -- TOC entry 5232 (class 2620 OID 29669)
--- Name: support_request support_request_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: support_request support_request_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER support_request_after_operation_trigger AFTER DELETE OR UPDATE ON public.support_request FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5774,7 +5774,7 @@ CREATE TRIGGER support_request_after_operation_trigger AFTER DELETE OR UPDATE ON
 
 --
 -- TOC entry 5234 (class 2620 OID 43563)
--- Name: user_file_upload user_file_upload_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: user_file_upload user_file_upload_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER user_file_upload_after_operation_trigger AFTER DELETE OR UPDATE ON public.user_file_upload FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5782,7 +5782,7 @@ CREATE TRIGGER user_file_upload_after_operation_trigger AFTER DELETE OR UPDATE O
 
 --
 -- TOC entry 5235 (class 2620 OID 46714)
--- Name: user_referrer user_referrer_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: user_referrer user_referrer_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER user_referrer_after_operation_trigger AFTER DELETE OR UPDATE ON public.user_referrer FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5790,7 +5790,7 @@ CREATE TRIGGER user_referrer_after_operation_trigger AFTER DELETE OR UPDATE ON p
 
 --
 -- TOC entry 5226 (class 2620 OID 29677)
--- Name: user_role user_role_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: user_role user_role_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER user_role_after_operation_trigger AFTER DELETE OR UPDATE ON public.user_role FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5798,7 +5798,7 @@ CREATE TRIGGER user_role_after_operation_trigger AFTER DELETE OR UPDATE ON publi
 
 --
 -- TOC entry 5225 (class 2620 OID 29101)
--- Name: users users_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: users users_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER users_after_operation_trigger AFTER DELETE OR UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5806,7 +5806,7 @@ CREATE TRIGGER users_after_operation_trigger AFTER DELETE OR UPDATE ON public.us
 
 --
 -- TOC entry 5228 (class 2620 OID 29684)
--- Name: workbench_request workbench_request_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: workbench_request workbench_request_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER workbench_request_after_operation_trigger AFTER DELETE OR UPDATE ON public.workbench_request FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5814,7 +5814,7 @@ CREATE TRIGGER workbench_request_after_operation_trigger AFTER DELETE OR UPDATE 
 
 --
 -- TOC entry 5229 (class 2620 OID 29691)
--- Name: workbench_request_interest workbench_request_interest_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: radx_admin
+-- Name: workbench_request_interest workbench_request_interest_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
 
 CREATE TRIGGER workbench_request_interest_after_operation_trigger AFTER DELETE OR UPDATE ON public.workbench_request_interest FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
@@ -5822,7 +5822,7 @@ CREATE TRIGGER workbench_request_interest_after_operation_trigger AFTER DELETE O
 
 --
 -- TOC entry 5178 (class 2606 OID 17025)
--- Name: lkup_cde_codelist_value fk_cde_codelist_value_codelist_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_cde_codelist_value fk_cde_codelist_value_codelist_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_cde_codelist_value
@@ -5831,7 +5831,7 @@ ALTER TABLE ONLY public.lkup_cde_codelist_value
 
 --
 -- TOC entry 5171 (class 2606 OID 16983)
--- Name: data_file fk_data_file_dictionary_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file fk_data_file_dictionary_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file
@@ -5840,7 +5840,7 @@ ALTER TABLE ONLY public.data_file
 
 --
 -- TOC entry 5179 (class 2606 OID 17076)
--- Name: data_file_download fk_data_file_download_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file_download fk_data_file_download_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file_download
@@ -5849,7 +5849,7 @@ ALTER TABLE ONLY public.data_file_download
 
 --
 -- TOC entry 5180 (class 2606 OID 17081)
--- Name: data_file_download fk_data_file_download_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file_download fk_data_file_download_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file_download
@@ -5858,7 +5858,7 @@ ALTER TABLE ONLY public.data_file_download
 
 --
 -- TOC entry 5172 (class 2606 OID 16988)
--- Name: data_file fk_data_file_metadata_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file fk_data_file_metadata_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file
@@ -5867,7 +5867,7 @@ ALTER TABLE ONLY public.data_file
 
 --
 -- TOC entry 5173 (class 2606 OID 16993)
--- Name: data_file fk_data_file_original_data_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file fk_data_file_original_data_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file
@@ -5876,7 +5876,7 @@ ALTER TABLE ONLY public.data_file
 
 --
 -- TOC entry 5174 (class 2606 OID 16968)
--- Name: data_file fk_data_file_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file fk_data_file_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file
@@ -5885,7 +5885,7 @@ ALTER TABLE ONLY public.data_file
 
 --
 -- TOC entry 5175 (class 2606 OID 16973)
--- Name: data_file fk_data_file_status_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file fk_data_file_status_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file
@@ -5894,7 +5894,7 @@ ALTER TABLE ONLY public.data_file
 
 --
 -- TOC entry 5176 (class 2606 OID 16963)
--- Name: data_file fk_data_file_submission_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file fk_data_file_submission_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file
@@ -5903,7 +5903,7 @@ ALTER TABLE ONLY public.data_file
 
 --
 -- TOC entry 5177 (class 2606 OID 16978)
--- Name: data_file fk_data_file_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_file fk_data_file_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_file
@@ -5912,7 +5912,7 @@ ALTER TABLE ONLY public.data_file
 
 --
 -- TOC entry 5167 (class 2606 OID 16942)
--- Name: data_submission fk_data_submission_status_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_submission fk_data_submission_status_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_submission
@@ -5921,7 +5921,7 @@ ALTER TABLE ONLY public.data_submission
 
 --
 -- TOC entry 5168 (class 2606 OID 16947)
--- Name: data_submission fk_data_submission_step_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_submission fk_data_submission_step_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_submission
@@ -5930,7 +5930,7 @@ ALTER TABLE ONLY public.data_submission
 
 --
 -- TOC entry 5169 (class 2606 OID 16932)
--- Name: data_submission fk_data_submission_study_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_submission fk_data_submission_study_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_submission
@@ -5939,7 +5939,7 @@ ALTER TABLE ONLY public.data_submission
 
 --
 -- TOC entry 5170 (class 2606 OID 16937)
--- Name: data_submission fk_data_submission_submitter_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: data_submission fk_data_submission_submitter_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.data_submission
@@ -5948,7 +5948,7 @@ ALTER TABLE ONLY public.data_submission
 
 --
 -- TOC entry 5189 (class 2606 OID 17290)
--- Name: datafile_harmonization_metrics fk_datafile_harmonization_report_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: datafile_harmonization_metrics fk_datafile_harmonization_report_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.datafile_harmonization_metrics
@@ -5957,7 +5957,7 @@ ALTER TABLE ONLY public.datafile_harmonization_metrics
 
 --
 -- TOC entry 5146 (class 2606 OID 16669)
--- Name: entity_property_display_setting fk_display_setting_entity_group_propery_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property_display_setting fk_display_setting_entity_group_propery_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_display_setting
@@ -5966,7 +5966,7 @@ ALTER TABLE ONLY public.entity_property_display_setting
 
 --
 -- TOC entry 5147 (class 2606 OID 16664)
--- Name: entity_property_display_setting fk_display_setting_entity_propery_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property_display_setting fk_display_setting_entity_propery_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_display_setting
@@ -5975,7 +5975,7 @@ ALTER TABLE ONLY public.entity_property_display_setting
 
 --
 -- TOC entry 5142 (class 2606 OID 16643)
--- Name: entity_property fk_entity_property_code_list_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property fk_entity_property_code_list_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property
@@ -5984,7 +5984,7 @@ ALTER TABLE ONLY public.entity_property
 
 --
 -- TOC entry 5143 (class 2606 OID 16638)
--- Name: entity_property fk_entity_property_entity_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property fk_entity_property_entity_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property
@@ -5993,7 +5993,7 @@ ALTER TABLE ONLY public.entity_property
 
 --
 -- TOC entry 5144 (class 2606 OID 16648)
--- Name: entity_property fk_entity_property_source_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property fk_entity_property_source_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property
@@ -6002,7 +6002,7 @@ ALTER TABLE ONLY public.entity_property
 
 --
 -- TOC entry 5145 (class 2606 OID 16633)
--- Name: entity_property fk_entity_property_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property fk_entity_property_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property
@@ -6011,7 +6011,7 @@ ALTER TABLE ONLY public.entity_property
 
 --
 -- TOC entry 5185 (class 2606 OID 17188)
--- Name: event_link fk_event_link_event_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: event_link fk_event_link_event_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.event_link
@@ -6020,7 +6020,7 @@ ALTER TABLE ONLY public.event_link
 
 --
 -- TOC entry 5184 (class 2606 OID 17172)
--- Name: events fk_event_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: events fk_event_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.events
@@ -6029,7 +6029,7 @@ ALTER TABLE ONLY public.events
 
 --
 -- TOC entry 5197 (class 2606 OID 22328)
--- Name: hub_content_metrics fk_hub_content_metrics_report_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: hub_content_metrics fk_hub_content_metrics_report_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.hub_content_metrics
@@ -6038,7 +6038,7 @@ ALTER TABLE ONLY public.hub_content_metrics
 
 --
 -- TOC entry 5150 (class 2606 OID 16732)
--- Name: institution fk_institution_country_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: institution fk_institution_country_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.institution
@@ -6047,7 +6047,7 @@ ALTER TABLE ONLY public.institution
 
 --
 -- TOC entry 5151 (class 2606 OID 16737)
--- Name: institution fk_institution_state_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: institution fk_institution_state_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.institution
@@ -6056,7 +6056,7 @@ ALTER TABLE ONLY public.institution
 
 --
 -- TOC entry 5152 (class 2606 OID 16727)
--- Name: institution fk_institution_status_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: institution fk_institution_status_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.institution
@@ -6065,7 +6065,7 @@ ALTER TABLE ONLY public.institution
 
 --
 -- TOC entry 5153 (class 2606 OID 16722)
--- Name: institution fk_institution_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: institution fk_institution_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.institution
@@ -6074,7 +6074,7 @@ ALTER TABLE ONLY public.institution
 
 --
 -- TOC entry 5160 (class 2606 OID 16833)
--- Name: jwt_token fk_jwt_token_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: jwt_token fk_jwt_token_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.jwt_token
@@ -6083,7 +6083,7 @@ ALTER TABLE ONLY public.jwt_token
 
 --
 -- TOC entry 5188 (class 2606 OID 17276)
--- Name: metrics_report fk_metrics_report_weekly_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: metrics_report fk_metrics_report_weekly_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.metrics_report
@@ -6092,7 +6092,7 @@ ALTER TABLE ONLY public.metrics_report
 
 --
 -- TOC entry 5181 (class 2606 OID 17100)
--- Name: entity_property_mta_mapping fk_mta_mapping_codelist_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping fk_mta_mapping_codelist_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_mta_mapping
@@ -6101,7 +6101,7 @@ ALTER TABLE ONLY public.entity_property_mta_mapping
 
 --
 -- TOC entry 5182 (class 2606 OID 17105)
--- Name: entity_property_mta_mapping fk_mta_mapping_codelist_value_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping fk_mta_mapping_codelist_value_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_mta_mapping
@@ -6110,7 +6110,7 @@ ALTER TABLE ONLY public.entity_property_mta_mapping
 
 --
 -- TOC entry 5183 (class 2606 OID 17095)
--- Name: entity_property_mta_mapping fk_mta_mapping_entity_propery_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping fk_mta_mapping_entity_propery_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.entity_property_mta_mapping
@@ -6119,7 +6119,7 @@ ALTER TABLE ONLY public.entity_property_mta_mapping
 
 --
 -- TOC entry 5187 (class 2606 OID 17252)
--- Name: news_link fk_news_link_news_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: news_link fk_news_link_news_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.news_link
@@ -6128,7 +6128,7 @@ ALTER TABLE ONLY public.news_link
 
 --
 -- TOC entry 5186 (class 2606 OID 17236)
--- Name: news fk_news_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: news fk_news_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.news
@@ -6137,7 +6137,7 @@ ALTER TABLE ONLY public.news
 
 --
 -- TOC entry 5138 (class 2606 OID 16492)
--- Name: lkup_property_codelist_value fk_property_codelist_value_codelist_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_value fk_property_codelist_value_codelist_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_property_codelist_value
@@ -6146,7 +6146,7 @@ ALTER TABLE ONLY public.lkup_property_codelist_value
 
 --
 -- TOC entry 5198 (class 2606 OID 22743)
--- Name: public_data fk_public_data_collection_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: public_data fk_public_data_collection_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.public_data
@@ -6155,7 +6155,7 @@ ALTER TABLE ONLY public.public_data
 
 --
 -- TOC entry 5199 (class 2606 OID 22748)
--- Name: public_data fk_public_data_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: public_data fk_public_data_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.public_data
@@ -6164,7 +6164,7 @@ ALTER TABLE ONLY public.public_data
 
 --
 -- TOC entry 5139 (class 2606 OID 16571)
--- Name: s3_file fk_s3_file_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: s3_file fk_s3_file_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.s3_file
@@ -6173,7 +6173,7 @@ ALTER TABLE ONLY public.s3_file
 
 --
 -- TOC entry 5200 (class 2606 OID 29140)
--- Name: sas_data_file fk_sas_data_file_category_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: sas_data_file fk_sas_data_file_category_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_data_file
@@ -6182,7 +6182,7 @@ ALTER TABLE ONLY public.sas_data_file
 
 --
 -- TOC entry 5201 (class 2606 OID 29125)
--- Name: sas_data_file fk_sas_data_file_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: sas_data_file fk_sas_data_file_parent_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_data_file
@@ -6191,7 +6191,7 @@ ALTER TABLE ONLY public.sas_data_file
 
 --
 -- TOC entry 5202 (class 2606 OID 29130)
--- Name: sas_data_file fk_sas_data_file_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: sas_data_file fk_sas_data_file_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_data_file
@@ -6200,7 +6200,7 @@ ALTER TABLE ONLY public.sas_data_file
 
 --
 -- TOC entry 5203 (class 2606 OID 29135)
--- Name: sas_data_file fk_sas_data_file_status_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: sas_data_file fk_sas_data_file_status_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_data_file
@@ -6209,7 +6209,7 @@ ALTER TABLE ONLY public.sas_data_file
 
 --
 -- TOC entry 5204 (class 2606 OID 29153)
--- Name: sas_file_download fk_sas_file_download_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: sas_file_download fk_sas_file_download_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_file_download
@@ -6218,7 +6218,7 @@ ALTER TABLE ONLY public.sas_file_download
 
 --
 -- TOC entry 5205 (class 2606 OID 29158)
--- Name: sas_file_download fk_sas_file_download_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: sas_file_download fk_sas_file_download_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.sas_file_download
@@ -6227,7 +6227,7 @@ ALTER TABLE ONLY public.sas_file_download
 
 --
 -- TOC entry 5140 (class 2606 OID 16587)
--- Name: study fk_study_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study fk_study_center_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study
@@ -6236,7 +6236,7 @@ ALTER TABLE ONLY public.study
 
 --
 -- TOC entry 5195 (class 2606 OID 17365)
--- Name: study_harmonization_metrics fk_study_harmonization_report_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study_harmonization_metrics fk_study_harmonization_report_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study_harmonization_metrics
@@ -6245,7 +6245,7 @@ ALTER TABLE ONLY public.study_harmonization_metrics
 
 --
 -- TOC entry 5148 (class 2606 OID 16690)
--- Name: study_property_value fk_study_property_value_entity_property_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study_property_value fk_study_property_value_entity_property_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study_property_value
@@ -6254,7 +6254,7 @@ ALTER TABLE ONLY public.study_property_value
 
 --
 -- TOC entry 5149 (class 2606 OID 16685)
--- Name: study_property_value fk_study_property_value_study_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study_property_value fk_study_property_value_study_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study_property_value
@@ -6263,7 +6263,7 @@ ALTER TABLE ONLY public.study_property_value
 
 --
 -- TOC entry 5141 (class 2606 OID 16592)
--- Name: study fk_study_status_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: study fk_study_status_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.study
@@ -6272,7 +6272,7 @@ ALTER TABLE ONLY public.study
 
 --
 -- TOC entry 5190 (class 2606 OID 17324)
--- Name: support_request fk_support_request_assignee_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: support_request fk_support_request_assignee_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.support_request
@@ -6281,7 +6281,7 @@ ALTER TABLE ONLY public.support_request
 
 --
 -- TOC entry 5191 (class 2606 OID 17319)
--- Name: support_request fk_support_request_requestor_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: support_request fk_support_request_requestor_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.support_request
@@ -6290,7 +6290,7 @@ ALTER TABLE ONLY public.support_request
 
 --
 -- TOC entry 5192 (class 2606 OID 17339)
--- Name: support_request fk_support_request_resolution_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: support_request fk_support_request_resolution_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.support_request
@@ -6299,7 +6299,7 @@ ALTER TABLE ONLY public.support_request
 
 --
 -- TOC entry 5193 (class 2606 OID 17329)
--- Name: support_request fk_support_request_status_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: support_request fk_support_request_status_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.support_request
@@ -6308,7 +6308,7 @@ ALTER TABLE ONLY public.support_request
 
 --
 -- TOC entry 5194 (class 2606 OID 17334)
--- Name: support_request fk_support_request_type_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: support_request fk_support_request_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.support_request
@@ -6317,7 +6317,7 @@ ALTER TABLE ONLY public.support_request
 
 --
 -- TOC entry 5154 (class 2606 OID 22122)
--- Name: users fk_user_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: users fk_user_center_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.users
@@ -6326,7 +6326,7 @@ ALTER TABLE ONLY public.users
 
 --
 -- TOC entry 5206 (class 2606 OID 43542)
--- Name: user_file_upload fk_user_file_upload_by; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_file_upload fk_user_file_upload_by; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_file_upload
@@ -6335,7 +6335,7 @@ ALTER TABLE ONLY public.user_file_upload
 
 --
 -- TOC entry 5207 (class 2606 OID 43552)
--- Name: user_file_upload fk_user_file_upload_delete_by; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_file_upload fk_user_file_upload_delete_by; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_file_upload
@@ -6344,7 +6344,7 @@ ALTER TABLE ONLY public.user_file_upload
 
 --
 -- TOC entry 5208 (class 2606 OID 43547)
--- Name: user_file_upload fk_user_file_upload_download_by; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_file_upload fk_user_file_upload_download_by; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_file_upload
@@ -6353,7 +6353,7 @@ ALTER TABLE ONLY public.user_file_upload
 
 --
 -- TOC entry 5209 (class 2606 OID 43537)
--- Name: user_file_upload fk_user_file_upload_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_file_upload fk_user_file_upload_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_file_upload
@@ -6362,7 +6362,7 @@ ALTER TABLE ONLY public.user_file_upload
 
 --
 -- TOC entry 5210 (class 2606 OID 43532)
--- Name: user_file_upload fk_user_file_upload_study_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_file_upload fk_user_file_upload_study_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_file_upload
@@ -6371,7 +6371,7 @@ ALTER TABLE ONLY public.user_file_upload
 
 --
 -- TOC entry 5155 (class 2606 OID 21312)
--- Name: users fk_user_institution_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: users fk_user_institution_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.users
@@ -6380,7 +6380,7 @@ ALTER TABLE ONLY public.users
 
 --
 -- TOC entry 5162 (class 2606 OID 16869)
--- Name: user_login fk_user_login_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_login fk_user_login_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_login
@@ -6389,7 +6389,7 @@ ALTER TABLE ONLY public.user_login
 
 --
 -- TOC entry 5161 (class 2606 OID 16848)
--- Name: user_ras fk_user_ras_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_ras fk_user_ras_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_ras
@@ -6398,7 +6398,7 @@ ALTER TABLE ONLY public.user_ras
 
 --
 -- TOC entry 5211 (class 2606 OID 46703)
--- Name: user_referrer fk_user_referrer_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_referrer fk_user_referrer_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_referrer
@@ -6407,7 +6407,7 @@ ALTER TABLE ONLY public.user_referrer
 
 --
 -- TOC entry 5212 (class 2606 OID 46698)
--- Name: user_referrer fk_user_referrer_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_referrer fk_user_referrer_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_referrer
@@ -6416,7 +6416,7 @@ ALTER TABLE ONLY public.user_referrer
 
 --
 -- TOC entry 5156 (class 2606 OID 16778)
--- Name: users fk_user_researcher_level; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: users fk_user_researcher_level; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.users
@@ -6425,7 +6425,7 @@ ALTER TABLE ONLY public.users
 
 --
 -- TOC entry 5158 (class 2606 OID 16796)
--- Name: user_role fk_user_role_role_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_role fk_user_role_role_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_role
@@ -6434,7 +6434,7 @@ ALTER TABLE ONLY public.user_role
 
 --
 -- TOC entry 5159 (class 2606 OID 16791)
--- Name: user_role fk_user_role_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_role fk_user_role_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_role
@@ -6443,7 +6443,7 @@ ALTER TABLE ONLY public.user_role
 
 --
 -- TOC entry 5157 (class 2606 OID 16773)
--- Name: users fk_user_status; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: users fk_user_status; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.users
@@ -6452,7 +6452,7 @@ ALTER TABLE ONLY public.users
 
 --
 -- TOC entry 5214 (class 2606 OID 47343)
--- Name: user_workspace fk_user_workspace_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: user_workspace fk_user_workspace_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_workspace
@@ -6461,7 +6461,7 @@ ALTER TABLE ONLY public.user_workspace
 
 --
 -- TOC entry 5215 (class 2606 OID 58945)
--- Name: lkup_variable_category fk_variable_category_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_category fk_variable_category_center_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_variable_category
@@ -6470,7 +6470,7 @@ ALTER TABLE ONLY public.lkup_variable_category
 
 --
 -- TOC entry 5216 (class 2606 OID 58960)
--- Name: variables fk_variable_category_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: variables fk_variable_category_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.variables
@@ -6479,7 +6479,7 @@ ALTER TABLE ONLY public.variables
 
 --
 -- TOC entry 5217 (class 2606 OID 58970)
--- Name: variables fk_variable_center_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: variables fk_variable_center_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.variables
@@ -6488,7 +6488,7 @@ ALTER TABLE ONLY public.variables
 
 --
 -- TOC entry 5213 (class 2606 OID 46791)
--- Name: lkup_core_variable_property_value fk_lkup_core_variable_property_value_entity_property_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: lkup_core_variable_property_value fk_lkup_core_variable_property_value_entity_property_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.lkup_core_variable_property_value
@@ -6497,7 +6497,7 @@ ALTER TABLE ONLY public.lkup_core_variable_property_value
 
 --
 -- TOC entry 5218 (class 2606 OID 58965)
--- Name: variables fk_variable_study_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: variables fk_variable_study_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.variables
@@ -6506,7 +6506,7 @@ ALTER TABLE ONLY public.variables
 
 --
 -- TOC entry 5165 (class 2606 OID 16915)
--- Name: workbench_request_interest fk_workbench_request_interest_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: workbench_request_interest fk_workbench_request_interest_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.workbench_request_interest
@@ -6515,7 +6515,7 @@ ALTER TABLE ONLY public.workbench_request_interest
 
 --
 -- TOC entry 5166 (class 2606 OID 16910)
--- Name: workbench_request_interest fk_workbench_request_interest_request_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: workbench_request_interest fk_workbench_request_interest_request_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.workbench_request_interest
@@ -6524,7 +6524,7 @@ ALTER TABLE ONLY public.workbench_request_interest
 
 --
 -- TOC entry 5163 (class 2606 OID 16896)
--- Name: workbench_request fk_workbench_request_status_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: workbench_request fk_workbench_request_status_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.workbench_request
@@ -6533,7 +6533,7 @@ ALTER TABLE ONLY public.workbench_request
 
 --
 -- TOC entry 5164 (class 2606 OID 16891)
--- Name: workbench_request fk_workbench_requestor_user_id; Type: FK CONSTRAINT; Schema: public; Owner: radx_admin
+-- Name: workbench_request fk_workbench_requestor_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.workbench_request
@@ -6543,1345 +6543,1345 @@ ALTER TABLE ONLY public.workbench_request
 --
 -- TOC entry 5400 (class 0 OID 0)
 -- Dependencies: 8
--- Name: SCHEMA radx_history; Type: ACL; Schema: -; Owner: radx_admin
+-- Name: SCHEMA datahub_history; Type: ACL; Schema: -; Owner: datahub_admin
 --
 
-GRANT ALL ON SCHEMA radx_history TO radx_user;
+GRANT ALL ON SCHEMA datahub_history TO datahub_user;
 
 
 --
 -- TOC entry 5401 (class 0 OID 0)
 -- Dependencies: 486
--- Name: FUNCTION after_operation_trigger_fnc(); Type: ACL; Schema: public; Owner: radx_admin
+-- Name: FUNCTION after_operation_trigger_fnc(); Type: ACL; Schema: public; Owner: datahub_admin
 --
 
 REVOKE ALL ON FUNCTION public.after_operation_trigger_fnc() FROM PUBLIC;
-GRANT ALL ON FUNCTION public.after_operation_trigger_fnc() TO radx_user;
+GRANT ALL ON FUNCTION public.after_operation_trigger_fnc() TO datahub_user;
 
 
 --
 -- TOC entry 5402 (class 0 OID 0)
 -- Dependencies: 465
--- Name: FUNCTION before_operation_trigger_fnc(); Type: ACL; Schema: public; Owner: radx_admin
+-- Name: FUNCTION before_operation_trigger_fnc(); Type: ACL; Schema: public; Owner: datahub_admin
 --
 
 REVOKE ALL ON FUNCTION public.before_operation_trigger_fnc() FROM PUBLIC;
-GRANT ALL ON FUNCTION public.before_operation_trigger_fnc() TO radx_user;
+GRANT ALL ON FUNCTION public.before_operation_trigger_fnc() TO datahub_user;
 
 
 --
 -- TOC entry 5403 (class 0 OID 0)
 -- Dependencies: 513
--- Name: FUNCTION ras_tracking_after_delete_trigger_fnc(); Type: ACL; Schema: public; Owner: radx_admin
+-- Name: FUNCTION ras_tracking_after_delete_trigger_fnc(); Type: ACL; Schema: public; Owner: datahub_admin
 --
 
 REVOKE ALL ON FUNCTION public.ras_tracking_after_delete_trigger_fnc() FROM PUBLIC;
-GRANT ALL ON FUNCTION public.ras_tracking_after_delete_trigger_fnc() TO radx_user;
+GRANT ALL ON FUNCTION public.ras_tracking_after_delete_trigger_fnc() TO datahub_user;
 
 
 --
 -- TOC entry 5404 (class 0 OID 0)
 -- Dependencies: 518
--- Name: PROCEDURE sp_generate_hub_content_metrics(); Type: ACL; Schema: public; Owner: radx_admin
+-- Name: PROCEDURE sp_generate_hub_content_metrics(); Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON PROCEDURE public.sp_generate_hub_content_metrics() TO radx_user;
+GRANT ALL ON PROCEDURE public.sp_generate_hub_content_metrics() TO datahub_user;
 
 
 --
 -- TOC entry 5405 (class 0 OID 0)
 -- Dependencies: 519
--- Name: PROCEDURE sp_parse_variables(); Type: ACL; Schema: public; Owner: radx_admin
+-- Name: PROCEDURE sp_parse_variables(); Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON PROCEDURE public.sp_parse_variables() TO radx_user;
+GRANT ALL ON PROCEDURE public.sp_parse_variables() TO datahub_user;
 
 
 --
 -- TOC entry 5406 (class 0 OID 0)
 -- Dependencies: 285
--- Name: TABLE data_file; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE data_file; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.data_file TO radx_user;
+GRANT ALL ON TABLE public.data_file TO datahub_user;
 
 
 --
 -- TOC entry 5407 (class 0 OID 0)
 -- Dependencies: 293
--- Name: TABLE data_file_download; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE data_file_download; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.data_file_download TO radx_user;
+GRANT ALL ON TABLE public.data_file_download TO datahub_user;
 
 
 --
 -- TOC entry 5409 (class 0 OID 0)
 -- Dependencies: 292
--- Name: SEQUENCE data_file_download_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE data_file_download_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.data_file_download_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.data_file_download_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5411 (class 0 OID 0)
 -- Dependencies: 284
--- Name: SEQUENCE data_file_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE data_file_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.data_file_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.data_file_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5415 (class 0 OID 0)
 -- Dependencies: 283
--- Name: TABLE data_submission; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE data_submission; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.data_submission TO radx_user;
+GRANT ALL ON TABLE public.data_submission TO datahub_user;
 
 
 --
 -- TOC entry 5417 (class 0 OID 0)
 -- Dependencies: 282
--- Name: SEQUENCE data_submission_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE data_submission_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.data_submission_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.data_submission_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5418 (class 0 OID 0)
 -- Dependencies: 313
--- Name: TABLE datafile_harmonization_metrics; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE datafile_harmonization_metrics; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.datafile_harmonization_metrics TO radx_user;
+GRANT ALL ON TABLE public.datafile_harmonization_metrics TO datahub_user;
 
 
 --
 -- TOC entry 5420 (class 0 OID 0)
 -- Dependencies: 312
--- Name: SEQUENCE datafile_harmonization_metrics_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE datafile_harmonization_metrics_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.datafile_harmonization_metrics_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.datafile_harmonization_metrics_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5421 (class 0 OID 0)
 -- Dependencies: 252
--- Name: TABLE entity_property; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE entity_property; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.entity_property TO radx_user;
+GRANT ALL ON TABLE public.entity_property TO datahub_user;
 
 
 --
 -- TOC entry 5422 (class 0 OID 0)
 -- Dependencies: 254
--- Name: TABLE entity_property_display_setting; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE entity_property_display_setting; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.entity_property_display_setting TO radx_user;
+GRANT ALL ON TABLE public.entity_property_display_setting TO datahub_user;
 
 
 --
 -- TOC entry 5425 (class 0 OID 0)
 -- Dependencies: 295
--- Name: TABLE entity_property_mta_mapping; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE entity_property_mta_mapping; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.entity_property_mta_mapping TO radx_user;
+GRANT ALL ON TABLE public.entity_property_mta_mapping TO datahub_user;
 
 
 --
 -- TOC entry 5427 (class 0 OID 0)
 -- Dependencies: 294
--- Name: SEQUENCE entity_property_mta_mapping_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE entity_property_mta_mapping_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.entity_property_mta_mapping_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.entity_property_mta_mapping_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5428 (class 0 OID 0)
 -- Dependencies: 303
--- Name: TABLE event_link; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE event_link; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.event_link TO radx_user;
+GRANT ALL ON TABLE public.event_link TO datahub_user;
 
 
 --
 -- TOC entry 5430 (class 0 OID 0)
 -- Dependencies: 302
--- Name: SEQUENCE event_link_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE event_link_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.event_link_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.event_link_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5431 (class 0 OID 0)
 -- Dependencies: 301
--- Name: TABLE events; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE events; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.events TO radx_user;
+GRANT ALL ON TABLE public.events TO datahub_user;
 
 
 --
 -- TOC entry 5433 (class 0 OID 0)
 -- Dependencies: 300
--- Name: SEQUENCE events_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE events_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.events_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.events_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5434 (class 0 OID 0)
 -- Dependencies: 398
--- Name: TABLE funding; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE funding; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.funding TO radx_user;
+GRANT ALL ON TABLE public.funding TO datahub_user;
 
 
 --
 -- TOC entry 5436 (class 0 OID 0)
 -- Dependencies: 397
--- Name: SEQUENCE funding_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE funding_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.funding_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.funding_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5437 (class 0 OID 0)
 -- Dependencies: 330
--- Name: TABLE hub_content_metrics; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE hub_content_metrics; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.hub_content_metrics TO radx_user;
+GRANT ALL ON TABLE public.hub_content_metrics TO datahub_user;
 
 
 --
 -- TOC entry 5439 (class 0 OID 0)
 -- Dependencies: 329
--- Name: SEQUENCE hub_content_metrics_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE hub_content_metrics_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.hub_content_metrics_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.hub_content_metrics_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5440 (class 0 OID 0)
 -- Dependencies: 258
--- Name: TABLE institution; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE institution; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.institution TO radx_user;
+GRANT ALL ON TABLE public.institution TO datahub_user;
 
 
 --
 -- TOC entry 5442 (class 0 OID 0)
 -- Dependencies: 257
--- Name: SEQUENCE institution_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE institution_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT SELECT,USAGE ON SEQUENCE public.institution_id_seq TO radx_user;
+GRANT SELECT,USAGE ON SEQUENCE public.institution_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5443 (class 0 OID 0)
 -- Dependencies: 270
--- Name: TABLE jwt_token; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE jwt_token; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
 GRANT SELECT,INSERT,UPDATE ON TABLE public.jwt_token TO iam_db_user_dev; --TODO: need to update the the iam user 
-GRANT ALL ON TABLE public.jwt_token TO radx_user;
+GRANT ALL ON TABLE public.jwt_token TO datahub_user;
 
 
 --
 -- TOC entry 5445 (class 0 OID 0)
 -- Dependencies: 269
--- Name: SEQUENCE jwt_token_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE jwt_token_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.jwt_token_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.jwt_token_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5446 (class 0 OID 0)
 -- Dependencies: 289
--- Name: TABLE lkup_cde_codelist; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_cde_codelist; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_cde_codelist TO radx_user;
+GRANT ALL ON TABLE public.lkup_cde_codelist TO datahub_user;
 
 
 --
 -- TOC entry 5448 (class 0 OID 0)
 -- Dependencies: 288
--- Name: SEQUENCE lkup_cde_codelist_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_cde_codelist_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_cde_codelist_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_cde_codelist_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5449 (class 0 OID 0)
 -- Dependencies: 291
--- Name: TABLE lkup_cde_codelist_value; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_cde_codelist_value; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_cde_codelist_value TO radx_user;
+GRANT ALL ON TABLE public.lkup_cde_codelist_value TO datahub_user;
 
 
 --
 -- TOC entry 5451 (class 0 OID 0)
 -- Dependencies: 290
--- Name: SEQUENCE lkup_cde_codelist_value_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_cde_codelist_value_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_cde_codelist_value_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_cde_codelist_value_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5452 (class 0 OID 0)
 -- Dependencies: 222
--- Name: TABLE lkup_country; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_country; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_country TO radx_user;
+GRANT ALL ON TABLE public.lkup_country TO datahub_user;
 
 
 --
 -- TOC entry 5454 (class 0 OID 0)
 -- Dependencies: 234
--- Name: TABLE lkup_data_file_category; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_data_file_category; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_data_file_category TO radx_user;
+GRANT ALL ON TABLE public.lkup_data_file_category TO datahub_user;
 
 
 --
 -- TOC entry 5456 (class 0 OID 0)
 -- Dependencies: 236
--- Name: TABLE lkup_center; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_center; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_center TO radx_user;
+GRANT ALL ON TABLE public.lkup_center TO datahub_user;
 
 
 --
 -- TOC entry 5458 (class 0 OID 0)
 -- Dependencies: 238
--- Name: TABLE lkup_entity_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_entity_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_entity_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_entity_type TO datahub_user;
 
 
 --
 -- TOC entry 5460 (class 0 OID 0)
 -- Dependencies: 297
--- Name: TABLE lkup_event_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_event_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_event_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_event_type TO datahub_user;
 
 
 --
 -- TOC entry 5462 (class 0 OID 0)
 -- Dependencies: 296
--- Name: SEQUENCE lkup_event_type_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_event_type_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_event_type_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_event_type_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5463 (class 0 OID 0)
 -- Dependencies: 240
--- Name: TABLE lkup_file_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_file_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_file_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_file_type TO datahub_user;
 
 
 --
 -- TOC entry 5465 (class 0 OID 0)
 -- Dependencies: 224
--- Name: TABLE lkup_institution_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_institution_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_institution_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_institution_type TO datahub_user;
 
 
 --
 -- TOC entry 5467 (class 0 OID 0)
 -- Dependencies: 309
--- Name: TABLE lkup_metrics_report_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_metrics_report_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_metrics_report_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_metrics_report_type TO datahub_user;
 
 
 --
 -- TOC entry 5469 (class 0 OID 0)
 -- Dependencies: 308
--- Name: SEQUENCE lkup_metrics_report_type_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_metrics_report_type_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_metrics_report_type_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_metrics_report_type_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5470 (class 0 OID 0)
 -- Dependencies: 299
--- Name: TABLE lkup_news_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_news_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_news_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_news_type TO datahub_user;
 
 
 --
 -- TOC entry 5472 (class 0 OID 0)
 -- Dependencies: 298
--- Name: SEQUENCE lkup_news_type_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_news_type_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_news_type_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_news_type_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5473 (class 0 OID 0)
 -- Dependencies: 230
--- Name: TABLE lkup_property_codelist; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_property_codelist; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_property_codelist TO radx_user;
+GRANT ALL ON TABLE public.lkup_property_codelist TO datahub_user;
 
 
 --
 -- TOC entry 5475 (class 0 OID 0)
 -- Dependencies: 232
--- Name: TABLE lkup_property_codelist_value; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_property_codelist_value; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_property_codelist_value TO radx_user;
+GRANT ALL ON TABLE public.lkup_property_codelist_value TO datahub_user;
 
 
 --
 -- TOC entry 5477 (class 0 OID 0)
 -- Dependencies: 244
--- Name: TABLE lkup_property_source; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_property_source; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_property_source TO radx_user;
+GRANT ALL ON TABLE public.lkup_property_source TO datahub_user;
 
 
 --
 -- TOC entry 5479 (class 0 OID 0)
 -- Dependencies: 242
--- Name: TABLE lkup_property_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_property_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_property_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_property_type TO datahub_user;
 
 
 --
 -- TOC entry 5481 (class 0 OID 0)
 -- Dependencies: 415
--- Name: TABLE lkup_referrer; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_referrer; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_referrer TO radx_user;
+GRANT ALL ON TABLE public.lkup_referrer TO datahub_user;
 
 
 --
 -- TOC entry 5483 (class 0 OID 0)
 -- Dependencies: 414
--- Name: SEQUENCE lkup_referrer_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_referrer_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_referrer_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_referrer_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5484 (class 0 OID 0)
 -- Dependencies: 262
--- Name: TABLE lkup_researcher_level; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_researcher_level; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_researcher_level TO radx_user;
+GRANT ALL ON TABLE public.lkup_researcher_level TO datahub_user;
 
 
 --
 -- TOC entry 5486 (class 0 OID 0)
 -- Dependencies: 315
--- Name: TABLE lkup_resolution_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_resolution_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_resolution_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_resolution_type TO datahub_user;
 
 
 --
 -- TOC entry 5488 (class 0 OID 0)
 -- Dependencies: 314
--- Name: SEQUENCE lkup_resolution_type_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_resolution_type_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_resolution_type_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_resolution_type_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5489 (class 0 OID 0)
 -- Dependencies: 260
--- Name: TABLE lkup_role; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_role; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_role TO radx_user;
+GRANT ALL ON TABLE public.lkup_role TO datahub_user;
 
 
 --
 -- TOC entry 5491 (class 0 OID 0)
 -- Dependencies: 226
--- Name: TABLE lkup_state; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_state; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_state TO radx_user;
+GRANT ALL ON TABLE public.lkup_state TO datahub_user;
 
 
 --
 -- TOC entry 5493 (class 0 OID 0)
 -- Dependencies: 228
--- Name: TABLE lkup_status; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_status; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_status TO radx_user;
+GRANT ALL ON TABLE public.lkup_status TO datahub_user;
 
 
 --
 -- TOC entry 5495 (class 0 OID 0)
 -- Dependencies: 246
--- Name: TABLE lkup_submission_step; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_submission_step; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_submission_step TO radx_user;
+GRANT ALL ON TABLE public.lkup_submission_step TO datahub_user;
 
 
 --
 -- TOC entry 5497 (class 0 OID 0)
 -- Dependencies: 317
--- Name: TABLE lkup_support_request_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_support_request_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_support_request_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_support_request_type TO datahub_user;
 
 
 --
 -- TOC entry 5499 (class 0 OID 0)
 -- Dependencies: 316
--- Name: SEQUENCE lkup_support_request_type_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_support_request_type_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_support_request_type_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_support_request_type_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5500 (class 0 OID 0)
 -- Dependencies: 428
--- Name: TABLE lkup_variable_category; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_variable_category; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_variable_category TO radx_user;
+GRANT ALL ON TABLE public.lkup_variable_category TO datahub_user;
 
 
 --
 -- TOC entry 5501 (class 0 OID 0)
 -- Dependencies: 419
--- Name: TABLE lkup_variable_datatype; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_variable_datatype; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_variable_datatype TO radx_user;
+GRANT ALL ON TABLE public.lkup_variable_datatype TO datahub_user;
 
 
 --
 -- TOC entry 5502 (class 0 OID 0)
 -- Dependencies: 287
--- Name: TABLE lkup_variable_type; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_variable_type; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_variable_type TO radx_user;
+GRANT ALL ON TABLE public.lkup_variable_type TO datahub_user;
 
 
 --
 -- TOC entry 5504 (class 0 OID 0)
 -- Dependencies: 286
--- Name: SEQUENCE lkup_variable_type_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_variable_type_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_variable_type_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_variable_type_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5505 (class 0 OID 0)
 -- Dependencies: 277
--- Name: TABLE lkup_workbench_interest; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_workbench_interest; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_workbench_interest TO radx_user;
+GRANT ALL ON TABLE public.lkup_workbench_interest TO datahub_user;
 
 
 --
 -- TOC entry 5507 (class 0 OID 0)
 -- Dependencies: 276
--- Name: SEQUENCE lkup_workbench_interest_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_workbench_interest_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_workbench_interest_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_workbench_interest_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5508 (class 0 OID 0)
 -- Dependencies: 311
--- Name: TABLE metrics_report; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE metrics_report; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.metrics_report TO radx_user;
+GRANT ALL ON TABLE public.metrics_report TO datahub_user;
 
 
 --
 -- TOC entry 5510 (class 0 OID 0)
 -- Dependencies: 310
--- Name: SEQUENCE metrics_report_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE metrics_report_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.metrics_report_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.metrics_report_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5511 (class 0 OID 0)
 -- Dependencies: 305
--- Name: TABLE news; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE news; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.news TO radx_user;
+GRANT ALL ON TABLE public.news TO datahub_user;
 
 
 --
 -- TOC entry 5513 (class 0 OID 0)
 -- Dependencies: 304
--- Name: SEQUENCE news_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE news_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.news_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.news_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5514 (class 0 OID 0)
 -- Dependencies: 307
--- Name: TABLE news_link; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE news_link; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.news_link TO radx_user;
+GRANT ALL ON TABLE public.news_link TO datahub_user;
 
 
 --
 -- TOC entry 5516 (class 0 OID 0)
 -- Dependencies: 306
--- Name: SEQUENCE news_link_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE news_link_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.news_link_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.news_link_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5517 (class 0 OID 0)
 -- Dependencies: 400
--- Name: TABLE newsletter; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE newsletter; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.newsletter TO radx_user;
+GRANT ALL ON TABLE public.newsletter TO datahub_user;
 
 
 --
 -- TOC entry 5519 (class 0 OID 0)
 -- Dependencies: 399
--- Name: SEQUENCE newsletter_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE newsletter_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.newsletter_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.newsletter_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5520 (class 0 OID 0)
 -- Dependencies: 340
--- Name: TABLE public_data; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE public_data; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.public_data TO radx_user;
+GRANT ALL ON TABLE public.public_data TO datahub_user;
 
 
 --
 -- TOC entry 5521 (class 0 OID 0)
 -- Dependencies: 338
--- Name: TABLE public_data_collection; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE public_data_collection; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.public_data_collection TO radx_user;
+GRANT ALL ON TABLE public.public_data_collection TO datahub_user;
 
 
 --
 -- TOC entry 5523 (class 0 OID 0)
 -- Dependencies: 337
--- Name: SEQUENCE public_data_collection_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE public_data_collection_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.public_data_collection_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.public_data_collection_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5525 (class 0 OID 0)
 -- Dependencies: 339
--- Name: SEQUENCE public_data_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE public_data_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.public_data_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.public_data_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5526 (class 0 OID 0)
 -- Dependencies: 268
--- Name: TABLE ras_tracking; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE ras_tracking; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.ras_tracking TO radx_user;
+GRANT ALL ON TABLE public.ras_tracking TO datahub_user;
 
 
 --
 -- TOC entry 5528 (class 0 OID 0)
 -- Dependencies: 267
--- Name: SEQUENCE ras_tracking_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE ras_tracking_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT SELECT,USAGE ON SEQUENCE public.ras_tracking_id_seq TO radx_user;
+GRANT SELECT,USAGE ON SEQUENCE public.ras_tracking_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5529 (class 0 OID 0)
 -- Dependencies: 248
--- Name: TABLE s3_file; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE s3_file; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.s3_file TO radx_user;
+GRANT ALL ON TABLE public.s3_file TO datahub_user;
 
 
 --
 -- TOC entry 5531 (class 0 OID 0)
 -- Dependencies: 247
--- Name: SEQUENCE s3_file_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE s3_file_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.s3_file_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.s3_file_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5532 (class 0 OID 0)
 -- Dependencies: 387
--- Name: TABLE sas_data_file; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE sas_data_file; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.sas_data_file TO radx_user;
+GRANT ALL ON TABLE public.sas_data_file TO datahub_user;
 
 
 --
 -- TOC entry 5534 (class 0 OID 0)
 -- Dependencies: 386
--- Name: SEQUENCE sas_data_file_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE sas_data_file_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.sas_data_file_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.sas_data_file_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5535 (class 0 OID 0)
 -- Dependencies: 389
--- Name: TABLE sas_file_download; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE sas_file_download; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.sas_file_download TO radx_user;
+GRANT ALL ON TABLE public.sas_file_download TO datahub_user;
 
 
 --
 -- TOC entry 5537 (class 0 OID 0)
 -- Dependencies: 388
--- Name: SEQUENCE sas_file_download_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE sas_file_download_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.sas_file_download_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.sas_file_download_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5538 (class 0 OID 0)
 -- Dependencies: 402
--- Name: TABLE search_log; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE search_log; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.search_log TO radx_user;
+GRANT ALL ON TABLE public.search_log TO datahub_user;
 
 
 --
 -- TOC entry 5540 (class 0 OID 0)
 -- Dependencies: 401
--- Name: SEQUENCE search_log_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE search_log_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.search_log_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.search_log_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5541 (class 0 OID 0)
 -- Dependencies: 250
--- Name: TABLE study; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE study; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.study TO radx_user;
+GRANT ALL ON TABLE public.study TO datahub_user;
 
 
 --
 -- TOC entry 5542 (class 0 OID 0)
 -- Dependencies: 321
--- Name: TABLE study_harmonization_metrics; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE study_harmonization_metrics; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.study_harmonization_metrics TO radx_user;
+GRANT ALL ON TABLE public.study_harmonization_metrics TO datahub_user;
 
 
 --
 -- TOC entry 5544 (class 0 OID 0)
 -- Dependencies: 320
--- Name: SEQUENCE study_harmonization_metrics_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE study_harmonization_metrics_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.study_harmonization_metrics_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.study_harmonization_metrics_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5546 (class 0 OID 0)
 -- Dependencies: 249
--- Name: SEQUENCE study_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE study_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.study_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.study_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5547 (class 0 OID 0)
 -- Dependencies: 256
--- Name: TABLE study_property_value; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE study_property_value; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.study_property_value TO radx_user;
+GRANT ALL ON TABLE public.study_property_value TO datahub_user;
 
 
 --
 -- TOC entry 5549 (class 0 OID 0)
 -- Dependencies: 255
--- Name: SEQUENCE study_property_value_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE study_property_value_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT SELECT,USAGE ON SEQUENCE public.study_property_value_id_seq TO radx_user;
+GRANT SELECT,USAGE ON SEQUENCE public.study_property_value_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5550 (class 0 OID 0)
 -- Dependencies: 319
--- Name: TABLE support_request; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE support_request; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.support_request TO radx_user;
+GRANT ALL ON TABLE public.support_request TO datahub_user;
 
 
 --
 -- TOC entry 5552 (class 0 OID 0)
 -- Dependencies: 318
--- Name: SEQUENCE support_request_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE support_request_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.support_request_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.support_request_id_seq TO datahub_user;
 
 
 
 --
 -- TOC entry 5562 (class 0 OID 0)
 -- Dependencies: 412
--- Name: TABLE user_file_upload; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE user_file_upload; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.user_file_upload TO radx_user;
+GRANT ALL ON TABLE public.user_file_upload TO datahub_user;
 
 
 --
 -- TOC entry 5564 (class 0 OID 0)
 -- Dependencies: 411
--- Name: SEQUENCE user_file_upload_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE user_file_upload_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.user_file_upload_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.user_file_upload_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5565 (class 0 OID 0)
 -- Dependencies: 275
--- Name: TABLE user_login; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE user_login; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.user_login TO radx_user;
+GRANT ALL ON TABLE public.user_login TO datahub_user;
 
 
 --
 -- TOC entry 5567 (class 0 OID 0)
 -- Dependencies: 274
--- Name: SEQUENCE user_login_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE user_login_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.user_login_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.user_login_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5568 (class 0 OID 0)
 -- Dependencies: 272
--- Name: TABLE user_ras; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE user_ras; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.user_ras TO radx_user;
+GRANT ALL ON TABLE public.user_ras TO datahub_user;
 
 
 --
 -- TOC entry 5570 (class 0 OID 0)
 -- Dependencies: 271
--- Name: SEQUENCE user_ras_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE user_ras_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.user_ras_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.user_ras_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5571 (class 0 OID 0)
 -- Dependencies: 417
--- Name: TABLE user_referrer; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE user_referrer; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.user_referrer TO radx_user;
+GRANT ALL ON TABLE public.user_referrer TO datahub_user;
 
 
 --
 -- TOC entry 5573 (class 0 OID 0)
 -- Dependencies: 416
--- Name: SEQUENCE user_referrer_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE user_referrer_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.user_referrer_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.user_referrer_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5574 (class 0 OID 0)
 -- Dependencies: 266
--- Name: TABLE user_role; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE user_role; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.user_role TO radx_user;
+GRANT ALL ON TABLE public.user_role TO datahub_user;
 
 
 --
 -- TOC entry 5576 (class 0 OID 0)
 -- Dependencies: 265
--- Name: SEQUENCE user_role_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE user_role_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT SELECT,USAGE ON SEQUENCE public.user_role_id_seq TO radx_user;
+GRANT SELECT,USAGE ON SEQUENCE public.user_role_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5577 (class 0 OID 0)
 -- Dependencies: 426
--- Name: TABLE user_workspace; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE user_workspace; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.user_workspace TO radx_user;
+GRANT ALL ON TABLE public.user_workspace TO datahub_user;
 
 
 --
 -- TOC entry 5579 (class 0 OID 0)
 -- Dependencies: 425
--- Name: SEQUENCE user_workspace_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE user_workspace_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.user_workspace_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.user_workspace_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5580 (class 0 OID 0)
 -- Dependencies: 264
--- Name: TABLE users; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE users; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.users TO radx_user;
+GRANT ALL ON TABLE public.users TO datahub_user;
 
 
 --
 -- TOC entry 5582 (class 0 OID 0)
 -- Dependencies: 263
--- Name: SEQUENCE users_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE users_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.users_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.users_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5586 (class 0 OID 0)
 -- Dependencies: 421
--- Name: TABLE lkup_core_variable_permissible_value; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_core_variable_permissible_value; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_core_variable_permissible_value TO radx_user;
+GRANT ALL ON TABLE public.lkup_core_variable_permissible_value TO datahub_user;
 
 
 --
 -- TOC entry 5588 (class 0 OID 0)
 -- Dependencies: 420
--- Name: SEQUENCE lkup_core_variable_permissible_value_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_core_variable_permissible_value_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_core_variable_permissible_value_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_core_variable_permissible_value_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5589 (class 0 OID 0)
 -- Dependencies: 423
--- Name: TABLE lkup_core_variable_property_value; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE lkup_core_variable_property_value; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.lkup_core_variable_property_value TO radx_user;
+GRANT ALL ON TABLE public.lkup_core_variable_property_value TO datahub_user;
 
 
 --
 -- TOC entry 5591 (class 0 OID 0)
 -- Dependencies: 422
--- Name: SEQUENCE lkup_core_variable_property_value_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE lkup_core_variable_property_value_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.lkup_core_variable_property_value_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.lkup_core_variable_property_value_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5592 (class 0 OID 0)
 -- Dependencies: 430
--- Name: TABLE variables; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE variables; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.variables TO radx_user;
+GRANT ALL ON TABLE public.variables TO datahub_user;
 
 
 --
 -- TOC entry 5594 (class 0 OID 0)
 -- Dependencies: 429
--- Name: SEQUENCE variables_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE variables_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.variables_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.variables_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5595 (class 0 OID 0)
 -- Dependencies: 385
--- Name: TABLE view_current_data_file; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_current_data_file; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_current_data_file TO radx_user;
+GRANT ALL ON TABLE public.view_current_data_file TO datahub_user;
 
 
 --
 -- TOC entry 5596 (class 0 OID 0)
 -- Dependencies: 334
--- Name: TABLE view_current_hub_content; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_current_hub_content; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_current_hub_content TO radx_user;
+GRANT ALL ON TABLE public.view_current_hub_content TO datahub_user;
 
 
 --
 -- TOC entry 5597 (class 0 OID 0)
 -- Dependencies: 336
--- Name: TABLE view_current_hub_content_data; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_current_hub_content_data; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_current_hub_content_data TO radx_user;
+GRANT ALL ON TABLE public.view_current_hub_content_data TO datahub_user;
 
 
 --
 -- TOC entry 5600 (class 0 OID 0)
 -- Dependencies: 433
--- Name: TABLE view_study_for_es; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_study_for_es; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_study_for_es TO radx_user;
+GRANT ALL ON TABLE public.view_study_for_es TO datahub_user;
 
 
 --
 -- TOC entry 5601 (class 0 OID 0)
 -- Dependencies: 325
--- Name: TABLE view_study_property_value_display; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_study_property_value_display; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_study_property_value_display TO radx_user;
+GRANT ALL ON TABLE public.view_study_property_value_display TO datahub_user;
 
 
 --
 -- TOC entry 5602 (class 0 OID 0)
 -- Dependencies: 335
--- Name: TABLE view_submission_activity; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_submission_activity; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_submission_activity TO radx_user;
+GRANT ALL ON TABLE public.view_submission_activity TO datahub_user;
 
 
 --
 -- TOC entry 5603 (class 0 OID 0)
 -- Dependencies: 427
--- Name: TABLE view_user_population; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_user_population; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_user_population TO radx_user;
+GRANT ALL ON TABLE public.view_user_population TO datahub_user;
 
 
 --
 -- TOC entry 5604 (class 0 OID 0)
 -- Dependencies: 396
--- Name: TABLE view_user_role; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_user_role; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_user_role TO radx_user;
+GRANT ALL ON TABLE public.view_user_role TO datahub_user;
 
 
 --
 -- TOC entry 5605 (class 0 OID 0)
 -- Dependencies: 424
--- Name: TABLE view_variable_overview_display; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE view_variable_overview_display; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.view_variable_overview_display TO radx_user;
+GRANT ALL ON TABLE public.view_variable_overview_display TO datahub_user;
 
 
 --
 -- TOC entry 5606 (class 0 OID 0)
 -- Dependencies: 332
--- Name: TABLE weekly_hub_content_data; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE weekly_hub_content_data; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.weekly_hub_content_data TO radx_user;
+GRANT ALL ON TABLE public.weekly_hub_content_data TO datahub_user;
 
 
 --
 -- TOC entry 5608 (class 0 OID 0)
 -- Dependencies: 331
--- Name: SEQUENCE weekly_hub_content_data_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE weekly_hub_content_data_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.weekly_hub_content_data_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.weekly_hub_content_data_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5609 (class 0 OID 0)
 -- Dependencies: 279
--- Name: TABLE workbench_request; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE workbench_request; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.workbench_request TO radx_user;
+GRANT ALL ON TABLE public.workbench_request TO datahub_user;
 
 
 --
 -- TOC entry 5611 (class 0 OID 0)
 -- Dependencies: 278
--- Name: SEQUENCE workbench_request_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE workbench_request_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.workbench_request_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.workbench_request_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5612 (class 0 OID 0)
 -- Dependencies: 281
--- Name: TABLE workbench_request_interest; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: TABLE workbench_request_interest; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON TABLE public.workbench_request_interest TO radx_user;
+GRANT ALL ON TABLE public.workbench_request_interest TO datahub_user;
 
 
 --
 -- TOC entry 5614 (class 0 OID 0)
 -- Dependencies: 280
--- Name: SEQUENCE workbench_request_interest_id_seq; Type: ACL; Schema: public; Owner: radx_admin
+-- Name: SEQUENCE workbench_request_interest_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
-GRANT ALL ON SEQUENCE public.workbench_request_interest_id_seq TO radx_user;
+GRANT ALL ON SEQUENCE public.workbench_request_interest_id_seq TO datahub_user;
 
 
 --
 -- TOC entry 5615 (class 0 OID 0)
 -- Dependencies: 379
--- Name: TABLE data_file_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE data_file_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.data_file_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.data_file_history TO datahub_user;
 
 
 --
 -- TOC entry 5616 (class 0 OID 0)
 -- Dependencies: 382
--- Name: TABLE data_submission_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE data_submission_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.data_submission_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.data_submission_history TO datahub_user;
 
 
 --
 -- TOC entry 5617 (class 0 OID 0)
 -- Dependencies: 390
--- Name: TABLE institution_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE institution_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.institution_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.institution_history TO datahub_user;
 
 
 --
 -- TOC entry 5618 (class 0 OID 0)
 -- Dependencies: 273
--- Name: TABLE ras_tracking_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE ras_tracking_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT,UPDATE ON TABLE radx_history.ras_tracking_history TO radx_user;
+GRANT SELECT,INSERT,UPDATE ON TABLE datahub_history.ras_tracking_history TO datahub_user;
 
 
 --
 -- TOC entry 5619 (class 0 OID 0)
 -- Dependencies: 380
--- Name: TABLE s3_file_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE s3_file_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.s3_file_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.s3_file_history TO datahub_user;
 
 
 --
 -- TOC entry 5620 (class 0 OID 0)
 -- Dependencies: 395
--- Name: TABLE sas_data_file_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE sas_data_file_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.sas_data_file_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.sas_data_file_history TO datahub_user;
 
 
 --
 -- TOC entry 5621 (class 0 OID 0)
 -- Dependencies: 381
--- Name: TABLE study_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE study_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.study_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.study_history TO datahub_user;
 
 
 --
 -- TOC entry 5622 (class 0 OID 0)
 -- Dependencies: 383
--- Name: TABLE study_property_value_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE study_property_value_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.study_property_value_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.study_property_value_history TO datahub_user;
 
 
 --
 -- TOC entry 5623 (class 0 OID 0)
 -- Dependencies: 391
--- Name: TABLE support_request_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE support_request_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.support_request_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.support_request_history TO datahub_user;
 
 
 --
 -- TOC entry 5624 (class 0 OID 0)
 -- Dependencies: 413
--- Name: TABLE user_file_upload_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE user_file_upload_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.user_file_upload_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.user_file_upload_history TO datahub_user;
 
 
 --
 -- TOC entry 5625 (class 0 OID 0)
 -- Dependencies: 418
--- Name: TABLE user_referrer_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE user_referrer_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.user_referrer_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.user_referrer_history TO datahub_user;
 
 
 --
 -- TOC entry 5626 (class 0 OID 0)
 -- Dependencies: 392
--- Name: TABLE user_role_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE user_role_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.user_role_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.user_role_history TO datahub_user;
 
 
 --
 -- TOC entry 5627 (class 0 OID 0)
 -- Dependencies: 384
--- Name: TABLE users_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE users_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.users_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.users_history TO datahub_user;
 
 
 --
 -- TOC entry 5628 (class 0 OID 0)
 -- Dependencies: 393
--- Name: TABLE workbench_request_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE workbench_request_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.workbench_request_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.workbench_request_history TO datahub_user;
 
 
 --
 -- TOC entry 5629 (class 0 OID 0)
 -- Dependencies: 394
--- Name: TABLE workbench_request_interest_history; Type: ACL; Schema: radx_history; Owner: radx_admin
+-- Name: TABLE workbench_request_interest_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
 --
 
-GRANT SELECT,INSERT ON TABLE radx_history.workbench_request_interest_history TO radx_user;
+GRANT SELECT,INSERT ON TABLE datahub_history.workbench_request_interest_history TO datahub_user;
 
 
 --
 -- TOC entry 2750 (class 826 OID 16822)
--- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: radx_admin
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: datahub_admin
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE radx_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO radx_user;
+ALTER DEFAULT PRIVILEGES FOR ROLE datahub_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO datahub_user;
 
 
 --
 -- TOC entry 2749 (class 826 OID 16823)
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: radx_admin
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: datahub_admin
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE radx_admin IN SCHEMA public GRANT ALL ON TABLES TO radx_user;
+ALTER DEFAULT PRIVILEGES FOR ROLE datahub_admin IN SCHEMA public GRANT ALL ON TABLES TO datahub_user;
 
 
 -- Completed on 2025-06-24 07:28:04

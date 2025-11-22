@@ -22,10 +22,10 @@ CREATE ROLE iam_db_user_dev WITH
 
 GRANT rds_iam TO iam_db_user_dev;
 
--- Role: radx_admin
--- DROP ROLE IF EXISTS radx_admin;
+-- Role: datahub_admin
+-- DROP ROLE IF EXISTS datahub_admin;
 
-CREATE ROLE radx_admin WITH
+CREATE ROLE datahub_admin WITH
   LOGIN
   NOSUPERUSER
   INHERIT
@@ -33,12 +33,12 @@ CREATE ROLE radx_admin WITH
   CREATEROLE
   NOREPLICATION;
 
-GRANT rds_superuser TO radx_admin WITH ADMIN OPTION;
+GRANT rds_superuser TO datahub_admin WITH ADMIN OPTION;
 
--- Role: radx_user
--- DROP ROLE IF EXISTS radx_user;
+-- Role: datahub_user
+-- DROP ROLE IF EXISTS datahub_user;
 
-CREATE ROLE radx_user WITH
+CREATE ROLE datahub_user WITH
   LOGIN
   NOSUPERUSER
   INHERIT
