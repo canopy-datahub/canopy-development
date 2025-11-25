@@ -102,7 +102,7 @@ INSERT INTO public.lkup_property_type VALUES (9, 'hyperlink', NULL);
 -- Data for Name: entity_property; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
-INSERT INTO public.entity_property VALUES (1, 'phs', NULL, 1, 1, 2, false, false, NULL, false);
+-- INSERT INTO public.entity_property VALUES (1, 'phs', NULL, 1, 1, 2, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (2, 'title', NULL, 1, 1, 1, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (6, 'studystartdate', NULL, 1, 4, 2, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (7, 'studyenddate', NULL, 1, 4, 2, false, false, NULL, false);

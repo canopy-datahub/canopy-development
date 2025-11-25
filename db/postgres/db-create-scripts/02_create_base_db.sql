@@ -19,6 +19,9 @@ SET client_min_messages = warning;
 SET row_security = off;
 SET search_path = 'public';
 
+-- Create the tablefunc extension
+CREATE EXTENSION IF NOT EXISTS tablefunc;
+
 --
 -- TOC entry 8 (class 2615 OID 16853)
 -- Name: datahub_history; Type: SCHEMA; Schema: -; Owner: datahub_admin
@@ -235,10 +238,10 @@ CREATE PROCEDURE public.sp_generate_hub_content_metrics()
 	END IF;
 	
 	Delete from hub_content_metrics where report_id=_report_id;
-	INSERT INTO hub_content_metrics(report_id, center, study_phs, study_title,study_status, study_create_date,study_has_data_file,
+	INSERT INTO hub_content_metrics(report_id, center, study_title,study_status, study_create_date,study_has_data_file,
 		total_file_count,data_file_count,total_file_size, orig_data_file_count, standardized_data_file_count, metadata_file_count,
 		dictionary_file_count,	readme_file_count,	other_file_count )
-	SELECT _report_id, d.center, d.study_phs, d.study_title, d.study_status, d.study_create_date,
+	SELECT _report_id, d.center, d.study_title, d.study_status, d.study_create_date,
 			d.study_has_data_file,
             d.total_file_count,
             d.data_file_count,
@@ -428,7 +431,7 @@ CREATE TABLE public.datafile_harmonization_metrics (
     report_id integer NOT NULL,
     orig_file_name character varying(1024),
     transform_file_name character varying(1024),
-    study_phs character varying(10),
+    study_id character varying(10),
     center character varying(128),
     orig_variable_count integer,
     transform_variable_count integer,
@@ -754,7 +757,6 @@ CREATE TABLE public.hub_content_metrics (
     id integer NOT NULL,
     report_id integer NOT NULL,
     center text,
-    study_phs text,
     study_title text,
     study_status text,
     study_create_date timestamp without time zone,
@@ -2424,7 +2426,7 @@ ALTER TABLE public.study OWNER TO datahub_admin;
 CREATE TABLE public.study_harmonization_metrics (
     id integer NOT NULL,
     report_id integer NOT NULL,
-    study_phs character varying(10),
+    study_id integer,
     center character varying(128),
     orig_transform_pairs_count integer,
     variable_count integer,
@@ -2908,7 +2910,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 CREATE TABLE public.lkup_core_variable_permissible_value (
     id integer NOT NULL,
-    variable_name integer NOT NULL,
+    variable_name character varying(256) NOT NULL,
     value integer NOT NULL,
     label character varying(256) NOT NULL,
     map_to_id integer
@@ -2949,7 +2951,7 @@ ALTER SEQUENCE public.lkup_core_variable_permissible_value_id_seq OWNED BY publi
 
 CREATE TABLE public.lkup_core_variable_property_value (
     id integer NOT NULL,
-    variable_name integer NOT NULL,
+    variable_name character varying(256) NOT NULL,
     entity_property_id integer NOT NULL,
     property_value text,
     value_index integer,
@@ -3044,7 +3046,6 @@ ALTER SEQUENCE public.variables_id_seq OWNED BY public.variables.id;
 
 CREATE VIEW public.view_study AS
  SELECT p.study_id,
-    p.phs,
     p.title,
     p.description,
     p.center,
@@ -3086,7 +3087,6 @@ CREATE VIEW public.view_study AS
    FROM ((public.study s
      JOIN public.lkup_status l ON ((s.status_id = l.id)))
      JOIN ( SELECT crosstab.study_id,
-            crosstab.phs,
             crosstab.title,
             crosstab.description,
             crosstab.center,
@@ -3127,8 +3127,7 @@ CREATE VIEW public.view_study AS
         from entity_property p left outer join study_property_value v  on v.entity_property_id = p.id and p.entity_type_id=1 and p.is_hidden = false
 		group by study_id, p.id, p.name
         order by study_id, p.id'::text, '
-	    values (''phs''),
-		(''title''),
+	    values (''title''),
 		(''description''),
 		(''center''),
 		(''studystartdate''),
@@ -3164,7 +3163,7 @@ CREATE VIEW public.view_study AS
 		(''FOA_number''),
 		(''FOA_URL''),
 		(''estimated_participant_range'')
-	'::text) crosstab(study_id integer, phs text, title text, description text, center text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, estimated_participants text, source text, subject text, types text, institutes_supporting_study text, data_general_types text, acknowledgement_statement text, data_species text, disease_specific_group text, disease_specific_related_conditions text, general_research_group text, grant_number text, health_biomed_group text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text)) p ON ((s.id = p.study_id)));
+	'::text) crosstab(study_id integer, title text, description text, center text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, estimated_participants text, source text, subject text, types text, institutes_supporting_study text, data_general_types text, acknowledgement_statement text, data_species text, disease_specific_group text, disease_specific_related_conditions text, general_research_group text, grant_number text, health_biomed_group text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text)) p ON ((s.id = p.study_id)));
 
 
 ALTER VIEW public.view_study OWNER TO datahub_user;
@@ -3177,7 +3176,6 @@ ALTER VIEW public.view_study OWNER TO datahub_user;
 CREATE VIEW public.view_current_data_file AS
  SELECT (row_number() OVER ())::integer AS id,
     t.study_id,
-    t.phs,
     t.title AS study_name,
     s.id AS submission_id,
     k.name AS submission_status,
@@ -3209,7 +3207,7 @@ ALTER VIEW public.view_current_data_file OWNER TO datahub_admin;
 CREATE VIEW public.view_current_hub_content AS
  SELECT id,
     center,
-    study_phs,
+    study_id,
     study_title,
     study_status,
     study_create_date,
@@ -3225,7 +3223,7 @@ CREATE VIEW public.view_current_hub_content AS
     (data_file_count > 0) AS study_has_data_file
    FROM ( SELECT s.study_id AS id,
             s.center,
-            s.phs AS study_phs,
+            s.study_id AS study_id,
             s.title AS study_title,
             s.status AS study_status,
             s.created_at AS study_create_date,
@@ -3243,7 +3241,7 @@ CREATE VIEW public.view_current_hub_content AS
              LEFT JOIN public.data_file d ON (((d.submission_id = m.id) AND d.is_current_version)))
              LEFT JOIN public.lkup_data_file_category l ON ((d.file_category_id = l.id)))
           WHERE (s.status = 'Approved'::text)
-          GROUP BY s.study_id, s.center, s.phs, s.title, s.status, s.created_at, s.has_data_files
+          GROUP BY s.study_id, s.center, s.title, s.status, s.created_at, s.has_data_files
           ORDER BY s.study_id) a;
 
 
@@ -3258,7 +3256,7 @@ CREATE VIEW public.view_current_hub_content_data AS
  SELECT (row_number() OVER ())::integer AS id,
     CURRENT_DATE AS report_date,
     t.center,
-    t.phs AS study_phs,
+    t.study_id,
     t.title AS study_title,
     t.status AS study_status,
     (t.created_at)::date AS study_create_date,
@@ -3296,11 +3294,11 @@ SELECT DISTINCT
 
     -- File information
     f.id AS file_id,
-    s3.file_name,
+    s3.file_name AS file_name,
 
     -- Variable information
     v.id AS variable_id,
-    v.name,
+    v.name AS variable,
     v.label AS variable_label,
     v.section AS variable_section,
     v.datatype AS variable_datatype,
@@ -3338,7 +3336,6 @@ ALTER VIEW public.view_variables OWNER TO datahub_admin;
 
 CREATE VIEW public.view_study_all AS
  SELECT p.study_id,
-    p.phs,
     p.title,
     p.description,
     p."RAPIDS_link",
@@ -3446,7 +3443,6 @@ CREATE VIEW public.view_study_all AS
    FROM ((public.study s
      JOIN public.lkup_status l ON ((s.status_id = l.id)))
      JOIN ( SELECT crosstab.study_id,
-            crosstab.phs,
             crosstab.title,
             crosstab.description,
             crosstab."RAPIDS_link",
@@ -3553,8 +3549,7 @@ CREATE VIEW public.view_study_all AS
         from entity_property p left outer join study_property_value v  on v.entity_property_id = p.id and p.entity_type_id=1
 		group by study_id, p.id, p.name
         order by study_id, p.id'::text, '
-	    values (''phs''),
-		(''title''),
+	    values (''title''),
 		(''description''),
 		(''RAPIDS_link''),
 		(''center''),
@@ -3656,7 +3651,7 @@ CREATE VIEW public.view_study_all AS
 		(''FOA_URL''),
 		(''estimated_participant_range''),
 		(''data_use_limitations'')
-	'::text) crosstab(study_id integer, phs text, title text, description text, "RAPIDS_link" text, center text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, pi_email text, pi_assistant_name text, pi_assistant_email text, pi_institution text, pi_sign_date text, po_name text, officer_sign_date text, estimated_participants text, public_access_data text, source text, subject text, types text, unrestricted_access text, institutes_supporting_study text, needs_institutional_certifications text, data_general_types text, data_genomic text, data_genotype text, data_sample_types text, data_sequencing text, user_agreement_accepted text, data_policy_accepted text, reject_comments text, study_approved_date text, acknowledgement_statement text, aggregate_appropriate_for_general_use text, awardee text, consent_to_add_aggregate text, consent_to_add_individual text, controlled_access text, controlled_access_data text, data_access_points text, data_analyses text, data_array_data text, data_from_repository_name text, data_phenotype text, data_sample_collection text, data_sharing_info text, data_species text, data_storage_size text, data_submission_date text, data_submission_method text, data_submission_timeline_details text, data_target_delivery_date text, data_target_release_date text, disease_specific_group text, disease_specific_related_conditions text, eua text, expected_data_format text, general_research_group text, geno_seq_platform_info text, geno_seq_platform_url text, geno_seq_platform_probes text, geno_seq_platform_vendor text, geno_seq_platform_description text, geno_seq_platform_name_version text, grant_number text, has_era_account text, has_ic text, health_biomed_group text, individual_appropriate_for_general_use text, other_group_description text, project_number text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, types_other_specify text, source_other_specify text, data_general_types_other_specify text, data_genomic_other_specify text, data_phenotype_other_specify text, data_sample_types_other_specify text, data_genotype_other_specify text, data_sequencing_other_specify text, data_analyses_other_specify text, data_array_data_other_specify text, data_access_points_other text, topics_other_specify text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, access_type text, data_access_type text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text, data_use_limitations text)) p ON ((s.id = p.study_id)));
+	'::text) crosstab(study_id integer, title text, description text, "RAPIDS_link" text, center text, studystartdate text, studyenddate text, is_multi_center text, multi_center_sites text, pi_name text, pi_email text, pi_assistant_name text, pi_assistant_email text, pi_institution text, pi_sign_date text, po_name text, officer_sign_date text, estimated_participants text, public_access_data text, source text, subject text, types text, unrestricted_access text, institutes_supporting_study text, needs_institutional_certifications text, data_general_types text, data_genomic text, data_genotype text, data_sample_types text, data_sequencing text, user_agreement_accepted text, data_policy_accepted text, reject_comments text, study_approved_date text, acknowledgement_statement text, aggregate_appropriate_for_general_use text, awardee text, consent_to_add_aggregate text, consent_to_add_individual text, controlled_access text, controlled_access_data text, data_access_points text, data_analyses text, data_array_data text, data_from_repository_name text, data_phenotype text, data_sample_collection text, data_sharing_info text, data_species text, data_storage_size text, data_submission_date text, data_submission_method text, data_submission_timeline_details text, data_target_delivery_date text, data_target_release_date text, disease_specific_group text, disease_specific_related_conditions text, eua text, expected_data_format text, general_research_group text, geno_seq_platform_info text, geno_seq_platform_url text, geno_seq_platform_probes text, geno_seq_platform_vendor text, geno_seq_platform_description text, geno_seq_platform_name_version text, grant_number text, has_era_account text, has_ic text, health_biomed_group text, individual_appropriate_for_general_use text, other_group_description text, project_number text, "study_DOI" text, study_citation text, has_data_files text, actual_study_size text, release_date text, updated_at text, study_version text, study_population_focus text, topics text, types_other_specify text, source_other_specify text, data_general_types_other_specify text, data_genomic_other_specify text, data_phenotype_other_specify text, data_sample_types_other_specify text, data_genotype_other_specify text, data_sequencing_other_specify text, data_analyses_other_specify text, data_array_data_other_specify text, data_access_points_other text, topics_other_specify text, "study_website_URL" text, "CT_URL" text, "publication_URL" text, access_type text, data_access_type text, "FOA_number" text, "FOA_URL" text, estimated_participant_range text, data_use_limitations text)) p ON ((s.id = p.study_id)));
 
 
 ALTER VIEW public.view_study_all OWNER TO datahub_user;
@@ -3664,7 +3659,6 @@ ALTER VIEW public.view_study_all OWNER TO datahub_user;
 
 CREATE VIEW public.view_study_for_es AS
  SELECT s.study_id,
-    s.phs,
     s.title,
     s.description,
     s.status,
@@ -3983,7 +3977,6 @@ CREATE VIEW public.view_submission_activity AS
  SELECT (row_number() OVER ())::integer AS id,
     s.study_id,
     s.center,
-    s.phs AS study_phs,
     s.title AS study_name,
     s.created_at AS study_initiated_date,
     (s.release_date)::date AS study_published_date,
@@ -4103,7 +4096,7 @@ CREATE VIEW public.view_variable_overview_display AS
      JOIN public.variables var ON ((v.variable_name = var.name)))
      JOIN public.entity_property p ON ((v.entity_property_id = p.id)))
      JOIN public.entity_property_display_setting st ON (((st.entity_property_id = p.id) AND (st.page = 'variable_overview'::text))))
-     LEFT JOIN public.lkup_property_type t ON ((p.property_type_id = t.id)));
+     LEFT JOIN public.lkup_property_type t ON ((p.property_type_id = t.id));
 
 
 ALTER VIEW public.view_variable_overview_display OWNER TO datahub_admin;
@@ -4117,7 +4110,7 @@ CREATE TABLE public.weekly_hub_content_data (
     id integer NOT NULL,
     report_date date NOT NULL,
     center text,
-    study_phs text,
+    study_id text,
     study_title text,
     study_status text,
     study_create_date timestamp without time zone,
@@ -6464,9 +6457,6 @@ ALTER TABLE ONLY public.user_workspace
 -- Name: lkup_variable_category fk_variable_category_center_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
-ALTER TABLE ONLY public.lkup_variable_category
-    ADD CONSTRAINT fk_variable_category_center_id FOREIGN KEY (center_id) REFERENCES public.lkup_center(id) NOT VALID;
-
 
 --
 -- TOC entry 5216 (class 2606 OID 58960)
@@ -6586,15 +6576,6 @@ GRANT ALL ON FUNCTION public.ras_tracking_after_delete_trigger_fnc() TO datahub_
 --
 
 GRANT ALL ON PROCEDURE public.sp_generate_hub_content_metrics() TO datahub_user;
-
-
---
--- TOC entry 5405 (class 0 OID 0)
--- Dependencies: 519
--- Name: PROCEDURE sp_parse_variables(); Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON PROCEDURE public.sp_parse_variables() TO datahub_user;
 
 
 --
@@ -7890,3 +7871,10 @@ ALTER DEFAULT PRIVILEGES FOR ROLE datahub_admin IN SCHEMA public GRANT ALL ON TA
 -- PostgreSQL database dump complete
 --
 
+-- Let datahub_admin access datahub_user's views
+GRANT SELECT ON public.view_study TO datahub_admin;
+GRANT SELECT ON public.view_study_all TO datahub_admin;
+
+-- And vice versa
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO datahub_admin;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO datahub_user;

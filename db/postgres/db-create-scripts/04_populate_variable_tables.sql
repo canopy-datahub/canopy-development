@@ -2263,7 +2263,7 @@ The values for this data element are integers that come from a list of 5 permiss
 -- Name: lkup_core_variable_permissible_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
-SELECT pg_catalog.setval('public.lkup_core_variable_permissible_values_id_seq', 1, false);
+SELECT pg_catalog.setval('public.lkup_core_variable_permissible_value_id_seq', 1, false);
 
 
 --
