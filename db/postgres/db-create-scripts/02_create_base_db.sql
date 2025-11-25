@@ -3204,7 +3204,7 @@ CREATE TABLE public.variable_permissible_values (
 );
 
 
-ALTER TABLE public.variable_permissible_values OWNER TO radx_admin;
+ALTER TABLE public.lkup_core_variable_permissible_value OWNER TO radx_admin;
 
 --
 -- TOC entry 420 (class 1259 OID 46758)
@@ -3228,7 +3228,7 @@ ALTER SEQUENCE public.variable_permissible_values_id_seq OWNER TO radx_admin;
 -- Name: variable_permissible_values_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: radx_admin
 --
 
-ALTER SEQUENCE public.variable_permissible_values_id_seq OWNED BY public.variable_permissible_values.id;
+ALTER SEQUENCE public.variable_permissible_values_id_seq OWNED BY public.lkup_core_variable_permissible_value.id;
 
 
 --
@@ -3953,7 +3953,7 @@ CREATE VIEW public.view_study_variables AS
      LEFT JOIN public.lkup_variable_category c ON ((v.category_id = c.id)));
 
 
-ALTER VIEW public.view_study_variables OWNER TO radx_admin;
+ALTER VIEW public.view_variables OWNER TO radx_admin;
 
 --
 -- TOC entry 433 (class 1259 OID 65280)
@@ -4012,15 +4012,15 @@ CREATE VIEW public.view_study_for_es AS
     s."FOA_URL",
     s.created_at
    FROM ((public.view_study s
-     LEFT JOIN ( SELECT view_study_variables.study_id,
-            (array_agg(view_study_variables.variable))::text AS study_variables
-           FROM public.view_study_variables
-          WHERE view_study_variables.is_tier1_variable
-          GROUP BY view_study_variables.study_id) v1 ON ((s.study_id = v1.study_id)))
-     LEFT JOIN ( SELECT view_study_variables.study_id,
+     LEFT JOIN ( SELECT view_variables.study_id,
+            (array_agg(view_variables.variable))::text AS study_variables
+           FROM public.view_variables
+          WHERE view_variables.is_tier1_variable
+          GROUP BY view_variables.study_id) v1 ON ((s.study_id = v1.study_id)))
+     LEFT JOIN ( SELECT view_variables.study_id,
             count(*) AS study_variable_count
-           FROM public.view_study_variables
-          GROUP BY view_study_variables.study_id) v2 ON ((s.study_id = v2.study_id)));
+           FROM public.view_variables
+          GROUP BY view_variables.study_id) v2 ON ((s.study_id = v2.study_id)));
 
 
 ALTER VIEW public.view_study_for_es OWNER TO radx_admin;
@@ -5373,7 +5373,7 @@ ALTER TABLE ONLY public.variable_mapping ALTER COLUMN id SET DEFAULT nextval('pu
 -- Name: variable_permissible_values id; Type: DEFAULT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.variable_permissible_values ALTER COLUMN id SET DEFAULT nextval('public.variable_permissible_values_id_seq'::regclass);
+ALTER TABLE ONLY public.lkup_core_variable_permissible_value ALTER COLUMN id SET DEFAULT nextval('public.variable_permissible_values_id_seq'::regclass);
 
 
 --
@@ -6033,7 +6033,7 @@ ALTER TABLE ONLY public.variable_mapping
 -- Name: variable_permissible_values variable_permissible_values_pkey; Type: CONSTRAINT; Schema: public; Owner: radx_admin
 --
 
-ALTER TABLE ONLY public.variable_permissible_values
+ALTER TABLE ONLY public.lkup_core_variable_permissible_value
     ADD CONSTRAINT variable_permissible_values_pkey PRIMARY KEY (id);
 
 
@@ -8048,7 +8048,7 @@ GRANT ALL ON SEQUENCE public.variable_mapping_id_seq TO radx_user;
 -- Name: TABLE variable_permissible_values; Type: ACL; Schema: public; Owner: radx_admin
 --
 
-GRANT ALL ON TABLE public.variable_permissible_values TO radx_user;
+GRANT ALL ON TABLE public.lkup_core_variable_permissible_value TO radx_user;
 
 
 --
@@ -8138,7 +8138,7 @@ GRANT ALL ON TABLE public.view_data_file_variables TO radx_user;
 -- Name: TABLE view_study_variables; Type: ACL; Schema: public; Owner: radx_admin
 --
 
-GRANT ALL ON TABLE public.view_study_variables TO radx_user;
+GRANT ALL ON TABLE public.view_variables TO radx_user;
 
 
 --
