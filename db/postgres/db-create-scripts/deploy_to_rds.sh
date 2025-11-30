@@ -128,6 +128,7 @@ SCRIPTS=(
     "02_create_base_db.sql"
     "03_populate_base_tables.sql"
     "04_populate_variable_tables.sql"
+    "05_populate_test_data.sql"
 )
 
 for script in "${SCRIPTS[@]}"; do
@@ -153,14 +154,4 @@ echo "========================================="
 echo "Database deployment completed!"
 echo "========================================="
 echo ""
-echo "Next steps:"
-echo "1. Update Secrets Manager with database credentials:"
-echo "   aws secretsmanager update-secret \\"
-echo "     --secret-id application_$ENV \\"
-echo "     --secret-string '{...}'"
-echo ""
-echo "2. Verify database schema:"
-echo "   psql -h $RDS_ENDPOINT -U $DB_USER -d $DB_NAME -c '\\dt'"
-echo ""
-echo "3. Test application connectivity"
 

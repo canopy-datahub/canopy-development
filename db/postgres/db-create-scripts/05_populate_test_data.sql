@@ -170,255 +170,255 @@ VALUES
 );
 
 
--- Create data submissions
-INSERT INTO data_submission (id, study_id, submitter_user_id, description, step_id, is_validated, status_id, date_submitted, date_approved, created_at, created_by) VALUES
-(1, 1, 1, 'Initial submission', 5, true, 10, CURRENT_DATE - INTERVAL '30 days', CURRENT_DATE - INTERVAL '25 days', CURRENT_TIMESTAMP, 9999),
-(2, 2, 2, 'Initial submission', 5, true, 10, CURRENT_DATE - INTERVAL '20 days', CURRENT_DATE - INTERVAL '15 days', CURRENT_TIMESTAMP, 9999);
+-- -- Create data submissions
+-- INSERT INTO data_submission (id, study_id, submitter_user_id, description, step_id, is_validated, status_id, date_submitted, date_approved, created_at, created_by) VALUES
+-- (1, 1, 1, 'Initial submission', 5, true, 10, CURRENT_DATE - INTERVAL '30 days', CURRENT_DATE - INTERVAL '25 days', CURRENT_TIMESTAMP, 9999),
+-- (2, 2, 2, 'Initial submission', 5, true, 10, CURRENT_DATE - INTERVAL '20 days', CURRENT_DATE - INTERVAL '15 days', CURRENT_TIMESTAMP, 9999);
 
--- Create files stored in S3
-INSERT INTO s3_file (
-  id,
-  file_name,
-  file_type_id,
-  file_path
-) VALUES
--- Study 1 - Version 1
-(1,  'dataset1.csv',   3, 'uploads/dataset1.csv'),   -- Main dataset
-(2,  'dict1.csv',      3, 'uploads/dict1.csv'),      -- Dictionary
-(3,  'meta1.json',     2, 'uploads/meta1.json'),     -- Metadata
-
--- Study 2 - Version 1
-(4,  'dataset2.csv',   3, 'uploads/dataset2.csv'),   -- Main dataset
-(5,  'dict2.csv',      3, 'uploads/dict2.csv'),      -- Dictionary
-(6,  'meta2.json',     2, 'uploads/meta2.json'),     -- Metadata
-
--- Study 1 - Version 2
-(7,  'dataset1.csv',   3, 'uploads/dataset1.csv'),   -- Updated dataset
-(8,  'dict1.csv',      3, 'uploads/dict1.csv'),      -- Updated dictionary
-(9,  'meta1.json',     2, 'uploads/meta1.json');     -- Updated metadata
-
--- Create data files with different versions
-INSERT INTO data_file (
-    id,
-    submission_id,
-    source_file_name,
-    normalized_file_name,
-    version_no,
-    is_current_version,
-    original_data_file_id,
-    file_category_id,
-    file_size,
-    pii_phi,
-    status_id,
-    S3_file_id,
-    approval_date,
-    created_at,
-    created_by,
-    dictionary_file_id,
-    metadata_file_id
-) VALUES
-
--- Study 1: Initial version
-(
-  1,                      -- id
-  1,                      -- submission_id
-  'dataset1.csv',         -- source_file_name
-  'dataset1_v1.csv',      -- normalized_file_name
-  '1',                    -- version_no
-  false,                  -- is_current_version
-  1,                      -- original_data_file_id (points to itself)
-  3,                      -- file_category_id (main dataset)
-  1024,                   -- file_size (in bytes)
-  false,                  -- pii_phi
-  10,                     -- status_id
-  1,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '25 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  5,                      -- dictionary_file_id (dict1.csv)
-  6                       -- metadata_file_id (meta1.json)
-),
-
-(
-  5,                      -- id
-  1,                      -- submission_id
-  'dict1.csv',            -- source_file_name
-  'dict1_v1.csv',         -- normalized_file_name
-  '1',                    -- version_no
-  false,                  -- is_current_version
-  5,                      -- original_data_file_id (points to itself)
-  3,                      -- file_category_id (dictionary)
-  512,                    -- file_size
-  false,                  -- pii_phi
-  10,                     -- status_id
-  2,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '25 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  null,                   -- dictionary_file_id
-  null                    -- metadata_file_id
-),
-
-(
-  6,                      -- id
-  1,                      -- submission_id
-  'meta1.json',           -- source_file_name
-  'meta1_v1.json',        -- normalized_file_name
-  '1',                    -- version_no
-  false,                  -- is_current_version
-  6,                      -- original_data_file_id
-  2,                      -- file_category_id (metadata)
-  768,                    -- file_size
-  false,                  -- pii_phi
-  10,                     -- status_id
-  3,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '25 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  null,                   -- dictionary_file_id
-  null                    -- metadata_file_id
-),
-
--- Study 2: Initial version
-(
-  7,                      -- id
-  2,                      -- submission_id
-  'dataset2.csv',         -- source_file_name
-  'dataset2_v1.csv',      -- normalized_file_name
-  '1',                    -- version_no
-  true,                   -- is_current_version
-  7,                      -- original_data_file_id (points to itself)
-  3,                      -- file_category_id (main dataset)
-  2048,                   -- file_size
-  false,                  -- pii_phi
-  10,                     -- status_id
-  4,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '15 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  11,                     -- dictionary_file_id (dict2.csv)
-  12                      -- metadata_file_id (meta2.json)
-),
-
-(
-  11,                     -- id
-  2,                      -- submission_id
-  'dict2.csv',            -- source_file_name
-  'dict2_v1.csv',         -- normalized_file_name
-  '1',                    -- version_no
-  true,                   -- is_current_version
-  11,                     -- original_data_file_id
-  3,                      -- file_category_id (dictionary)
-  1024,                   -- file_size
-  false,                  -- pii_phi
-  10,                     -- status_id
-  5,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '15 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  null,                   -- dictionary_file_id
-  null                    -- metadata_file_id
-),
-
-(
-  12,                     -- id
-  2,                      -- submission_id
-  'meta2.json',           -- source_file_name
-  'meta2_v1.json',        -- normalized_file_name
-  '1',                    -- version_no
-  true,                   -- is_current_version
-  12,                     -- original_data_file_id
-  2,                      -- file_category_id (metadata)
-  1536,                   -- file_size
-  false,                  -- pii_phi
-  10,                     -- status_id
-  6,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '15 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  null,                   -- dictionary_file_id
-  null                    -- metadata_file_id
-),
-
--- Study 1: Version 2 update
-(
-  13,                     -- id
-  1,                      -- submission_id
-  'dataset1.csv',         -- source_file_name
-  'dataset1_v2.csv',      -- normalized_file_name
-  '2',                    -- version_no
-  true,                   -- is_current_version
-  1,                      -- original_data_file_id (points to v1)
-  3,                      -- file_category_id (main dataset)
-  1536,                   -- file_size
-  false,                  -- pii_phi
-  10,                     -- status_id
-  7,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '20 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  14,                     -- dictionary_file_id (dict1 v2)
-  15                      -- metadata_file_id (meta1 v2)
-),
-
-(
-  14,                     -- id
-  1,                      -- submission_id
-  'dict1.csv',            -- source_file_name
-  'dict1_v2.csv',         -- normalized_file_name
-  '2',                    -- version_no
-  true,                   -- is_current_version
-  5,                      -- original_data_file_id (v1 of dict1)
-  3,                      -- file_category_id (dictionary)
-  768,                    -- file_size
-  false,                  -- pii_phi
-  10,                     -- status_id
-  8,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '20 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  null,                   -- dictionary_file_id
-  null                    -- metadata_file_id
-),
-
-(
-  15,                     -- id
-  1,                      -- submission_id
-  'meta1.json',           -- source_file_name
-  'meta1_v2.json',        -- normalized_file_name
-  '2',                    -- version_no
-  true,                   -- is_current_version
-  6,                      -- original_data_file_id (v1 of meta1)
-  2,                      -- file_category_id (metadata)
-  1024,                   -- file_size
-  false,                  -- pii_phi
-  10,                     -- status_id
-  9,                      -- S3_file_id
-  CURRENT_DATE - INTERVAL '20 days',  -- approval_date
-  CURRENT_TIMESTAMP,      -- created_at
-  9999,                   -- created_by
-  null,                   -- dictionary_file_id
-  null                    -- metadata_file_id
-);
-
--- Create study document
-INSERT INTO study_document (
-    id,
-    study_id,
-    document_name,
-    document_type_id,  -- This references lkup_data_file_category.id
-    document_size,
-    s3_file_id,
-    display_order
-) VALUES
--- Study 1 Documents
-(1, 1, 'Study Protocol', 3, 4096, 1, 1),           -- Protocol (category_id: 4)
-(2, 1, 'Consent Form', 4, 2048, 2, 2),             -- Consent Form (category_id: 5)
-(3, 1, 'Study Documentation', 2, 3072, 3, 3),      -- Documentation (category_id: 6)
--- Study 2 Documents
-(4, 2, 'Study Protocol', 3, 5120, 6, 1),           -- Protocol (category_id: 4)
-(5, 2, 'Consent Form', 4, 3072, 7, 2),             -- Consent Form (category_id: 5)
-(6, 2, 'Study Documentation', 2, 4096, 8, 3);      -- Documentation (category_id: 6)
+-- -- Create files stored in S3
+-- INSERT INTO s3_file (
+--   id,
+--   file_name,
+--   file_type_id,
+--   file_path
+-- ) VALUES
+-- -- Study 1 - Version 1
+-- (1,  'dataset1.csv',   3, 'uploads/dataset1.csv'),   -- Main dataset
+-- (2,  'dict1.csv',      3, 'uploads/dict1.csv'),      -- Dictionary
+-- (3,  'meta1.json',     2, 'uploads/meta1.json'),     -- Metadata
+--
+-- -- Study 2 - Version 1
+-- (4,  'dataset2.csv',   3, 'uploads/dataset2.csv'),   -- Main dataset
+-- (5,  'dict2.csv',      3, 'uploads/dict2.csv'),      -- Dictionary
+-- (6,  'meta2.json',     2, 'uploads/meta2.json'),     -- Metadata
+--
+-- -- Study 1 - Version 2
+-- (7,  'dataset1.csv',   3, 'uploads/dataset1.csv'),   -- Updated dataset
+-- (8,  'dict1.csv',      3, 'uploads/dict1.csv'),      -- Updated dictionary
+-- (9,  'meta1.json',     2, 'uploads/meta1.json');     -- Updated metadata
+--
+-- -- Create data files with different versions
+-- INSERT INTO data_file (
+--     id,
+--     submission_id,
+--     source_file_name,
+--     normalized_file_name,
+--     version_no,
+--     is_current_version,
+--     original_data_file_id,
+--     file_category_id,
+--     file_size,
+--     pii_phi,
+--     status_id,
+--     S3_file_id,
+--     approval_date,
+--     created_at,
+--     created_by,
+--     dictionary_file_id,
+--     metadata_file_id
+-- ) VALUES
+--
+-- -- Study 1: Initial version
+-- (
+--   1,                      -- id
+--   1,                      -- submission_id
+--   'dataset1.csv',         -- source_file_name
+--   'dataset1_v1.csv',      -- normalized_file_name
+--   '1',                    -- version_no
+--   false,                  -- is_current_version
+--   1,                      -- original_data_file_id (points to itself)
+--   3,                      -- file_category_id (main dataset)
+--   1024,                   -- file_size (in bytes)
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   1,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '25 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   5,                      -- dictionary_file_id (dict1.csv)
+--   6                       -- metadata_file_id (meta1.json)
+-- ),
+--
+-- (
+--   5,                      -- id
+--   1,                      -- submission_id
+--   'dict1.csv',            -- source_file_name
+--   'dict1_v1.csv',         -- normalized_file_name
+--   '1',                    -- version_no
+--   false,                  -- is_current_version
+--   5,                      -- original_data_file_id (points to itself)
+--   3,                      -- file_category_id (dictionary)
+--   512,                    -- file_size
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   2,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '25 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   null,                   -- dictionary_file_id
+--   null                    -- metadata_file_id
+-- ),
+--
+-- (
+--   6,                      -- id
+--   1,                      -- submission_id
+--   'meta1.json',           -- source_file_name
+--   'meta1_v1.json',        -- normalized_file_name
+--   '1',                    -- version_no
+--   false,                  -- is_current_version
+--   6,                      -- original_data_file_id
+--   2,                      -- file_category_id (metadata)
+--   768,                    -- file_size
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   3,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '25 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   null,                   -- dictionary_file_id
+--   null                    -- metadata_file_id
+-- ),
+--
+-- -- Study 2: Initial version
+-- (
+--   7,                      -- id
+--   2,                      -- submission_id
+--   'dataset2.csv',         -- source_file_name
+--   'dataset2_v1.csv',      -- normalized_file_name
+--   '1',                    -- version_no
+--   true,                   -- is_current_version
+--   7,                      -- original_data_file_id (points to itself)
+--   3,                      -- file_category_id (main dataset)
+--   2048,                   -- file_size
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   4,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '15 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   11,                     -- dictionary_file_id (dict2.csv)
+--   12                      -- metadata_file_id (meta2.json)
+-- ),
+--
+-- (
+--   11,                     -- id
+--   2,                      -- submission_id
+--   'dict2.csv',            -- source_file_name
+--   'dict2_v1.csv',         -- normalized_file_name
+--   '1',                    -- version_no
+--   true,                   -- is_current_version
+--   11,                     -- original_data_file_id
+--   3,                      -- file_category_id (dictionary)
+--   1024,                   -- file_size
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   5,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '15 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   null,                   -- dictionary_file_id
+--   null                    -- metadata_file_id
+-- ),
+--
+-- (
+--   12,                     -- id
+--   2,                      -- submission_id
+--   'meta2.json',           -- source_file_name
+--   'meta2_v1.json',        -- normalized_file_name
+--   '1',                    -- version_no
+--   true,                   -- is_current_version
+--   12,                     -- original_data_file_id
+--   2,                      -- file_category_id (metadata)
+--   1536,                   -- file_size
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   6,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '15 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   null,                   -- dictionary_file_id
+--   null                    -- metadata_file_id
+-- ),
+--
+-- -- Study 1: Version 2 update
+-- (
+--   13,                     -- id
+--   1,                      -- submission_id
+--   'dataset1.csv',         -- source_file_name
+--   'dataset1_v2.csv',      -- normalized_file_name
+--   '2',                    -- version_no
+--   true,                   -- is_current_version
+--   1,                      -- original_data_file_id (points to v1)
+--   3,                      -- file_category_id (main dataset)
+--   1536,                   -- file_size
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   7,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '20 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   14,                     -- dictionary_file_id (dict1 v2)
+--   15                      -- metadata_file_id (meta1 v2)
+-- ),
+--
+-- (
+--   14,                     -- id
+--   1,                      -- submission_id
+--   'dict1.csv',            -- source_file_name
+--   'dict1_v2.csv',         -- normalized_file_name
+--   '2',                    -- version_no
+--   true,                   -- is_current_version
+--   5,                      -- original_data_file_id (v1 of dict1)
+--   3,                      -- file_category_id (dictionary)
+--   768,                    -- file_size
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   8,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '20 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   null,                   -- dictionary_file_id
+--   null                    -- metadata_file_id
+-- ),
+--
+-- (
+--   15,                     -- id
+--   1,                      -- submission_id
+--   'meta1.json',           -- source_file_name
+--   'meta1_v2.json',        -- normalized_file_name
+--   '2',                    -- version_no
+--   true,                   -- is_current_version
+--   6,                      -- original_data_file_id (v1 of meta1)
+--   2,                      -- file_category_id (metadata)
+--   1024,                   -- file_size
+--   false,                  -- pii_phi
+--   10,                     -- status_id
+--   9,                      -- S3_file_id
+--   CURRENT_DATE - INTERVAL '20 days',  -- approval_date
+--   CURRENT_TIMESTAMP,      -- created_at
+--   9999,                   -- created_by
+--   null,                   -- dictionary_file_id
+--   null                    -- metadata_file_id
+-- );
+--
+-- -- Create study document
+-- INSERT INTO study_document (
+--     id,
+--     study_id,
+--     document_name,
+--     document_type_id,  -- This references lkup_data_file_category.id
+--     document_size,
+--     s3_file_id,
+--     display_order
+-- ) VALUES
+-- -- Study 1 Documents
+-- (1, 1, 'Study Protocol', 3, 4096, 1, 1),           -- Protocol (category_id: 4)
+-- (2, 1, 'Consent Form', 4, 2048, 2, 2),             -- Consent Form (category_id: 5)
+-- (3, 1, 'Study Documentation', 2, 3072, 3, 3),      -- Documentation (category_id: 6)
+-- -- Study 2 Documents
+-- (4, 2, 'Study Protocol', 3, 5120, 6, 1),           -- Protocol (category_id: 4)
+-- (5, 2, 'Consent Form', 4, 3072, 7, 2),             -- Consent Form (category_id: 5)
+-- (6, 2, 'Study Documentation', 2, 4096, 8, 3);      -- Documentation (category_id: 6)
 
 ------------------------- Properties related ----------------------------------
 -- Create study property values for two studies

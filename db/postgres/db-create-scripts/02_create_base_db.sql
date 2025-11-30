@@ -238,10 +238,10 @@ CREATE PROCEDURE public.sp_generate_hub_content_metrics()
 	END IF;
 	
 	Delete from hub_content_metrics where report_id=_report_id;
-	INSERT INTO hub_content_metrics(report_id, center, study_title,study_status, study_create_date,study_has_data_file,
+	INSERT INTO hub_content_metrics(report_id, center, study_id, study_title,study_status, study_create_date,study_has_data_file,
 		total_file_count,data_file_count,total_file_size, orig_data_file_count, standardized_data_file_count, metadata_file_count,
 		dictionary_file_count,	readme_file_count,	other_file_count )
-	SELECT _report_id, d.center, d.study_title, d.study_status, d.study_create_date,
+	SELECT _report_id, d.center, d.study_id, d.study_title, d.study_status, d.study_create_date,
 			d.study_has_data_file,
             d.total_file_count,
             d.data_file_count,
@@ -757,6 +757,7 @@ CREATE TABLE public.hub_content_metrics (
     id integer NOT NULL,
     report_id integer NOT NULL,
     center text,
+    study_id integer,
     study_title text,
     study_status text,
     study_create_date timestamp without time zone,
@@ -798,6 +799,9 @@ ALTER SEQUENCE public.hub_content_metrics_id_seq OWNER TO datahub_admin;
 --
 
 ALTER SEQUENCE public.hub_content_metrics_id_seq OWNED BY public.hub_content_metrics.id;
+
+ALTER TABLE public.hub_content_metrics
+    ALTER COLUMN id SET DEFAULT nextval('hub_content_metrics_id_seq'::regclass);
 
 
 --

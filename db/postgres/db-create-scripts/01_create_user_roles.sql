@@ -34,6 +34,7 @@ CREATE ROLE datahub_admin WITH
   NOREPLICATION;
 
 GRANT rds_superuser TO datahub_admin WITH ADMIN OPTION;
+GRANT datahub_admin TO CURRENT_USER;
 
 -- Role: datahub_user
 -- DROP ROLE IF EXISTS datahub_user;
@@ -46,3 +47,5 @@ CREATE ROLE datahub_user WITH
   NOCREATEROLE
   NOREPLICATION
   VALID UNTIL 'infinity';
+
+  GRANT datahub_user TO CURRENT_USER;
