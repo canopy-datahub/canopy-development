@@ -51,26 +51,24 @@ aws rds wait db-instance-available \
 
 ```bash
 cd /Users/ycao77/dataHub/datahub-development/db/postgres/db-create-scripts
-
-# Deploy to dev (uses default profile: datahub-rep, region: us-east-1)
-./deploy_to_rds.sh dev
-
-# Deploy with specific region
-./deploy_to_rds.sh dev us-east-1
-
-# Deploy with specific region and profile
-./deploy_to_rds.sh dev us-east-1 datahub-rep
-
-# Deploy to test
-./deploy_to_rds.sh test us-east-1
-
-# Deploy to prod
-./deploy_to_rds.sh prod us-east-1
 ```
 
 **Script Usage:**
 ```bash
 ./deploy_to_rds.sh [env] [region] [profile]
+
+# Examples:
+# Deploy to dev (uses default profile: datahub-rep, region: us-east-1)
+./deploy_to_rds.sh dev
+
+# Deploy with specific region and profile
+./deploy_to_rds.sh dev us-east-1 datahub-rep
+
+# Deploy to test
+./deploy_to_rds.sh test us-east-1 datahub-rep
+
+# Deploy to prod
+./deploy_to_rds.sh prod us-east-1 datahub-rep
 ```
 
 **Parameters:**
@@ -88,7 +86,7 @@ cd /Users/ycao77/dataHub/datahub-development/db/postgres/db-create-scripts
 7. Runs all SQL scripts in order:
    - `01_create_user_roles.sql` - Creates database users and roles
    - `02_create_base_db.sql` - Creates tables, views, functions
-   - `03_populate_base_tables.sql` - Populates lookup tables
+   - `03_populate_base_tables.sql` - Populates data in lookup tables
    - `04_populate_variable_tables.sql` - Populates variable data
    - `05_populate_test_data.sql` - Adds test data (optional, for dev/test environments only)
 
@@ -99,12 +97,16 @@ cd /Users/ycao77/dataHub/datahub-development/db/postgres/db-create-scripts
 
 ### Update Secrets Manager
 
-After deployment, update the `application_{ENV}` secret with correct credentials:
+After deployment, update the `application_{ENV}` secret with correct credentials.
+
+#### Method 1: Update via AWS CLI (Recommended)
 
 ```bash
 # Get current secret
 aws secretsmanager get-secret-value \
-  --secret-id application_dev \
+  --secret-id application_${ENV} \
+  --region us-east-1 \
+  --profile datahub-rep \
   --query SecretString \
   --output text > secret.json
 
@@ -116,10 +118,27 @@ aws secretsmanager get-secret-value \
 
 # Update secret
 aws secretsmanager update-secret \
-  --secret-id application_dev \
+  --secret-id application_${ENV} \
+  --region us-east-1 \
+  --profile datahub-rep \
   --secret-string file://secret.json
 
 # Clean up
 rm secret.json
 ```
+
+#### Method 2: Update via CloudFormation Template (Alternative)
+
+Alternatively, you can edit the secret directly in `SecretsManager.yaml` and redeploy the stack. Update your dbuser, password and host from line 59-64
+
+```bash
+
+"dbuser":"datahubpostgresdev",
+"password":"REPLACEME", 
+"engine":"postgres",
+"host":"datahub-postgresql-dev.cyhmos66o8v8.us-east-1.rds.amazonaws.com",
+"port":"5432",
+"dbname":"datahub_dev",
+```
+
 
