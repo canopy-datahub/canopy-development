@@ -110,7 +110,7 @@ Where `{ENV}` is one of: `dev`, `test`, or `prod`
 **⚠️ IMPORTANT**: You must create the Lambda layer **before** deploying the Lambda function. The Lambda function depends on this layer for its dependencies (psycopg2-binary, opensearch-py, etc.).
 
 ```bash
-cd /Users/ycao77/dataHub/datahub-development/opensearch/opensearch_reindex
+cd ~/dataHub/datahub-development/opensearch/opensearch_reindex
 
 # Create layer for dev environment
 ./create_layer.sh dependency-layer us-east-1 datahub-rep
@@ -149,7 +149,7 @@ cd /Users/ycao77/dataHub/datahub-development/opensearch/opensearch_reindex
 Before or after deploying the Lambda CloudFormation stack, upload the Lambda code:
 
 ```bash
-cd /Users/ycao77/dataHub/datahub-development/opensearch/opensearch_reindex
+cd ~/dataHub/datahub-development/opensearch/opensearch_reindex
 
 # Upload to dev environment
 ./deploy_aws.sh dev stanford
@@ -222,17 +222,15 @@ The secret is created by the SecretsManager CloudFormation stack and contains th
 
 ```json
 {
-  "opensearch.hostname": "vpc-datahub-opensearch-dev-xxxxx.us-east-1.es.amazonaws.com",
-  "opensearch.port": "443",
-  "opensearch.scheme": "https",
-  "opensearch.username": "opensearch",
-  "opensearch.password": "your-opensearch-password",
+  "SEARCH_HOST": "vpc-datahub-opensearch-dev-xxxxx.us-east-1.es.amazonaws.com",
+  "SEARCH_USERNAME": "opensearch",
+  "SEARCH_PASSWORD": "Changeme@2025",
   "host": "datahub-dev-db-proxy.proxy-xxxxx.us-east-1.rds.amazonaws.com",
   "port": "5432",
-  "dbname": "DataHub_dev",
+  "dbname": "datahub_dev",
   "dbuser": "datahub_user",
   "password": "your-db-password",
-  "engine": "postgres"
+  "dbDriverClassName": "org.postgresql.Driver"
 }
 ```
 
@@ -277,12 +275,3 @@ aws secretsmanager update-secret \
   --secret-id application_dev \
   --secret-string file://current_secret.json
 ```
-
-**Important fields to update:**
-- `opensearch.hostname`: Get from OpenSearch domain endpoint (see above)
-- `opensearch.password`: Set OpenSearch master password
-- `host`: RDS Proxy or RDS instance endpoint
-- `dbname`: Database name (e.g., `DataHub_dev`)
-- `dbuser`: Database username
-- `password`: Database password
-
