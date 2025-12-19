@@ -6,12 +6,10 @@ This guide explains how to deploy the DataHub database schema to an AWS RDS Post
 ## Prerequisites
 
 1. ✅ RDS instance deployed via CloudFormation (`DataHub-RDS-{ENV}` stack)
-2. ✅ PostgreSQL client (`psql`) installed locally
-3. ✅ AWS CLI configured with appropriate credentials
-   - AWS profile configured (default: `datahub-rep`)
-   - Run `aws configure --profile datahub-rep` to set up credentials
-   - Or use existing profile with `--profile` parameter
-4. ✅ Network access to RDS (security group configured)
+2. ✅ Python 3.7+ installed (macOS/Linux/Windows)
+3. ✅ PostgreSQL client (`psql`) installed and on PATH (macOS/Linux/Windows)
+4. ✅ AWS CLI installed and on PATH with appropriate credentials
+5. ✅ Network access to RDS (security group configured)
 
 **Note:** The script automatically handles AWS credentials similar to InstallGuide.ipynb:
 - Unsets any existing AWS environment credentials
@@ -50,31 +48,31 @@ aws rds wait db-instance-available \
 ### Automated Deployment Script
 
 ```bash
-cd /Users/ycao77/dataHub/datahub-development/db/postgres/db-create-scripts
+cd ~/dataHub/datahub-development/db/postgres/db-create-scripts
 ```
 
 **Script Usage:**
 ```bash
-./deploy_to_rds.sh [env] [region] [profile]
+python deploy_to_rds.py --env dev --region us-east-1 --profile datahub-rep
 
 # Examples:
 # Deploy to dev (uses default profile: datahub-rep, region: us-east-1)
-./deploy_to_rds.sh dev
+python deploy_to_rds.py --env dev
 
 # Deploy with specific region and profile
-./deploy_to_rds.sh dev us-east-1 datahub-rep
+python deploy_to_rds.py --env dev --region us-east-2 --profile my-profile
 
 # Deploy to test
-./deploy_to_rds.sh test us-east-1 datahub-rep
+python deploy_to_rds.py --env test --region us-east-1 --profile datahub-rep
 
 # Deploy to prod
-./deploy_to_rds.sh prod us-east-1 datahub-rep
+python deploy_to_rds.py --env prod --region us-east-1 --profile datahub-rep
 ```
 
 **Parameters:**
-- `env`: Environment (`dev`, `test`, or `prod`) - default: `dev`
-- `region`: AWS region - default: `us-east-1`
-- `profile`: AWS profile name - default: `datahub-rep`
+- `--env`: Environment (`dev`, `test`, or `prod`) - default: `dev`
+- `--region`: AWS region - default: `us-east-1`
+- `--profile`: AWS profile name - default: `datahub-rep`
 
 **What the script does:**
 1. Unsets existing AWS environment credentials (like InstallGuide.ipynb)
@@ -140,5 +138,3 @@ Alternatively, you can edit the secret directly in `SecretsManager.yaml` and red
 "port":"5432",
 "dbname":"datahub_dev",
 ```
-
-
