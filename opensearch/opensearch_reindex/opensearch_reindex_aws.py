@@ -85,14 +85,13 @@ def get_opensearch_client():
         secrets = get_secrets()
         
         # Extract OpenSearch configuration from secrets
-        # SecretsManager.yaml uses: opensearch.hostname, opensearch.port, opensearch.username, opensearch.password
-        host = secrets.get('opensearch.hostname')
-        port = secrets.get('opensearch.port', '443')
-        username = secrets.get('opensearch.username')
-        password = secrets.get('opensearch.password')
+        host = secrets.get('SEARCH_HOST')
+        username = secrets.get('SEARCH_USERNAME')
+        password = secrets.get('SEARCH_PASSWORD')
+        port = '443'
         
         if not host:
-            raise ValueError("opensearch.hostname not found in secrets")
+            raise ValueError("SEARCH_HOST not found in secrets")
         
         auth = (username, password)
         
