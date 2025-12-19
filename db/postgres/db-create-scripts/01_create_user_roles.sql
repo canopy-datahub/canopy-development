@@ -1,32 +1,9 @@
--- Role: rds_iam
--- DROP ROLE IF EXISTS rds_iam;
-
-CREATE ROLE rds_iam WITH
-  NOLOGIN
-  NOSUPERUSER
-  INHERIT
-  NOCREATEDB
-  NOCREATEROLE
-  NOREPLICATION;
-  
--- Role: iam_db_user_dev
--- DROP ROLE IF EXISTS iam_db_user_dev;
-
-CREATE ROLE iam_db_user_dev WITH
-  LOGIN
-  NOSUPERUSER
-  INHERIT
-  NOCREATEDB
-  NOCREATEROLE
-  NOREPLICATION;
-
-GRANT rds_iam TO iam_db_user_dev;
-
 -- Role: datahub_admin
 -- DROP ROLE IF EXISTS datahub_admin;
 
 CREATE ROLE datahub_admin WITH
   LOGIN
+  PASSWORD 'REPLACEME'
   NOSUPERUSER
   INHERIT
   CREATEDB
@@ -34,18 +11,16 @@ CREATE ROLE datahub_admin WITH
   NOREPLICATION;
 
 GRANT rds_superuser TO datahub_admin WITH ADMIN OPTION;
-GRANT datahub_admin TO CURRENT_USER;
 
 -- Role: datahub_user
 -- DROP ROLE IF EXISTS datahub_user;
 
 CREATE ROLE datahub_user WITH
   LOGIN
+  PASSWORD 'REPLACEME'
   NOSUPERUSER
   INHERIT
   NOCREATEDB
   NOCREATEROLE
   NOREPLICATION
   VALID UNTIL 'infinity';
-
-  GRANT datahub_user TO CURRENT_USER;
