@@ -3662,64 +3662,64 @@ ALTER VIEW public.view_study_all OWNER TO datahub_user;
 
 
 CREATE VIEW public.view_study_for_es AS
- SELECT s.study_id,
-    s.title,
-    s.description,
-    s.status,
-    s.center,
-    s.studystartdate,
-    s.studyenddate,
-    s.is_multi_center,
-    s.multi_center_sites,
-    s.pi_name,
-    s.estimated_participants,
-    s.estimated_participant_range,
-    array_to_string((s.study_population_focus)::text[], '; '::text) AS study_population_focus,
-    (s.study_population_focus)::text[] AS study_population_focus_array,
+SELECT s.study_id,
+       s.title,
+       s.description,
+       s.status,
+       s.center,
+       s.studystartdate,
+       s.studyenddate,
+       s.is_multi_center,
+       s.multi_center_sites,
+       s.pi_name,
+       s.estimated_participants,
+       s.estimated_participant_range,
+       array_to_string((s.study_population_focus)::text[], '; '::text) AS study_population_focus,
+       (s.study_population_focus)::text[] AS study_population_focus_array,
     array_to_string((s.topics)::text[], '; '::text) AS topics,
-    (s.topics)::text[] AS topics_array,
+       (s.topics)::text[] AS topics_array,
     array_to_string((s.source)::text[], '; '::text) AS source,
-    (s.source)::text[] AS source_array,
+       (s.source)::text[] AS source_array,
     array_to_string((s.subject)::text[], '; '::text) AS subject,
-    (s.subject)::text[] AS subject_array,
+       (s.subject)::text[] AS subject_array,
     array_to_string((s.types)::text[], '; '::text) AS types,
-    (s.types)::text[] AS types_array,
+       (s.types)::text[] AS types_array,
     array_to_string((s.institutes_supporting_study)::text[], '; '::text) AS institutes_supporting_study,
-    (s.institutes_supporting_study)::text[] AS institutes_supporting_study_array,
+       (s.institutes_supporting_study)::text[] AS institutes_supporting_study_array,
     array_to_string((s.data_general_types)::text[], '; '::text) AS data_general_types,
-    (s.data_general_types)::text[] AS data_general_types_array,
-    array_to_string((v1.study_variables)::text[], '; '::text) AS study_variables,
-    (v1.study_variables)::text[] AS study_variables_array,
-    v2.study_variable_count,
-    s.acknowledgement_statement,
-    array_to_string((s.data_species)::text[], '; '::text) AS data_species,
-    array_to_string((s.disease_specific_group)::text[], '; '::text) AS disease_specific_group,
-    s.disease_specific_related_conditions,
-    s.general_research_group,
-    s.grant_number,
-    s.health_biomed_group,
-    s."study_DOI",
-    s.study_citation,
-    s.has_data_files,
-    s.actual_study_size,
-    s.release_date,
-    s.updated_at,
-    s.study_version,
-    s."study_website_URL",
-    s."CT_URL",
-    s."publication_URL",
-    s."FOA_number",
-    s."FOA_URL",
-    s.created_at
-   FROM ((public.view_study s
-     LEFT JOIN ( SELECT view_variables.study_id,
-            (array_agg(view_variables.variable))::text AS study_variables
-           FROM public.view_variables
-          GROUP BY view_variables.study_id) v1 ON ((s.study_id = v1.study_id)))
-     LEFT JOIN ( SELECT view_variables.study_id,
-            count(*) AS study_variable_count
-           FROM public.view_variables
-          GROUP BY view_variables.study_id) v2 ON ((s.study_id = v2.study_id)));
+       (s.data_general_types)::text[] AS data_general_types_array,
+    array_to_string(v1.study_variables, '; '::text) AS study_variables,
+       v1.study_variables AS study_variables_array,
+       v2.study_variable_count,
+       s.acknowledgement_statement,
+       array_to_string((s.data_species)::text[], '; '::text) AS data_species,
+       array_to_string((s.disease_specific_group)::text[], '; '::text) AS disease_specific_group,
+       s.disease_specific_related_conditions,
+       s.general_research_group,
+       s.grant_number,
+       s.health_biomed_group,
+       s."study_DOI",
+       s.study_citation,
+       s.has_data_files,
+       s.actual_study_size,
+       s.release_date,
+       s.updated_at,
+       s.study_version,
+       s."study_website_URL",
+       s."CT_URL",
+       s."publication_URL",
+       s."FOA_number",
+       s."FOA_URL",
+       s.created_at
+FROM ((public.view_study s
+    LEFT JOIN ( SELECT view_variables.study_id,
+                       array_agg(DISTINCT view_variables.variable) AS study_variables
+                FROM public.view_variables
+                GROUP BY view_variables.study_id) v1 ON ((s.study_id = v1.study_id)))
+    LEFT JOIN ( SELECT view_variables.study_id,
+                       count(DISTINCT view_variables.variable) AS study_variable_count
+                FROM public.view_variables
+                GROUP BY view_variables.study_id) v2 ON ((s.study_id = v2.study_id)));
 
 
 ALTER VIEW public.view_study_for_es OWNER TO datahub_admin;

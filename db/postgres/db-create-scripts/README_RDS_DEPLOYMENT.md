@@ -18,7 +18,7 @@ This guide explains how to deploy the DataHub database schema to an AWS RDS Post
 
 ## Database Configuration
 
-From `RDS.yaml`:
+From [`RDS.yaml`](../../../datahub-cloud-replication/modules/RDS.yaml):
 - **DB Instance Identifier**: `datahub-postgresql-{ENV}`
 - **Database Name**: `datahub_{ENV}` (e.g., `datahub_dev`)
 - **Master Username**: `datahubpostgres{ENV}` (e.g., `datahubpostgresdev`)
@@ -75,7 +75,7 @@ python deploy_to_rds.py --env prod --region us-east-1 --profile datahub-rep
 - `--profile`: AWS profile name - default: `datahub-rep`
 
 **What the script does:**
-1. Unsets existing AWS environment credentials (like InstallGuide.ipynb)
+1. Unsets existing AWS environment credentials
 2. Sets AWS profile and region
 3. Verifies AWS credentials
 4. Gets RDS endpoint from AWS
@@ -95,46 +95,55 @@ python deploy_to_rds.py --env prod --region us-east-1 --profile datahub-rep
 
 ### Update Secrets Manager
 
-After deployment, update the `application_{ENV}` secret with correct credentials.
+After deployment, update the `application_{ENV}` secret with correct RDS credentials.
 
-#### Method 1: Update via AWS CLI (Recommended)
+**⚠️ Important**: The values you set here must match your RDS configuration in [`RDS.yaml`](../../../datahub-cloud-replication/modules/RDS.yaml). If you modify the database name, username, or other settings in `RDS.yaml`, you must update them here as well.
 
-```bash
-# Get current secret
-aws secretsmanager get-secret-value \
-  --secret-id application_${ENV} \
-  --region us-east-1 \
-  --profile datahub-rep \
-  --query SecretString \
-  --output text > secret.json
-
-# Edit secret.json to update:
-# - "host": RDS endpoint
-# - "dbname": "datahub_{ENV}"
-# - "dbuser": "datahubpostgres{ENV}" (This is RDS master role or use other roles created by 01_create_user_roles.sql)
-# - "password": password for dbuser
-
-# Update secret
-aws secretsmanager update-secret \
-  --secret-id application_${ENV} \
-  --region us-east-1 \
-  --profile datahub-rep \
-  --secret-string file://secret.json
-
-# Clean up
-rm secret.json
-```
-
-#### Method 2: Update via CloudFormation Template (Alternative)
-
-Alternatively, you can edit the secret directly in `SecretsManager.yaml` and redeploy the stack. Update your dbuser, password and host from line 59-64
+#### Step 1: Get RDS Endpoint (Host)
+The RDS endpoint should be printed when you run `deploy_to_rds.py`, if not, please run the following again to get the endpoint.
 
 ```bash
+# Get RDS endpoint
+aws rds describe-db-instances \
+  --db-instance-identifier datahub-postgresql-${ENV} \
+  --region us-east-1 \
+  --profile datahub-rep \
+  --query 'DBInstances[0].Endpoint.Address' \
+  --output text
 
-"dbuser":"datahubpostgresdev",
-"password":"REPLACEME", 
-"engine":"postgres",
-"host":"datahub-postgresql-dev.cyhmos66o8v8.us-east-1.rds.amazonaws.com",
-"port":"5432",
-"dbname":"datahub_dev",
+# Example output: datahub-postgresql-dev.cyhmos66o8v8.us-east-1.rds.amazonaws.com
 ```
+
+#### Step 2: Update Parameter Files
+
+Before updating Secrets Manager, ensure the RDS credentials in your parameter files match:
+
+**Files to update:**
+- `datahub-cloud-replication/parameters-dev.json`
+- `datahub-cloud-replication/parameters-test.json`
+- `datahub-cloud-replication/parameters-prod.json`
+
+**Update these parameters:**
+```json
+{
+  "DataHubUserUsername": "datahub_user",
+  "DataHubUserPassword": "REPLACEME"
+}
+```
+
+**⚠️ Note**: These credentials are for the `datahub_user` role created by `01_create_user_roles.sql`, not the RDS master user.
+
+**⚠️ Important Consistency Checks:**
+
+1. **Database Name**: Must match between:
+   - `RDS.yaml` → `DBName` parameter
+   - `SecretsManager.yaml` → `dbname` field
+   - This guide → `datahub_{ENV}`
+
+2. **Database User**: Must match between:
+   - `parameters-*.json` → `DataHubUserUsername`
+   - `01_create_user_roles.sql` → role created
+
+3. **Database Password**: Must match between:
+   - `parameters-*.json` → `DataHubUserPassword`
+   - `01_create_user_roles.sql` → role password
