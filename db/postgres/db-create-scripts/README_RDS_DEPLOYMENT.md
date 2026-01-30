@@ -5,7 +5,7 @@ This guide explains how to deploy the DataHub database schema to an AWS RDS Post
 
 ## Prerequisites
 
-1. ✅ RDS instance deployed via CloudFormation (`DataHub-RDS-{ENV}` stack)
+1. ✅ RDS instance deployed via CloudFormation (`${PROJECT_NAME}-RDS-{ENV}` stack)
 2. ✅ Python 3.7+ installed (macOS/Linux/Windows)
 3. ✅ PostgreSQL client (`psql`) installed and on PATH (macOS/Linux/Windows)
 4. ✅ AWS CLI installed and on PATH with appropriate credentials
@@ -19,9 +19,9 @@ This guide explains how to deploy the DataHub database schema to an AWS RDS Post
 ## Database Configuration
 
 From [`RDS.yaml`](../../../datahub-cloud-replication/modules/RDS.yaml):
-- **DB Instance Identifier**: `datahub-postgresql-{ENV}`
-- **Database Name**: `datahub_{ENV}` (e.g., `datahub_dev`)
-- **Master Username**: `datahubpostgres{ENV}` (e.g., `datahubpostgresdev`)
+- **DB Instance Identifier**: `${PROJECT_NAME}-postgresql-{ENV}`
+- **Database Name**: `${PROJECT_NAME}_{ENV}` (e.g., `datahub_dev`)
+- **Master Username**: `${PROJECT_NAME}postgres{ENV}` (e.g., `datahubpostgresdev`)
 - **Port**: `5432`
 - **Engine**: PostgreSQL 16.9
 
@@ -33,14 +33,14 @@ The RDS instance is created with password `"REPLACEME"`. Update it:
 
 ```bash
 aws rds modify-db-instance \
-  --db-instance-identifier datahub-postgresql-dev \
+  --db-instance-identifier ${PROJECT_NAME}-postgresql-dev \
   --master-user-password "YourSecurePassword123!" \
   --apply-immediately \
   --region us-east-1
 
 # Wait for modification to complete
 aws rds wait db-instance-available \
-  --db-instance-identifier datahub-postgresql-dev \
+  --db-instance-identifier ${PROJECT_NAME}-postgresql-dev \
   --region us-east-1
 ```
 
@@ -53,23 +53,27 @@ cd ~/dataHub/datahub-development/db/postgres/db-create-scripts
 
 **Script Usage:**
 ```bash
-python deploy_to_rds.py --env dev --region us-east-1 --profile datahub-rep
+python deploy_to_rds.py --project-name <project-name> --env <env> --region <region> --profile <profile>
 
 # Examples:
 # Deploy to dev (uses default profile: datahub-rep, region: us-east-1)
-python deploy_to_rds.py --env dev
+python deploy_to_rds.py --project-name datahub --env dev
 
 # Deploy with specific region and profile
-python deploy_to_rds.py --env dev --region us-east-2 --profile my-profile
+python deploy_to_rds.py --project-name datahub --env dev --region us-east-2 --profile my-profile
 
 # Deploy to test
-python deploy_to_rds.py --env test --region us-east-1 --profile datahub-rep
+python deploy_to_rds.py --project-name datahub --env test --region us-east-1 --profile datahub-rep
 
 # Deploy to prod
-python deploy_to_rds.py --env prod --region us-east-1 --profile datahub-rep
+python deploy_to_rds.py --project-name datahub --env prod --region us-east-1 --profile datahub-rep
+
+# Deploy with custom project name
+python deploy_to_rds.py --project-name myproject --env dev --region us-east-1 --profile datahub-rep
 ```
 
 **Parameters:**
+- `--project-name`: Project name (e.g., `datahub`, `myproject`) - **REQUIRED**
 - `--env`: Environment (`dev`, `test`, or `prod`) - default: `dev`
 - `--region`: AWS region - default: `us-east-1`
 - `--profile`: AWS profile name - default: `datahub-rep`
@@ -105,7 +109,7 @@ The RDS endpoint should be printed when you run `deploy_to_rds.py`, if not, plea
 ```bash
 # Get RDS endpoint
 aws rds describe-db-instances \
-  --db-instance-identifier datahub-postgresql-${ENV} \
+  --db-instance-identifier ${PROJECT_NAME}-postgresql-${ENV} \
   --region us-east-1 \
   --profile datahub-rep \
   --query 'DBInstances[0].Endpoint.Address' \
@@ -138,7 +142,7 @@ Before updating Secrets Manager, ensure the RDS credentials in your parameter fi
 1. **Database Name**: Must match between:
    - `RDS.yaml` → `DBName` parameter
    - `SecretsManager.yaml` → `dbname` field
-   - This guide → `datahub_{ENV}`
+   - This guide → `${PROJECT_NAME}_{ENV}`
 
 2. **Database User**: Must match between:
    - `parameters-*.json` → `DataHubUserUsername`
