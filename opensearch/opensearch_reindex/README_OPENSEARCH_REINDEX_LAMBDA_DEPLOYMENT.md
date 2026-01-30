@@ -88,7 +88,7 @@ The Lambda function is deployed in three steps:
 The following stacks must be deployed **before** the Lambda stack (see `InstallGuide.ipynb`):
 
 1. ✅ **Networking** - VPC, Subnets, Security Groups
-2. ✅ **S3** - Creates `datahub-lambda-artifacts-{DataHubUniqueId}-{ENV}` bucket
+2. ✅ **S3** - Creates `${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{ENV}` bucket
 3. ✅ **SecretsManager** - Creates `application_{ENV}` secret
 4. ✅ **LoadBalancer** - Application Load Balancer (for VPC imports)
 5. ✅ **RDS** - PostgreSQL database
@@ -100,7 +100,7 @@ Where `{ENV}` is one of: `dev`, `test`, or `prod`
 1. **AWS CLI** configured with appropriate credentials
 2. **Python 3.11+** (for running the deployment scripts)
 3. **Docker** (for building the Lambda layer)
-4. Access to S3 bucket: `datahub-lambda-artifacts-{DataHubUniqueId}-{ENV}`
+4. Access to S3 bucket: `${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{ENV}`
 5. Secrets Manager configured (see below)
 
 ### Deployment Steps
@@ -160,25 +160,26 @@ Before deploying the Lambda CloudFormation stack, upload the Lambda code.
 cd ~/dataHub/datahub-development/opensearch/opensearch_reindex
 
 # Upload to dev environment
-python deploy_lambda.py dev stanford
+python deploy_lambda.py datahub dev stanford
 
 # Upload to test environment
-python deploy_lambda.py test stanford
+python deploy_lambda.py datahub test stanford
 
 # Upload to prod environment
-python deploy_lambda.py prod stanford
+python deploy_lambda.py datahub prod stanford
 ```
 
 **Script Usage:**
 ```bash
-python deploy_lambda.py [env] [DataHubUniqueId]
+python deploy_lambda.py <project-name> <env> <unique-id>
 ```
 
 **Parameters:**
 
-- **env**: `dev`, `test`, or `prod` (default: `dev`)
-- **DataHubUniqueId**: Unique identifier for S3 bucket (default: `stanford`)
-  - S3 bucket: `datahub-lambda-artifacts-{DataHubUniqueId}-{env}`
+- **project-name**: Project name (e.g., `datahub`, `Redwood`) - **REQUIRED**
+- **env**: `dev`, `test`, or `prod` - **REQUIRED**
+- **DataHubUniqueId**: Unique identifier for S3 bucket (e.g., `stanford`) - **REQUIRED**
+  - S3 bucket: `${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{env}`
 
 #### What the script does
 
@@ -188,7 +189,7 @@ python deploy_lambda.py [env] [DataHubUniqueId]
    - `search_index_mapping.json`
    - `variable_index_mapping.json`
    - `autocomplete_index_mapping.json`
-3. ⬆️ Uploads to S3: `s3://datahub-lambda-artifacts-{DataHubUniqueId}-{ENV}/opensearch-refresh/opensearch-refresh-lambda.zip`
+3. ⬆️ Uploads to S3: `s3://${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{ENV}/opensearch-refresh/opensearch-refresh-lambda.zip`
 4. 📋 Displays next steps for deployment
 
 #### Important Notes
@@ -212,7 +213,7 @@ If you only changed the Lambda code (not dependencies)
 1. **Upload the new code**
 
 ```bash
-python deploy_lambda.py [env] [DataHubUniqueId]
+python deploy_lambda.py <project-name> <env> <unique-id>
 ```
 
 2. **Redeploy the Lambda CloudFormation stack** (via `InstallGuide.ipynb`)
@@ -258,19 +259,19 @@ The secret is created by the SecretsManager CloudFormation stack and contains th
 ```bash
 # For dev environment
 aws opensearch describe-domain \
-  --domain-name datahub-opensearch-dev \
+  --domain-name ${PROJECT_NAME}-opensearch-dev \
   --query 'DomainStatus.Endpoint' \
   --output text
 
 # For test environment
 aws opensearch describe-domain \
-  --domain-name datahub-opensearch-test \
+  --domain-name ${PROJECT_NAME}-opensearch-test \
   --query 'DomainStatus.Endpoint' \
   --output text
 
 # For prod environment
 aws opensearch describe-domain \
-  --domain-name datahub-opensearch-prod \
+  --domain-name ${PROJECT_NAME}-opensearch-prod \
   --query 'DomainStatus.Endpoint' \
   --output text
 ```
@@ -322,8 +323,8 @@ cd ~/dataHub/datahub-development/opensearch/opensearch_reindex
 # Step 1: Create Lambda layer (REQUIRED FIRST)
 python create_layer.py dependency-layer us-east-1 datahub-rep
 
-# Step 2: Upload Lambda code
-python deploy_lambda.py dev stanford
+# Step 2: Upload Lambda code (replace 'datahub' with your project name)
+python deploy_lambda.py datahub dev stanford
 
 # Step 3: Deploy Lambda via CloudFormation (see Lambda Deployment in the InstallGuide.ipynb)
 

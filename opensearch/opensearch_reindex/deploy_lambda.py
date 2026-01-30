@@ -8,10 +8,10 @@ This script uploads Lambda code to S3. After uploading, you need to:
 1. Deploy the Lambda CloudFormation stack (first time), OR
 2. Update the Lambda function code (if already deployed)
 
-Usage: python deploy_lambda.py [env] [DataHubUniqueId]
-Example: python deploy_lambda.py dev stanford
-         python deploy_lambda.py test stanford
-         python deploy_lambda.py prod stanford
+Usage: python deploy_lambda.py <project-name> <env> <unique-id>
+Example: python deploy_lambda.py datahub dev stanford
+         python deploy_lambda.py datahub test stanford
+         python deploy_lambda.py myproject prod myorg
 """
 
 import argparse
@@ -33,11 +33,12 @@ class LambdaDeployer:
         "autocomplete_index_mapping.json"
     ]
     
-    def __init__(self, env: str, datahub_unique_id: str):
+    def __init__(self, project_name: str, env: str, unique_id: str):
+        self.project_name = project_name
         self.env = env
-        self.datahub_unique_id = datahub_unique_id
-        self.s3_bucket = f"datahub-lambda-artifacts-{datahub_unique_id}-{env}"
-        self.lambda_function = f"DataHub-OpenSearchRefresh-{env}"
+        self.unique_id = unique_id
+        self.s3_bucket = f"{project_name}-lambda-artifacts-{unique_id}-{env}"
+        self.lambda_function = f"{project_name}-OpenSearchRefresh-{env}"
         self.package_dir = Path("package")
         self.zip_file = Path("opensearch-refresh-lambda.zip")
         
@@ -45,8 +46,9 @@ class LambdaDeployer:
         """Print script header with configuration."""
         print("=" * 41)
         print("OpenSearch Reindex Lambda - Code Upload")
+        print(f"Project Name: {self.project_name}")
         print(f"Environment: {self.env}")
-        print(f"DataHubUniqueId: {self.datahub_unique_id}")
+        print(f"Unique ID: {self.unique_id}")
         print("=" * 41)
         print()
         print(f"S3 Bucket: {self.s3_bucket}")
@@ -211,29 +213,29 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python deploy_lambda.py dev stanford
-  python deploy_lambda.py test stanford
-  python deploy_lambda.py prod stanford
+  python deploy_lambda.py datahub dev stanford
+  python deploy_lambda.py datahub test stanford
+  python deploy_lambda.py myproject prod myorg
         """
     )
     
     parser.add_argument(
-        "env",
-        nargs="?",
-        default="dev",
-        choices=["dev", "test", "prod"],
-        help="Environment: dev, test, or prod (default: dev)"
+        "project_name",
+        help="Project name (e.g., datahub, myproject)"
     )
     parser.add_argument(
-        "datahub_unique_id",
-        nargs="?",
-        default="stanford",
-        help="DataHubUniqueId for S3 bucket naming (default: stanford)"
+        "env",
+        choices=["dev", "test", "prod"],
+        help="Environment: dev, test, or prod"
+    )
+    parser.add_argument(
+        "unique_id",
+        help="Unique identifier for S3 bucket naming (e.g., stanford, myorg)"
     )
     
     args = parser.parse_args()
     
-    deployer = LambdaDeployer(args.env, args.datahub_unique_id)
+    deployer = LambdaDeployer(args.project_name, args.env, args.unique_id)
     deployer.run()
 
 
