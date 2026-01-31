@@ -160,7 +160,7 @@ def main() -> None:
 
     print(f"RDS Endpoint: {endpoint}")
 
-    db_name = f"datahub_{args.env}"
+    db_name = f"{args.project_name}_{args.env}"
     db_user = f"datahubpostgres{args.env}"
 
     print("")
@@ -216,7 +216,6 @@ def main() -> None:
     print("=========================================\n")
 
 
-if __name__ == "__main__":
 if __name__ == "__main__":
     try:
         main()
