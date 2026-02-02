@@ -89,7 +89,7 @@ The following stacks must be deployed **before** the Lambda stack (see `InstallG
 
 1. ✅ **Networking** - VPC, Subnets, Security Groups
 2. ✅ **S3** - Creates `${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{ENV}` bucket
-3. ✅ **SecretsManager** - Creates `application_{ENV}` secret
+3. ✅ **SecretsManager** - Creates `{PROJECT_NAME}_application_{ENV}` secret
 4. ✅ **LoadBalancer** - Application Load Balancer (for VPC imports)
 5. ✅ **RDS** - PostgreSQL database
 6. ✅ **OpenSearch** - OpenSearch domain
