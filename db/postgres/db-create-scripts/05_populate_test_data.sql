@@ -1,3 +1,61 @@
+-- Create Institution
+INSERT INTO institution (
+    id, name, status_id, institution_type_id, is_for_profit, ror_id,
+    country_id, state_id, province_region, created_by
+) VALUES
+-- Record 1: Stanford University
+(
+    1,                              -- id
+    'Stanford University',          -- name
+    23,                             -- status_id
+    10,                             -- institution_type_id (e.g., University)
+    false,                          -- is_for_profit
+    'https://ror.org/00f54p054',    -- ror_id
+    1,                              -- country_id (e.g., USA)
+    5,                              -- state_id (e.g., California)
+    NULL,                           -- province_region
+    1                               -- created_by
+),
+-- Record 2: Harvard Medical School
+(
+    2,                              -- id
+    'Harvard Medical School',       -- name
+    23,                             -- status_id
+    10,                             -- institution_type_id
+    false,                          -- is_for_profit
+    'https://ror.org/03vek6s52',    -- ror_id
+    1,                              -- country_id
+    22,                             -- state_id (e.g., Massachusetts)
+    NULL,                           -- province_region
+    1                               -- created_by
+),
+-- Record 3: NIH
+(
+    3,                              -- id
+    'NIH',                          -- name
+    23,                             -- status_id
+    5,                              -- institution_type_id (e.g., Government agency)
+    false,                          -- is_for_profit
+    'https://ror.org/01cwqze88',    -- ror_id
+    1,                              -- country_id
+    21,                             -- state_id (e.g., Maryland)
+    NULL,                           -- province_region
+    1                               -- created_by
+),
+-- Record 4: Mayo Clinic
+(
+    4,                              -- id
+    'Mayo Clinic',                  -- name
+    23,                             -- status_id
+    8,                              -- institution_type_id (e.g., Healthcare organization)
+    false,                          -- is_for_profit
+    'https://ror.org/03cpe8v73',    -- ror_id
+    1,                              -- country_id
+    24,                             -- state_id (e.g., Minnesota)
+    NULL,                           -- province_region
+    1                               -- created_by
+);
+
 -- Create users
 INSERT INTO users (
   id,
