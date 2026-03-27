@@ -6,7 +6,7 @@ Replicates deploy_to_rds.sh without relying on jq/nc; works on macOS, Linux, and
 Requires: AWS CLI, psql, Python 3.7+.
 
 Usage:
-    python deploy_to_rds.py --env dev --region us-east-1 --profile datahub-rep
+    python deploy_to_rds.py --project-name datahub --env dev --region us-east-1 --profile datahub-rep
 """
 
 import argparse
@@ -88,7 +88,12 @@ def run_psql_file(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Deploy DataHub database schema to RDS (cross-platform)"
+        description="Deploy database schema to RDS (cross-platform)"
+    )
+    parser.add_argument(
+        "--project-name",
+        required=True,
+        help="Project name (e.g., datahub, myproject) - REQUIRED",
     )
     parser.add_argument(
         "--env",
@@ -121,6 +126,7 @@ def main() -> None:
 
     print("=========================================")
     print("RDS Database Schema Deployment")
+    print(f"Project Name: {args.project_name}")
     print(f"Environment: {args.env}")
     print(f"AWS Region: {args.region}")
     print(f"AWS Profile: {args.profile}")
@@ -132,7 +138,7 @@ def main() -> None:
     print(f"✓ AWS User: {identity.get('Arn', 'unknown')}\n")
 
     print("Getting RDS endpoint...")
-    db_identifier = f"datahub-postgresql-{args.env}"
+    db_identifier = f"{args.project_name}-postgresql-{args.env}"
     rds_info = run_aws(
         [
             "rds",
@@ -154,8 +160,8 @@ def main() -> None:
 
     print(f"RDS Endpoint: {endpoint}")
 
-    db_name = f"datahub_{args.env}"
-    db_user = f"datahubpostgres{args.env}"
+    db_name = f"{args.project_name}_{args.env}"
+    db_user = f"datahub_postgres_{args.env}"
 
     print("")
     db_password = getpass("Enter database master password: ")
