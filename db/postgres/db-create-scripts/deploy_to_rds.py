@@ -161,7 +161,7 @@ def main() -> None:
     print(f"RDS Endpoint: {endpoint}")
 
     db_name = f"{args.project_name}_{args.env}"
-    db_user = f"datahubpostgres{args.env}"
+    db_user = f"datahub_postgres_{args.env}"
 
     print("")
     db_password = getpass("Enter database master password: ")
