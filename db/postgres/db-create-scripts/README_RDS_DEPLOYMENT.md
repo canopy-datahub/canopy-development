@@ -5,7 +5,7 @@ This guide explains how to deploy the DataHub database schema to an AWS RDS Post
 
 ## Prerequisites
 
-1. ✅ RDS instance deployed via CloudFormation (`${PROJECT_NAME}-RDS-{ENV}` stack)
+1. ✅ RDS instance deployed via CloudFormation (`${CANOPY_PROJECT_NAME}-RDS-${CANOPY_ENV}` stack)
 2. ✅ Python 3.7+ installed (macOS/Linux/Windows)
 3. ✅ PostgreSQL client (`psql`) installed and on PATH (macOS/Linux/Windows)
 4. ✅ AWS CLI installed and on PATH with appropriate credentials
@@ -19,31 +19,13 @@ This guide explains how to deploy the DataHub database schema to an AWS RDS Post
 ## Database Configuration
 
 From [`RDS.yaml`](../../../datahub-cloud-replication/modules/RDS.yaml):
-- **DB Instance Identifier**: `${PROJECT_NAME}-postgresql-{ENV}`
-- **Database Name**: `${PROJECT_NAME}_{ENV}` (e.g., `datahub_dev`)
-- **Master Username**: `${PROJECT_NAME}postgres{ENV}` (e.g., `datahubpostgresdev`)
+- **DB Instance Identifier**: `${CANOPY_PROJECT_NAME}-postgresql-${CANOPY_ENV}`
+- **Database Name**: `${CANOPY_PROJECT_NAME}_${CANOPY_ENV}` (e.g., `datahub_dev`)
+- **Master Username**: `${CANOPY_PROJECT_NAME}postgres${CANOPY_ENV}` (e.g., `datahubpostgresdev`)
 - **Port**: `5432`
 - **Engine**: PostgreSQL 16.9
 
 ## Deployment
-
-#### (Optional) Set Master Password
-
-The RDS instance is created with password `"REPLACEME"`. Update it:
-
-```bash
-aws rds modify-db-instance \
-  --db-instance-identifier ${PROJECT_NAME}-postgresql-dev \
-  --master-user-password "YourSecurePassword123!" \
-  --apply-immediately \
-  --region us-east-1
-
-# Wait for modification to complete
-aws rds wait db-instance-available \
-  --db-instance-identifier ${PROJECT_NAME}-postgresql-dev \
-  --region us-east-1
-```
-
 
 ### Automated Deployment Script
 
@@ -73,7 +55,7 @@ python deploy_to_rds.py --project-name myproject --env dev --region us-east-1 --
 ```
 
 **Parameters:**
-- `--project-name`: Project name (e.g., `datahub`, `myproject`) - **REQUIRED**
+- `--project-name`: Project name (e.g., `canopy`) - **REQUIRED**
 - `--env`: Environment (`dev`, `test`, or `prod`) - default: `dev`
 - `--region`: AWS region - default: `us-east-1`
 - `--profile`: AWS profile name - default: `datahub-rep`
@@ -99,7 +81,7 @@ python deploy_to_rds.py --project-name myproject --env dev --region us-east-1 --
 
 ### Update Secrets Manager
 
-After deployment, update the `application_{ENV}` secret with correct RDS credentials.
+After deployment, update the `application_${CANOPY_ENV}` secret with correct RDS credentials.
 
 **⚠️ Important**: The values you set here must match your RDS configuration in [`RDS.yaml`](../../../datahub-cloud-replication/modules/RDS.yaml). If you modify the database name, username, or other settings in `RDS.yaml`, you must update them here as well.
 
@@ -109,9 +91,9 @@ The RDS endpoint should be printed when you run `deploy_to_rds.py`, if not, plea
 ```bash
 # Get RDS endpoint
 aws rds describe-db-instances \
-  --db-instance-identifier ${PROJECT_NAME}-postgresql-${ENV} \
-  --region us-east-1 \
-  --profile datahub-rep \
+  --db-instance-identifier ${CANOPY_PROJECT_NAME}-postgresql-${CANOPY_ENV} \
+  --region ${AWS_REGION} \
+  --profile ${AWS_PROFILE} \
   --query 'DBInstances[0].Endpoint.Address' \
   --output text
 
@@ -123,9 +105,7 @@ aws rds describe-db-instances \
 Before updating Secrets Manager, ensure the RDS credentials in your parameter files match:
 
 **Files to update:**
-- `datahub-cloud-replication/parameters-dev.json`
-- `datahub-cloud-replication/parameters-test.json`
-- `datahub-cloud-replication/parameters-prod.json`
+- `datahub-cloud-replication/parameters-${CANOPY_ENV}.json`
 
 **Update these parameters:**
 ```json
@@ -142,7 +122,7 @@ Before updating Secrets Manager, ensure the RDS credentials in your parameter fi
 1. **Database Name**: Must match between:
    - `RDS.yaml` → `DBName` parameter
    - `SecretsManager.yaml` → `dbname` field
-   - This guide → `${PROJECT_NAME}_{ENV}`
+   - This guide → `${CANOPY_PROJECT_NAME}_${CANOPY_ENV}`
 
 2. **Database User**: Must match between:
    - `parameters-*.json` → `DataHubUserUsername`
