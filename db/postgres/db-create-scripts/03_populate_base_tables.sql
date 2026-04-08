@@ -21,7 +21,7 @@ SET row_security = off;
 --
 -- TOC entry 4989 (class 0 OID 16517)
 -- Dependencies: 238
--- Data for Name: lkup_entity_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_entity_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_entity_type VALUES (1, 'study', NULL);
@@ -34,7 +34,7 @@ INSERT INTO public.lkup_entity_type VALUES (5, 'datafile', NULL);
 --
 -- TOC entry 4981 (class 0 OID 16475)
 -- Dependencies: 230
--- Data for Name: lkup_property_codelist; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_property_codelist; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_property_codelist VALUES (2, 'Center', 'study_center');
@@ -70,7 +70,7 @@ INSERT INTO public.lkup_property_codelist VALUES (28, 'Study_Focus_Population', 
 --
 -- TOC entry 4995 (class 0 OID 16544)
 -- Dependencies: 244
--- Data for Name: lkup_property_source; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_property_source; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_property_source VALUES (1, 'dbGaP/MTA', NULL);
@@ -82,7 +82,7 @@ INSERT INTO public.lkup_property_source VALUES (4, 'Other', 'unknown');
 --
 -- TOC entry 4993 (class 0 OID 16535)
 -- Dependencies: 242
--- Data for Name: lkup_property_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_property_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_property_type VALUES (1, 'text', NULL);
@@ -99,10 +99,10 @@ INSERT INTO public.lkup_property_type VALUES (9, 'hyperlink', NULL);
 --
 -- TOC entry 4999 (class 0 OID 16623)
 -- Dependencies: 252
--- Data for Name: entity_property; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: entity_property; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
-INSERT INTO public.entity_property VALUES (1, 'phs', NULL, 1, 1, 2, false, false, NULL, false);
+-- INSERT INTO public.entity_property VALUES (1, 'phs', NULL, 1, 1, 2, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (2, 'title', NULL, 1, 1, 1, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (6, 'studystartdate', NULL, 1, 4, 2, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (7, 'studyenddate', NULL, 1, 4, 2, false, false, NULL, false);
@@ -216,29 +216,28 @@ INSERT INTO public.entity_property VALUES (209, 'variable_cardinality', NULL, 2,
 INSERT INTO public.entity_property VALUES (210, 'variable_provenance', NULL, 2, 1, 3, false, true, NULL, false);
 INSERT INTO public.entity_property VALUES (211, 'variable_notes', NULL, 2, 1, 3, false, true, NULL, false);
 INSERT INTO public.entity_property VALUES (212, 'variable_mapping', NULL, 2, 1, 3, false, true, NULL, false);
-INSERT INTO public.entity_property VALUES (202, 'Section', NULL, 2, 1, 3, false, false, NULL, false);
-INSERT INTO public.entity_property VALUES (203, 'Datatype', NULL, 2, 1, 3, false, false, NULL, false);
-INSERT INTO public.entity_property VALUES (214, 'Study Name', NULL, 2, 1, 1, false, false, NULL, false);
+INSERT INTO public.entity_property VALUES (202, 'section', NULL, 2, 1, 3, false, false, NULL, false);
+INSERT INTO public.entity_property VALUES (203, 'datatype', NULL, 2, 1, 3, false, false, NULL, false);
+INSERT INTO public.entity_property VALUES (214, 'study_name', NULL, 2, 1, 1, false, false, NULL, false);
 INSERT INTO public.entity_property VALUES (104, 'study_variables', NULL, 1, 1, 3, false, true, NULL, NULL);
 
 
 --
 -- TOC entry 5001 (class 0 OID 16654)
 -- Dependencies: 254
--- Data for Name: entity_property_display_setting; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: entity_property_display_setting; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.entity_property_display_setting VALUES (89, 4, 'study_overview', 'Representative', 'RAPIDS Link', 10, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (3, 2, 'study_search', 'Title', 'Study Name', 10, false, 10, NULL, NULL, true);
 INSERT INTO public.entity_property_display_setting VALUES (50, 78, 'study_overview', 'Representative', 'Release Date', 40, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (90, 103, 'study_overview', 'Detail', 'Consent/Data Use Limitations', 320, false, NULL, NULL, NULL, false);
-INSERT INTO public.entity_property_display_setting VALUES (2, 1, 'study_search', 'Representative', 'dbGaP Study Accession', 20, false, NULL, NULL, NULL, true);
 INSERT INTO public.entity_property_display_setting VALUES (11, 10, 'study_search', 'Detail', 'Principal Investigator', 220, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (104, 200, 'variable_overview', 'Title', 'Name', 10, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (105, 201, 'variable_overview', 'Representative', 'Label', 10, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (106, 202, 'variable_overview', 'Representative', 'Section', 20, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (107, 203, 'variable_overview', 'Representative', 'Data Type', 30, false, NULL, NULL, NULL, false);
-INSERT INTO public.entity_property_display_setting VALUES (108, 204, 'variable_overview', 'Representative', 'RADx Variable Category', 40, false, NULL, NULL, NULL, false);
+INSERT INTO public.entity_property_display_setting VALUES (108, 204, 'variable_overview', 'Representative', 'Variable Category', 40, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (109, 205, 'variable_overview', 'Representative', 'Description', 50, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (110, 206, 'variable_overview', 'Representative', 'Keywords', 60, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (111, 207, 'variable_overview', 'Representative', 'Term', 70, false, NULL, NULL, NULL, false);
@@ -259,7 +258,6 @@ INSERT INTO public.entity_property_display_setting VALUES (49, 77, 'study_overvi
 INSERT INTO public.entity_property_display_setting VALUES (59, 75, 'study_overview', 'Detail', 'Citation', 125, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (61, 95, 'study_overview', 'Detail', 'Study Website URL', 240, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (4, 3, 'study_search', 'Detail', 'Study Description', 100, false, NULL, NULL, NULL, false);
-INSERT INTO public.entity_property_display_setting VALUES (28, 1, 'study_overview', 'Representative', 'dbGaP Study Accession', 5, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (58, 74, 'study_overview', 'Representative', 'DOI', 40, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (51, 79, 'study_overview', 'Representative', 'Updated Date', 50, false, NULL, NULL, NULL, false);
 INSERT INTO public.entity_property_display_setting VALUES (37, 10, 'study_overview', 'Representative', 'Principal Investigator', 60, false, NULL, NULL, NULL, false);
@@ -299,7 +297,7 @@ INSERT INTO public.entity_property_display_setting VALUES (44, 26, 'study_overvi
 --
 -- TOC entry 4983 (class 0 OID 16484)
 -- Dependencies: 232
--- Data for Name: lkup_property_codelist_value; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_property_codelist_value; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_property_codelist_value VALUES (335, 3, 'Survey', 10);
@@ -546,7 +544,7 @@ INSERT INTO public.lkup_property_codelist_value VALUES (266, 28, 'Underserved or
 --
 -- TOC entry 5011 (class 0 OID 17087)
 -- Dependencies: 295
--- Data for Name: entity_property_mta_mapping; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: entity_property_mta_mapping; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.entity_property_mta_mapping VALUES (98, 44, 'SNP Array', 24, 155, NULL);
@@ -714,7 +712,7 @@ INSERT INTO public.entity_property_mta_mapping VALUES (79, 42, 'Trusted Partner 
 --
 -- TOC entry 4973 (class 0 OID 16430)
 -- Dependencies: 222
--- Data for Name: lkup_country; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_country; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_country VALUES (1, 'United States', 1);
@@ -922,7 +920,7 @@ INSERT INTO public.lkup_country VALUES (200, 'Zimbabwe', 200);
 --
 -- TOC entry 4985 (class 0 OID 16498)
 -- Dependencies: 234
--- Data for Name: lkup_data_file_category; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_data_file_category; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_data_file_category VALUES (4, 'Image Data', NULL, 'data', 40);
@@ -943,7 +941,7 @@ INSERT INTO public.lkup_data_file_category VALUES (12, 'README', 'A file contain
 --
 -- TOC entry 4987 (class 0 OID 16507)
 -- Dependencies: 236
--- Data for Name: lkup_center; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_center; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_center VALUES (1, 'RADx-UP', NULL);
@@ -956,7 +954,7 @@ INSERT INTO public.lkup_center VALUES (5, 'Stanford', NULL);
 --
 -- TOC entry 5013 (class 0 OID 17111)
 -- Dependencies: 297
--- Data for Name: lkup_event_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_event_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_event_type VALUES (1, 'webinar');
@@ -967,7 +965,7 @@ INSERT INTO public.lkup_event_type VALUES (3, 'general event');
 --
 -- TOC entry 4991 (class 0 OID 16526)
 -- Dependencies: 240
--- Data for Name: lkup_file_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_file_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_file_type VALUES (1, 'application/vnd.ms-excel', NULL);
@@ -984,7 +982,7 @@ INSERT INTO public.lkup_file_type VALUES (9, 'other', NULL);
 --
 -- TOC entry 4975 (class 0 OID 16437)
 -- Dependencies: 224
--- Data for Name: lkup_institution_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_institution_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_institution_type VALUES (1, 'Academic Institution', 10);
@@ -1002,7 +1000,7 @@ INSERT INTO public.lkup_institution_type VALUES (10, 'Other', 100);
 --
 -- TOC entry 5017 (class 0 OID 17259)
 -- Dependencies: 309
--- Data for Name: lkup_metrics_report_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_metrics_report_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_metrics_report_type VALUES (1, 'hub_content', NULL);
@@ -1012,7 +1010,7 @@ INSERT INTO public.lkup_metrics_report_type VALUES (2, 'harmonization', NULL);
 --
 -- TOC entry 5015 (class 0 OID 17120)
 -- Dependencies: 299
--- Data for Name: lkup_news_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_news_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_news_type VALUES (1, 'funding opportunities');
@@ -1022,7 +1020,7 @@ INSERT INTO public.lkup_news_type VALUES (2, 'general news');
 --
 -- TOC entry 5023 (class 0 OID 46679)
 -- Dependencies: 415
--- Data for Name: lkup_referrer; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_referrer; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_referrer VALUES (1, 'Social media (LinkedIn, Twitter, etc.)', 'please specify what account', NULL, 10);
@@ -1036,7 +1034,7 @@ INSERT INTO public.lkup_referrer VALUES (6, 'Other', 'please specify', NULL, 60)
 --
 -- TOC entry 5005 (class 0 OID 16750)
 -- Dependencies: 262
--- Data for Name: lkup_researcher_level; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_researcher_level; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_researcher_level VALUES (1, 'Undergraduate', NULL);
@@ -1049,7 +1047,7 @@ INSERT INTO public.lkup_researcher_level VALUES (5, 'Established Investigator', 
 --
 -- TOC entry 5019 (class 0 OID 17296)
 -- Dependencies: 315
--- Data for Name: lkup_resolution_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_resolution_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_resolution_type VALUES (1, 'Issue Resolved', NULL, 10);
@@ -1060,7 +1058,7 @@ INSERT INTO public.lkup_resolution_type VALUES (3, 'Backlog Item', NULL, 30);
 --
 -- TOC entry 5003 (class 0 OID 16743)
 -- Dependencies: 260
--- Data for Name: lkup_role; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_role; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_role VALUES (1, 'Data Submitter', 'Data Submitter');
@@ -1074,7 +1072,7 @@ INSERT INTO public.lkup_role VALUES (6, 'Uploader', 'User can upload files to po
 --
 -- TOC entry 4977 (class 0 OID 16444)
 -- Dependencies: 226
--- Data for Name: lkup_state; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_state; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_state VALUES (1, 'Alabama', 'AL', 10);
@@ -1138,7 +1136,7 @@ INSERT INTO public.lkup_state VALUES (56, 'Virgin Islands', 'VI', 560);
 --
 -- TOC entry 4979 (class 0 OID 16466)
 -- Dependencies: 228
--- Data for Name: lkup_status; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_status; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_status VALUES (1, 'active', 'general', 10, NULL);
@@ -1168,7 +1166,7 @@ INSERT INTO public.lkup_status VALUES (21, 'rejected', 'workbench_request', 30, 
 --
 -- TOC entry 4997 (class 0 OID 16553)
 -- Dependencies: 246
--- Data for Name: lkup_submission_step; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_submission_step; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_submission_step VALUES (1, 'Upload Files');
@@ -1181,7 +1179,7 @@ INSERT INTO public.lkup_submission_step VALUES (5, 'Submitted');
 --
 -- TOC entry 5021 (class 0 OID 17303)
 -- Dependencies: 317
--- Data for Name: lkup_support_request_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_support_request_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_support_request_type VALUES (1, 'General Feedback', NULL, 10);
@@ -1194,21 +1192,16 @@ INSERT INTO public.lkup_support_request_type VALUES (5, 'Engagement', NULL, 50);
 --
 -- TOC entry 5025 (class 0 OID 58938)
 -- Dependencies: 428
--- Data for Name: lkup_variable_category; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_variable_category; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
-INSERT INTO public.lkup_variable_category VALUES (1, 'RADx Core Variable', NULL, 'tier 1 variable');
-INSERT INTO public.lkup_variable_category VALUES (4, 'RADx DHT Common Variable', 3, 'tier 2 variable');
-INSERT INTO public.lkup_variable_category VALUES (6, 'RADx Study Level Variable', NULL, 'tier 3 variable');
-INSERT INTO public.lkup_variable_category VALUES (3, 'RADx Tech Common Variable', 2, 'tier 2 variable');
-INSERT INTO public.lkup_variable_category VALUES (2, 'RADx-UP Common Variable', 1, 'tier 2 variable');
-INSERT INTO public.lkup_variable_category VALUES (5, 'RADx-rad Common Variable', 4, 'tier 2 variable');
-
+INSERT INTO public.lkup_variable_category VALUES (1, 'Core Variable', 'core variable');
+INSERT INTO public.lkup_variable_category VALUES (2, 'Non-core Variable', 'non core variable');
 
 --
 -- TOC entry 5024 (class 0 OID 46715)
 -- Dependencies: 419
--- Data for Name: lkup_variable_datatype; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_variable_datatype; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_variable_datatype VALUES (1, 'Integer', NULL);
@@ -1219,7 +1212,7 @@ INSERT INTO public.lkup_variable_datatype VALUES (3, 'Decimal', NULL);
 --
 -- TOC entry 5009 (class 0 OID 16999)
 -- Dependencies: 287
--- Data for Name: lkup_variable_type; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_variable_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_variable_type VALUES (1, 'text', NULL);
@@ -1230,7 +1223,7 @@ INSERT INTO public.lkup_variable_type VALUES (3, 'codelisted', NULL);
 --
 -- TOC entry 5007 (class 0 OID 16875)
 -- Dependencies: 277
--- Data for Name: lkup_workbench_interest; Type: TABLE DATA; Schema: public; Owner: radx_admin
+-- Data for Name: lkup_workbench_interest; Type: TABLE DATA; Schema: public; Owner: datahub_admin
 --
 
 INSERT INTO public.lkup_workbench_interest VALUES (2, 'Nice to have', NULL);
@@ -1242,7 +1235,7 @@ INSERT INTO public.lkup_workbench_interest VALUES (1, 'Evaluating its usefulness
 --
 -- TOC entry 5031 (class 0 OID 0)
 -- Dependencies: 253
--- Name: entity_property_display_setting_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: entity_property_display_setting_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.entity_property_display_setting_id_seq', 90, true);
@@ -1251,7 +1244,7 @@ SELECT pg_catalog.setval('public.entity_property_display_setting_id_seq', 90, tr
 --
 -- TOC entry 5032 (class 0 OID 0)
 -- Dependencies: 251
--- Name: entity_property_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: entity_property_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.entity_property_id_seq', 102, true);
@@ -1260,7 +1253,7 @@ SELECT pg_catalog.setval('public.entity_property_id_seq', 102, true);
 --
 -- TOC entry 5033 (class 0 OID 0)
 -- Dependencies: 294
--- Name: entity_property_mta_mapping_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: entity_property_mta_mapping_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.entity_property_mta_mapping_id_seq', 1, false);
@@ -1269,7 +1262,7 @@ SELECT pg_catalog.setval('public.entity_property_mta_mapping_id_seq', 1, false);
 --
 -- TOC entry 5034 (class 0 OID 0)
 -- Dependencies: 221
--- Name: lkup_country_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_country_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_country_id_seq', 1, false);
@@ -1278,7 +1271,7 @@ SELECT pg_catalog.setval('public.lkup_country_id_seq', 1, false);
 --
 -- TOC entry 5035 (class 0 OID 0)
 -- Dependencies: 233
--- Name: lkup_data_file_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_data_file_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_data_file_category_id_seq', 14, true);
@@ -1287,7 +1280,7 @@ SELECT pg_catalog.setval('public.lkup_data_file_category_id_seq', 14, true);
 --
 -- TOC entry 5036 (class 0 OID 0)
 -- Dependencies: 235
--- Name: lkup_center_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_center_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_center_id_seq', 4, true);
@@ -1296,7 +1289,7 @@ SELECT pg_catalog.setval('public.lkup_center_id_seq', 4, true);
 --
 -- TOC entry 5037 (class 0 OID 0)
 -- Dependencies: 237
--- Name: lkup_entity_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_entity_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_entity_type_id_seq', 6, true);
@@ -1305,7 +1298,7 @@ SELECT pg_catalog.setval('public.lkup_entity_type_id_seq', 6, true);
 --
 -- TOC entry 5038 (class 0 OID 0)
 -- Dependencies: 296
--- Name: lkup_event_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_event_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_event_type_id_seq', 3, true);
@@ -1314,7 +1307,7 @@ SELECT pg_catalog.setval('public.lkup_event_type_id_seq', 3, true);
 --
 -- TOC entry 5039 (class 0 OID 0)
 -- Dependencies: 239
--- Name: lkup_file_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_file_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_file_type_id_seq', 9, true);
@@ -1323,7 +1316,7 @@ SELECT pg_catalog.setval('public.lkup_file_type_id_seq', 9, true);
 --
 -- TOC entry 5040 (class 0 OID 0)
 -- Dependencies: 223
--- Name: lkup_institution_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_institution_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_institution_type_id_seq', 10, true);
@@ -1332,7 +1325,7 @@ SELECT pg_catalog.setval('public.lkup_institution_type_id_seq', 10, true);
 --
 -- TOC entry 5041 (class 0 OID 0)
 -- Dependencies: 308
--- Name: lkup_metrics_report_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_metrics_report_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_metrics_report_type_id_seq', 2, true);
@@ -1341,7 +1334,7 @@ SELECT pg_catalog.setval('public.lkup_metrics_report_type_id_seq', 2, true);
 --
 -- TOC entry 5042 (class 0 OID 0)
 -- Dependencies: 298
--- Name: lkup_news_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_news_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_news_type_id_seq', 2, true);
@@ -1350,7 +1343,7 @@ SELECT pg_catalog.setval('public.lkup_news_type_id_seq', 2, true);
 --
 -- TOC entry 5043 (class 0 OID 0)
 -- Dependencies: 229
--- Name: lkup_property_codelist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_property_codelist_id_seq', 1, false);
@@ -1359,7 +1352,7 @@ SELECT pg_catalog.setval('public.lkup_property_codelist_id_seq', 1, false);
 --
 -- TOC entry 5044 (class 0 OID 0)
 -- Dependencies: 231
--- Name: lkup_property_codelist_value_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_property_codelist_value_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_property_codelist_value_id_seq', 362, true);
@@ -1368,7 +1361,7 @@ SELECT pg_catalog.setval('public.lkup_property_codelist_value_id_seq', 362, true
 --
 -- TOC entry 5045 (class 0 OID 0)
 -- Dependencies: 243
--- Name: lkup_property_source_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_property_source_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_property_source_id_seq', 3, true);
@@ -1377,7 +1370,7 @@ SELECT pg_catalog.setval('public.lkup_property_source_id_seq', 3, true);
 --
 -- TOC entry 5046 (class 0 OID 0)
 -- Dependencies: 241
--- Name: lkup_property_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_property_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_property_type_id_seq', 9, true);
@@ -1386,7 +1379,7 @@ SELECT pg_catalog.setval('public.lkup_property_type_id_seq', 9, true);
 --
 -- TOC entry 5047 (class 0 OID 0)
 -- Dependencies: 414
--- Name: lkup_referrer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_referrer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_referrer_id_seq', 1, false);
@@ -1395,7 +1388,7 @@ SELECT pg_catalog.setval('public.lkup_referrer_id_seq', 1, false);
 --
 -- TOC entry 5048 (class 0 OID 0)
 -- Dependencies: 261
--- Name: lkup_researcher_level_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_researcher_level_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_researcher_level_id_seq', 5, true);
@@ -1404,7 +1397,7 @@ SELECT pg_catalog.setval('public.lkup_researcher_level_id_seq', 5, true);
 --
 -- TOC entry 5049 (class 0 OID 0)
 -- Dependencies: 314
--- Name: lkup_resolution_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_resolution_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_resolution_type_id_seq', 3, true);
@@ -1413,7 +1406,7 @@ SELECT pg_catalog.setval('public.lkup_resolution_type_id_seq', 3, true);
 --
 -- TOC entry 5050 (class 0 OID 0)
 -- Dependencies: 259
--- Name: lkup_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_role_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_role_id_seq', 5, true);
@@ -1422,7 +1415,7 @@ SELECT pg_catalog.setval('public.lkup_role_id_seq', 5, true);
 --
 -- TOC entry 5051 (class 0 OID 0)
 -- Dependencies: 225
--- Name: lkup_state_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_state_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_state_id_seq', 1, false);
@@ -1431,7 +1424,7 @@ SELECT pg_catalog.setval('public.lkup_state_id_seq', 1, false);
 --
 -- TOC entry 5052 (class 0 OID 0)
 -- Dependencies: 227
--- Name: lkup_status_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_status_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_status_id_seq', 19, true);
@@ -1440,7 +1433,7 @@ SELECT pg_catalog.setval('public.lkup_status_id_seq', 19, true);
 --
 -- TOC entry 5053 (class 0 OID 0)
 -- Dependencies: 245
--- Name: lkup_submission_step_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_submission_step_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_submission_step_id_seq', 1, false);
@@ -1449,7 +1442,7 @@ SELECT pg_catalog.setval('public.lkup_submission_step_id_seq', 1, false);
 --
 -- TOC entry 5054 (class 0 OID 0)
 -- Dependencies: 316
--- Name: lkup_support_request_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_support_request_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_support_request_type_id_seq', 5, true);
@@ -1458,7 +1451,7 @@ SELECT pg_catalog.setval('public.lkup_support_request_type_id_seq', 5, true);
 --
 -- TOC entry 5055 (class 0 OID 0)
 -- Dependencies: 286
--- Name: lkup_variable_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_variable_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_variable_type_id_seq', 3, true);
@@ -1467,7 +1460,7 @@ SELECT pg_catalog.setval('public.lkup_variable_type_id_seq', 3, true);
 --
 -- TOC entry 5056 (class 0 OID 0)
 -- Dependencies: 276
--- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE SET; Schema: public; Owner: radx_admin
+-- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_workbench_interest_id_seq', 4, true);

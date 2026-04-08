@@ -19,6 +19,21 @@ autocomplete_query = "SELECT distinct property_value as phrase FROM study_proper
 study_search_index_name = "study_search"
 study_search_index_mapping_file_name = "search_index_mapping.json"
 study_search_query = "SELECT * FROM public.view_study_for_es where status='Approved'"
+variable_index_name = "variable_search"
+variable_index_mapping_file_name = "variable_index_mapping.json"
+variable_query = """
+SELECT 
+    vv.variable,
+    MAX(vv.variable_label) as variable_label,
+    MAX(COALESCE(NULLIF(TRIM(vv.variable_section), ''), 'unknown')) as section,
+    MIN(vv.variable_id) as variable_id,
+    ARRAY_AGG(COALESCE(NULLIF(TRIM(vs.title), ''), 'unknown') ORDER BY vv.study_id) as study_name,
+    MAX(COALESCE(NULLIF(TRIM(vv.variable_datatype), ''), 'unknown')) as datatype,
+    ARRAY_AGG(vv.study_id ORDER BY vv.study_id) as study_id
+FROM public.view_variables vv
+LEFT JOIN public.view_study vs ON vv.study_id = vs.study_id 
+GROUP BY vv.variable
+"""
 
 def load_index_mapping(index_mapping_file_name):
     """Load index mapping from JSON file"""
@@ -171,10 +186,10 @@ def create_index_from_db(client, index_name, index_mapping_file_name, connection
             }
             doc_id += 1
         else:
-            # Study search document structure
+            # Study/Variable search document structure
             doc = {
                 "_index": index_name,
-                '_id': row[0],  # use study id as doc id
+                '_id': row[0],  # use study_id or variable name as doc id
                 "_source": dict(zip([desc[0] for desc in cur.description], row))  # populate with column_name:row
             }
         bulk_data.append(doc)
@@ -221,6 +236,8 @@ def connect_opensearch_create_index(client, index_name, index_mapping_file_name)
     connection = get_database_connection()
     if index_name == study_search_index_name:
         create_index_from_db(client, index_name, index_mapping_file_name, connection, query=study_search_query)
+    elif index_name == variable_index_name:
+        create_index_from_db(client, index_name, index_mapping_file_name, connection, query=variable_query)
     else:
         create_index_from_db(client, index_name, index_mapping_file_name, connection, query=autocomplete_query, is_autocomplete=True)
 
@@ -265,6 +282,9 @@ def main():
         
         print(f"Starting OpenSearch refresh for index: {autocomplete_index_name}")
         connect_opensearch_create_index(client, autocomplete_index_name, autocomplete_index_mapping_file_name)
+        
+        print(f"Starting OpenSearch refresh for index: {variable_index_name}")
+        connect_opensearch_create_index(client, variable_index_name, variable_index_mapping_file_name)
         
         print("OpenSearch Index AutoRefresh Completed Successfully!")
         
