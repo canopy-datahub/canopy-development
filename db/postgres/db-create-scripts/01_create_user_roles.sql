@@ -1,0 +1,26 @@
+-- Role: datahub_admin
+-- DROP ROLE IF EXISTS datahub_admin;
+
+CREATE ROLE datahub_admin WITH
+  LOGIN
+  PASSWORD 'REPLACEME'
+  NOSUPERUSER
+  INHERIT
+  CREATEDB
+  CREATEROLE
+  NOREPLICATION;
+
+GRANT rds_superuser TO datahub_admin WITH ADMIN OPTION;
+
+-- Role: datahub_user
+-- DROP ROLE IF EXISTS datahub_user;
+
+CREATE ROLE datahub_user WITH
+  LOGIN
+  PASSWORD 'REPLACEME'
+  NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION
+  VALID UNTIL 'infinity';
