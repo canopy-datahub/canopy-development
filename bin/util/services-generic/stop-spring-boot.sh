@@ -12,7 +12,7 @@ service=$1
 case "$service" in
   download)   OFFSET=6; PATH="api/download/v1" ;;
   email)      OFFSET=5; PATH="api/email/v1" ;;
-  entity)     OFFSET=0; PATH="api/entity/v1" ;;
+  entity)     OFFSET=7; PATH="api/entity/v1" ;;
   report)     OFFSET=4; PATH="api/report/v1" ;;
   search)     OFFSET=1; PATH="api/search/v1" ;;
   submission) OFFSET=3; PATH="api/submission-service/v1" ;;

@@ -18,6 +18,8 @@ alias godhdownload='cd $DATAHUB_HOME/datahub-service-download'
 
 alias godhui='cd $DATAHUB_HOME/datahub-ui-main'
 
+alias sleepbetweenstarts='sleep 2'
+
 alias startdatahubentity='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh entity &'
 alias stopdatahubentity='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh entity'
 
