@@ -17,6 +17,7 @@ services:
       retries: 10
     volumes:
       - keycloak-data:/opt/keycloak/data
+      - ../../datahub-cloud-replication/keycloak/themes/canopy:/opt/keycloak/themes/canopy
 
 volumes:
   keycloak-data:
