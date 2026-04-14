@@ -4,19 +4,19 @@
 export DATAHUB_UTIL_BIN=${DATAHUB_DEVELOP_HOME}/bin/util/
 
 #CEDAR location aliases
-alias godh='cd $DATAHUB_HOME'
-alias envdh='source $DATAHUB_HOME/set-env.sh'
-alias dhcli='source $DATAHUB_HOME/datahub-cli/cli.sh'
+alias gocanopy='cd $CANOPY_HOME'
+alias envcanopy='source $CANOPY_HOME/set-env.sh'
+alias canopycli='source $CANOPY_HOME/canopy-cli/cli.sh'
 
-alias godhentity='cd $DATAHUB_HOME/datahub-service-entity'
-alias godhsearch='cd $DATAHUB_HOME/datahub-service-search'
-alias godhuser='cd $DATAHUB_HOME/datahub-service-user'
-alias godhsubmission='cd $DATAHUB_HOME/datahub-service-submission'
-alias godhreport='cd $DATAHUB_HOME/datahub-service-report'
-alias godhemail='cd $DATAHUB_HOME/datahub-service-email'
-alias godhdownload='cd $DATAHUB_HOME/datahub-service-download'
+alias godhentity='cd $CANOPY_HOME/datahub-service-entity'
+alias godhsearch='cd $CANOPY_HOME/datahub-service-search'
+alias godhuser='cd $CANOPY_HOME/datahub-service-user'
+alias godhsubmission='cd $CANOPY_HOME/datahub-service-submission'
+alias godhreport='cd $CANOPY_HOME/datahub-service-report'
+alias godhemail='cd $CANOPY_HOME/datahub-service-email'
+alias godhdownload='cd $CANOPY_HOME/datahub-service-download'
 
-alias godhui='cd $DATAHUB_HOME/datahub-ui-main'
+alias godhui='cd $CANOPY_HOME/datahub-ui-main'
 
 alias sleepbetweenstarts='sleep 2'
 
