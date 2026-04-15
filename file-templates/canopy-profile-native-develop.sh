@@ -2,7 +2,7 @@
 
 #------------------------------------------------------
 # Canopy Development Util home folder
-export CANOPY_DEVELOP_HOME=${CANOPY_HOME}/datahub-development
+export CANOPY_DEVELOP_HOME=${CANOPY_HOME}/canopy-development
 
 #------------------------------------------------------
 # Canopy custom environment variables
