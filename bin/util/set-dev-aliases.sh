@@ -1,50 +1,42 @@
 #!/bin/bash
 
 #DEV Util common locations
-export DATAHUB_UTIL_BIN=${DATAHUB_DEVELOP_HOME}/bin/util/
+export CANOPY_UTIL_BIN=${CANOPY_DEVELOP_HOME}/bin/util/
 
 #CEDAR location aliases
-alias gocanopy='cd $CANOPY_HOME'
-alias envcanopy='source $CANOPY_HOME/set-env.sh'
-alias canopycli='source $CANOPY_HOME/canopy-cli/cli.sh'
 
-alias godhentity='cd $CANOPY_HOME/datahub-service-entity'
-alias godhsearch='cd $CANOPY_HOME/datahub-service-search'
-alias godhuser='cd $CANOPY_HOME/datahub-service-user'
-alias godhsubmission='cd $CANOPY_HOME/datahub-service-submission'
-alias godhreport='cd $CANOPY_HOME/datahub-service-report'
-alias godhemail='cd $CANOPY_HOME/datahub-service-email'
-alias godhdownload='cd $CANOPY_HOME/datahub-service-download'
+alias gocanopyentity='cd $CANOPY_HOME/datahub-service-entity'
+alias gocanopysearch='cd $CANOPY_HOME/datahub-service-search'
+alias gocanopyuser='cd $CANOPY_HOME/datahub-service-user'
+alias gocanopysubmission='cd $CANOPY_HOME/datahub-service-submission'
+alias gocanopyreport='cd $CANOPY_HOME/datahub-service-report'
+alias gocanopyemail='cd $CANOPY_HOME/datahub-service-email'
+alias gocanopydownload='cd $CANOPY_HOME/datahub-service-download'
 
-alias godhui='cd $CANOPY_HOME/datahub-ui-main'
+alias gocanopyui='cd $CANOPY_HOME/datahub-ui-main'
 
 alias sleepbetweenstarts='sleep 2'
 
-alias startdatahubentity='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh entity &'
-alias stopdatahubentity='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh entity'
+alias startcanopyentity='$CANOPY_UTIL_BIN/services-generic/start-spring-boot.sh entity &'
+alias stopcanopyentity='$CANOPY_UTIL_BIN/services-generic/stop-spring-boot.sh entity'
 
-alias startdatahubsearch='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh search &'
-alias stopdatahubsearch='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh search'
+alias startcanopysearch='$CANOPY_UTIL_BIN/services-generic/start-spring-boot.sh search &'
+alias stopcanopysearch='$CANOPY_UTIL_BIN/services-generic/stop-spring-boot.sh search'
 
-alias startdatahubuser='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh user &'
-alias stopdatahubuser='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh user'
+alias startcanopyuser='$CANOPY_UTIL_BIN/services-generic/start-spring-boot.sh user &'
+alias stopcanopyuser='$CANOPY_UTIL_BIN/services-generic/stop-spring-boot.sh user'
 
-alias startdatahubsubmission='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh submission &'
-alias stopdatahubsubmission='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh submission'
+alias startcanopysubmission='$CANOPY_UTIL_BIN/services-generic/start-spring-boot.sh submission &'
+alias stopcanopysubmission='$CANOPY_UTIL_BIN/services-generic/stop-spring-boot.sh submission'
 
-alias startdatahubreport='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh report &'
-alias stopdatahubreport='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh report'
+alias startcanopyreport='$CANOPY_UTIL_BIN/services-generic/start-spring-boot.sh report &'
+alias stopcanopyreport='$CANOPY_UTIL_BIN/services-generic/stop-spring-boot.sh report'
 
-alias startdatahubemail='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh email &'
-alias stopdatahubemail='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh email'
+alias startcanopyemail='$CANOPY_UTIL_BIN/services-generic/start-spring-boot.sh email &'
+alias stopcanopyemail='$CANOPY_UTIL_BIN/services-generic/stop-spring-boot.sh email'
 
-alias startdatahubdownload='$DATAHUB_UTIL_BIN/services-generic/start-spring-boot.sh download &'
-alias stopdatahubdownload='$DATAHUB_UTIL_BIN/services-generic/stop-spring-boot.sh download'
+alias startcanopydownload='$CANOPY_UTIL_BIN/services-generic/start-spring-boot.sh download &'
+alias stopcanopydownload='$CANOPY_UTIL_BIN/services-generic/stop-spring-boot.sh download'
 
-alias startdatahubservices='$DATAHUB_UTIL_BIN/services-generic/start-services.sh'
-alias stopdatahubservices='$DATAHUB_UTIL_BIN/services-generic/stop-services.sh'
-
-#alias startinfra='$CEDAR_UTIL_BIN/services-generic/startinfra.sh'
-#alias stopinfra='$CEDAR_UTIL_BIN/services-generic/stopinfra.sh'
-#
-#alias ij="'/Applications/IntelliJ IDEA.app/Contents/MacOS/idea'"
+alias startcanopyservices='$CANOPY_UTIL_BIN/services-generic/start-services.sh'
+alias stopcanopyservices='$CANOPY_UTIL_BIN/services-generic/stop-services.sh'
