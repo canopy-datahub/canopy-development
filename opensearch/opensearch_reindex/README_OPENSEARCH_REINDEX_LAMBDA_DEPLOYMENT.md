@@ -88,7 +88,7 @@ The Lambda function is deployed in three steps:
 The following stacks must be deployed **before** the Lambda stack (see `InstallGuide.ipynb`):
 
 1. ✅ **Networking** - VPC, Subnets, Security Groups
-2. ✅ **S3** - Creates `${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{ENV}` bucket
+2. ✅ **S3** - Creates `${PROJECT_NAME}-lambda-artifacts-{DeploymentId}-{ENV}` bucket
 3. ✅ **SecretsManager** - Creates `{PROJECT_NAME}_application_{ENV}` secret
 4. ✅ **LoadBalancer** - Application Load Balancer (for VPC imports)
 5. ✅ **RDS** - PostgreSQL database
@@ -100,7 +100,7 @@ Where `{ENV}` is one of: `dev`, `test`, or `prod`
 1. **AWS CLI** configured with appropriate credentials
 2. **Python 3.11+** (for running the deployment scripts)
 3. **Docker** (for building the Lambda layer)
-4. Access to S3 bucket: `${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{ENV}`
+4. Access to S3 bucket: `${PROJECT_NAME}-lambda-artifacts-{DeploymentId}-{ENV}`
 5. Secrets Manager configured (see below)
 
 ### Deployment Steps
@@ -178,8 +178,8 @@ python deploy_lambda.py <project-name> <env> <unique-id>
 
 - **project-name**: Project name (e.g., `datahub`, `Redwood`) - **REQUIRED**
 - **env**: `dev`, `test`, or `prod` - **REQUIRED**
-- **DataHubUniqueId**: Unique identifier for S3 bucket (e.g., `stanford`) - **REQUIRED**
-  - S3 bucket: `${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{env}`
+- **DeploymentId**: Unique identifier for S3 bucket (e.g., `stanford`) - **REQUIRED**
+  - S3 bucket: `${PROJECT_NAME}-lambda-artifacts-{DeploymentId}-{env}`
 
 #### What the script does
 
@@ -189,7 +189,7 @@ python deploy_lambda.py <project-name> <env> <unique-id>
    - `search_index_mapping.json`
    - `variable_index_mapping.json`
    - `autocomplete_index_mapping.json`
-3. ⬆️ Uploads to S3: `s3://${PROJECT_NAME}-lambda-artifacts-{DataHubUniqueId}-{ENV}/opensearch-refresh/opensearch-refresh-lambda.zip`
+3. ⬆️ Uploads to S3: `s3://${PROJECT_NAME}-lambda-artifacts-{DeploymentId}-{ENV}/opensearch-refresh/opensearch-refresh-lambda.zip`
 4. 📋 Displays next steps for deployment
 
 #### Important Notes
