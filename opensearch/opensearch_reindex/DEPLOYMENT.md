@@ -15,7 +15,7 @@ This Lambda function refreshes OpenSearch indices for DataHub, including:
 
 ### 1. Install Dependencies
 ```bash
-cd /Users/ycao77/dataHub/datahub-development/opensearch/opensearch_reindex
+cd ${CANOPY_HOME}/canopy-development/opensearch/opensearch_reindex
 
 # Install dependencies to a package directory
 pip install -r requirements.txt -t package/

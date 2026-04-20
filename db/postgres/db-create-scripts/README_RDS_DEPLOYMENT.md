@@ -30,7 +30,7 @@ From [`RDS.yaml`](../../../datahub-cloud-replication/modules/RDS.yaml):
 ### Automated Deployment Script
 
 ```bash
-cd ~/dataHub/datahub-development/db/postgres/db-create-scripts
+cd ${CANOPY_HOME}/canopy-development/db/postgres/db-create-scripts
 ```
 
 **Script Usage:**

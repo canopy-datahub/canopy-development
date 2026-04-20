@@ -76,7 +76,7 @@ class LambdaDeployer:
                 print(f"  - {file_name}")
             print()
             print("Make sure you're running this script from the correct directory:")
-            print("  cd ~/dataHub/datahub-development/opensearch/opensearch_reindex")
+            print("  cd ${CANOPY_HOME}/canopy-development/opensearch/opensearch_reindex")
             sys.exit(1)
             
     def cleanup(self):

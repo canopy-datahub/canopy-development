@@ -110,7 +110,7 @@ Where `{ENV}` is one of: `dev`, `test`, or `prod`
 **⚠️ IMPORTANT**: You must create the Lambda layer **before** deploying the Lambda function. The Lambda function depends on this layer for its dependencies (psycopg2-binary, opensearch-py, etc.).
 
 ```bash
-cd ~/dataHub/datahub-development/opensearch/opensearch_reindex
+cd ${CANOPY_HOME}/canopy-development/opensearch/opensearch_reindex
 
 # Create layer for dev environment
 python create_layer.py dependency-layer us-east-1 datahub-rep
@@ -157,7 +157,7 @@ python create_layer.py [layer-name] [region] [profile]
 Before deploying the Lambda CloudFormation stack, upload the Lambda code.
 
 ```bash
-cd ~/dataHub/datahub-development/opensearch/opensearch_reindex
+cd ${CANOPY_HOME}/canopy-development/opensearch/opensearch_reindex
 
 # Upload to dev environment
 python deploy_lambda.py datahub dev stanford
@@ -318,7 +318,7 @@ This ensures all secrets are properly updated in AWS Secrets Manager.
 
 ```bash
 # Navigate to directory
-cd ~/dataHub/datahub-development/opensearch/opensearch_reindex
+cd ${CANOPY_HOME}/canopy-development/opensearch/opensearch_reindex
 
 # Step 1: Create Lambda layer (REQUIRED FIRST)
 python create_layer.py dependency-layer us-east-1 datahub-rep
