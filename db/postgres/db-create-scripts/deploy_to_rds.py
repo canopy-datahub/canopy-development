@@ -74,16 +74,59 @@ def test_psql_connection(
 
 
 def run_psql_file(
-    endpoint: str, user: str, db_name: str, password: str, sql_file: Path
+    endpoint: str,
+    user: str,
+    db_name: str,
+    password: str,
+    sql_file: Path,
+    psql_vars: Dict[str, str] | None = None,
 ) -> bool:
     env = os.environ.copy()
     env["PGPASSWORD"] = password
-    cmd = ["psql", "-h", endpoint, "-U", user, "-d", db_name, "-f", str(sql_file)]
+    cmd = ["psql", "-h", endpoint, "-U", user, "-d", db_name]
+    for key, value in (psql_vars or {}).items():
+        cmd.extend(["-v", f"{key}={value}"])
+    cmd.extend(["-f", str(sql_file)])
     try:
         subprocess.run(cmd, env=env, check=True)
         return True
     except subprocess.CalledProcessError:
         return False
+
+
+def load_keycloak_db_params() -> Dict[str, str]:
+    """Read KeycloakDbName/Username/Password from CANOPY_AWS_PARAMETER_FILE.
+    Falls back to interactive prompts if the file is missing or a key is absent.
+    """
+    required = ("KeycloakDbName", "KeycloakDbUsername", "KeycloakDbPassword")
+    values: Dict[str, str] = {}
+    param_path = os.environ.get("CANOPY_AWS_PARAMETER_FILE", "")
+    if param_path and Path(param_path).is_file():
+        try:
+            with open(param_path, "r") as f:
+                params = json.load(f).get("Parameters", {})
+            for key in required:
+                if params.get(key):
+                    values[key] = params[key]
+        except (json.JSONDecodeError, OSError) as exc:
+            print(f"Warning: could not read {param_path}: {exc}", file=sys.stderr)
+
+    for key in required:
+        if not values.get(key):
+            if key == "KeycloakDbPassword":
+                values[key] = getpass(f"Enter {key}: ")
+            else:
+                values[key] = input(f"Enter {key}: ").strip()
+
+    if any(v in ("", "REPLACEME", "REPLACEME_kc_db_password") for v in values.values()):
+        print(
+            "Error: one or more Keycloak DB parameters are placeholders — "
+            "edit CANOPY_AWS_PARAMETER_FILE and retry.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    return values
 
 
 def main() -> None:
@@ -197,7 +240,17 @@ def main() -> None:
         "03_populate_base_tables.sql",
         "04_populate_variable_tables.sql",
         "05_populate_test_data.sql",
+        "06_create_keycloak_db.sql",
     ]
+
+    kc_params = load_keycloak_db_params()
+    psql_vars_for: Dict[str, Dict[str, str]] = {
+        "06_create_keycloak_db.sql": {
+            "kc_db": kc_params["KeycloakDbName"],
+            "kc_user": kc_params["KeycloakDbUsername"],
+            "kc_password": kc_params["KeycloakDbPassword"],
+        },
+    }
 
     for script_name in scripts:
         sql_path = script_dir / script_name
@@ -205,7 +258,8 @@ def main() -> None:
             print(f"⚠ Warning: {script_name} not found, skipping")
             continue
         print(f"\nRunning {script_name}...")
-        if run_psql_file(endpoint, db_user, db_name, db_password, sql_path):
+        vars_for_file = psql_vars_for.get(script_name)
+        if run_psql_file(endpoint, db_user, db_name, db_password, sql_path, vars_for_file):
             print(f"✓ {script_name} completed successfully")
         else:
             print(f"✗ Error running {script_name}", file=sys.stderr)
