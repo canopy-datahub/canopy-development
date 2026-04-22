@@ -149,7 +149,7 @@ python create_layer.py [layer-name] [region] [profile]
 #### Important Notes
 
 - The script will output the **Layer ARN**
-- Make sure this ARN matches what's configured in [`Lambda.yaml`](../../../datahub-cloud-replication/modules/Lambda.yaml) (line 272)
+- Make sure this ARN matches what's configured in [`Lambda.yaml`](../../../canopy-cloud-replication/modules/Lambda.yaml) (line 272)
 - If the ARN is different, update `Lambda.yaml` with the new ARN before deploying the Lambda stack
 
 #### Step 2: Upload Lambda Code to S3
@@ -201,7 +201,7 @@ python deploy_lambda.py <project-name> <env> <unique-id>
 
 After creating the layer (Step 1) and uploading the code (Step 2), deploy the Lambda function using CloudFormation.
 
-Follow [`InstallGuide.ipynb`](../../../datahub-cloud-replication/InstallGuide.ipynb) and run the **Lambda Stack** deployment step.
+Follow [`InstallGuide.ipynb`](../../../canopy-cloud-replication/InstallGuide.ipynb) and run the **Lambda Stack** deployment step.
 
 ---
 
@@ -227,7 +227,7 @@ If you need to update dependencies (e.g., upgrade `psycopg2-binary` or `opensear
    python create_layer.py dependency-layer us-east-1 datahub-rep
    ```
 
-2. **Update the Layer ARN** in [`Lambda.yaml`](../../../datahub-cloud-replication/modules/Lambda.yaml) at line 272
+2. **Update the Layer ARN** in [`Lambda.yaml`](../../../canopy-cloud-replication/modules/Lambda.yaml) at line 272
 
 3. **Redeploy the Lambda CloudFormation stack** (via `InstallGuide.ipynb`)
 
@@ -249,7 +249,7 @@ The secret is created by the SecretsManager CloudFormation stack and contains th
   "SEARCH_PASSWORD": "${OpenSearchPassword}",
 }
 ```
-`SEARCH_USERNAME` and `SEARCH_PASSWORD` are configured in the datahub-cloud-replication/parameter-{ENV}.json. These credentials should be set before the OpenSearch deployment. 
+`SEARCH_USERNAME` and `SEARCH_PASSWORD` are configured in the canopy-cloud-replication/parameter-{ENV}.json. These credentials should be set before the OpenSearch deployment. 
 
 `SEARCH_HOST` need to be updated in the SecretsManager CloudFormation after the OpenSearch deployment.
 
@@ -299,13 +299,13 @@ rm current_secret.json
 
 ##### Method 2: Update via CloudFormation Template
 
-Alternatively, you can edit the secret directly in [`SecretsManager.yaml`](../../../datahub-cloud-replication/modules/SecretsManager.yaml) and redeploy the stack. 
+Alternatively, you can edit the secret directly in [`SecretsManager.yaml`](../../../canopy-cloud-replication/modules/SecretsManager.yaml) and redeploy the stack. 
 
 Edit `SEARCH_HOST` stored in `SecretsManager.yaml` at line 96
 
 **Then redeploy the SecretsManager stack:**
 
-Follow [`InstallGuide.ipynb`](../../../datahub-cloud-replication/InstallGuide.ipynb) and rerun:
+Follow [`InstallGuide.ipynb`](../../../canopy-cloud-replication/InstallGuide.ipynb) and rerun:
 - **Step 4**: Set environment
 - **Step 14**: Deploy SecretsManager stack (with updated Opensearch host)
 This ensures all secrets are properly updated in AWS Secrets Manager.

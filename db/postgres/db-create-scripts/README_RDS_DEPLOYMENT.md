@@ -18,7 +18,7 @@ This guide explains how to deploy the DataHub database schema to an AWS RDS Post
 
 ## Database Configuration
 
-From [`RDS.yaml`](../../../datahub-cloud-replication/modules/RDS.yaml):
+From [`RDS.yaml`](../../../canopy-cloud-replication/modules/RDS.yaml):
 - **DB Instance Identifier**: `${CANOPY_PROJECT_NAME}-postgresql-${CANOPY_ENV}`
 - **Database Name**: `${CANOPY_PROJECT_NAME}_${CANOPY_ENV}` (e.g., `datahub_dev`)
 - **Master Username**: `${CANOPY_PROJECT_NAME}postgres${CANOPY_ENV}` (e.g., `datahubpostgresdev`)
@@ -83,7 +83,7 @@ python deploy_to_rds.py --project-name myproject --env dev --region us-east-1 --
 
 After deployment, update the `application_${CANOPY_ENV}` secret with correct RDS credentials.
 
-**⚠️ Important**: The values you set here must match your RDS configuration in [`RDS.yaml`](../../../datahub-cloud-replication/modules/RDS.yaml). If you modify the database name, username, or other settings in `RDS.yaml`, you must update them here as well.
+**⚠️ Important**: The values you set here must match your RDS configuration in [`RDS.yaml`](../../../canopy-cloud-replication/modules/RDS.yaml). If you modify the database name, username, or other settings in `RDS.yaml`, you must update them here as well.
 
 #### Step 1: Get RDS Endpoint (Host)
 The RDS endpoint should be printed when you run `deploy_to_rds.py`, if not, please run the following again to get the endpoint.
@@ -105,7 +105,7 @@ aws rds describe-db-instances \
 Before updating Secrets Manager, ensure the RDS credentials in your parameter files match:
 
 **Files to update:**
-- `datahub-cloud-replication/parameters-${CANOPY_ENV}.json`
+- `canopy-cloud-replication/parameters-${CANOPY_ENV}.json`
 
 **Update these parameters:**
 ```json
