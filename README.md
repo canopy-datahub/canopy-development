@@ -1,4 +1,4 @@
-# datahub-development
+# canopy-development
 
 Development-related resources for the Canopy platform.
 

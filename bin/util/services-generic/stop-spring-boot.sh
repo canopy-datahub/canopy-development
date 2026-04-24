@@ -15,7 +15,7 @@ case "$service" in
   entity)     OFFSET=7; PATH="api/entity/v1" ;;
   report)     OFFSET=4; PATH="api/report/v1" ;;
   search)     OFFSET=1; PATH="api/search/v1" ;;
-  submission) OFFSET=3; PATH="api/submission-service/v1" ;;
+  submission) OFFSET=3; PATH="api/submission/v1" ;;
   user)       OFFSET=2; PATH="api/user/v1" ;;
   *)
     echo "Unknown service: $service"
