@@ -56,75 +56,6 @@ INSERT INTO institution (
     1                               -- created_by
 );
 
--- Create users
-INSERT INTO users (
-  id,
-  uuid,
-  first_name,
-  middle_initial,
-  last_name,
-  email_address,
-  orcid_id,
-  job_title,
-  institution_id,
-  researcher_level_id,
-  status_id,
-  internal_user,
-  accept_terms,
-  last_dua_date,
-  last_login_at,
-  sftp_path,
-  created_at,
-  modified_at,
-  center_id
-)
-VALUES
--- Record 1
-(
-  1,                                          -- id
-  '123e4567-e89b-12d3-a456-426614174000',     -- uuid
-  'Alice',                                    -- first_name
-  'M',                                        -- middle_initial
-  'Smith',                                    -- last_name
-  'alice.smith@example.edu',                  -- email_address
-  '0000-0001-2345-6789',                      -- orcid_id
-  'Associate Professor',                      -- job_title
-  1,                                          -- institution_id
-  5,                                          -- researcher_level_id
-  1,                                          -- status_id
-  true,                                       -- internal_user
-  true,                                       -- accept_terms
-  '2024-06-01',                               -- last_dua_date
-  '2025-07-07 09:15:00',                      -- last_login_at
-  NULL,                                       -- sftp_path
-  CURRENT_TIMESTAMP,                          -- created_at
-  NULL,                                       -- modified_at
-  1                                           -- center_id
-),
--- Record 2
-(
-  2,                                          -- id
-  '223e4567-e89b-12d3-a456-426614174001',     -- uuid
-  'Bob',                                      -- first_name
-  NULL,                                       -- middle_initial
-  'Johnson',                                  -- last_name
-  'bob.johnson@example.edu',                  -- email_address
-  NULL,                                       -- orcid_id
-  'Postdoctoral Fellow',                      -- job_title
-  2,                                          -- institution_id
-  3,                                          -- researcher_level_id
-  1,                                          -- status_id
-  false,                                      -- internal_user
-  true,                                       -- accept_terms
-  NULL,                                       -- last_dua_date
-  NULL,                                       -- last_login_at
-  NULL,                                       -- sftp_path
-  CURRENT_TIMESTAMP,                          -- created_at
-  NULL,                                       -- modified_at
-  1                                           -- center_id
-);
-
-
 ----------------------------------- News and Events related --------------------------------
 
 -- Create news entries
@@ -232,7 +163,7 @@ INSERT INTO users (
 VALUES
 (
   3,                                          -- id
-  null,     -- uuid
+  '333e4567-e89b-12d3-a456-426614174002',     -- uuid (matches the Test user in the Keycloak realm import)
   'Test',                                    -- first_name
   null,                                        -- middle_initial
   'Test',                                    -- last_name
