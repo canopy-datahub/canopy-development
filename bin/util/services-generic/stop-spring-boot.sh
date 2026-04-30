@@ -1,10 +1,10 @@
 #!/bin/bash
 echo --------------------------------------------------------------------------------
-echo Stopping DataHub $1 service
+echo Stopping Canopy $1 service
 echo - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 shopt -s expand_aliases
-source $DATAHUB_UTIL_BIN/set-dev-aliases.sh
+source $CANOPY_UTIL_BIN/set-dev-aliases.sh
 
 BASE_PORT=8080
 service=$1
@@ -30,5 +30,5 @@ CURL=$(command -v curl || echo /usr/bin/curl)
 
 echo "Stopping $service service on port $PORT..."
 $CURL -i \
-  -u "${DATAHUB_SPRING_MANAGEMENT_USER}:${DATAHUB_SPRING_MANAGEMENT_PASSWORD}" \
+  -u "${CANOPY_SPRING_MANAGEMENT_USER}:${CANOPY_SPRING_MANAGEMENT_PASSWORD}" \
   -X POST "http://localhost:${PORT}/${PATH}/actuator/shutdown"

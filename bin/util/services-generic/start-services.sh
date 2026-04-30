@@ -1,22 +1,22 @@
 #!/bin/bash
 clear
 echo --------------------------------------------------------------------------------
-echo Starting Spring Boot enabled DastaHub microservices
+echo Starting Spring Boot enabled Canopy microservices
 echo - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 shopt -s expand_aliases
-source $DATAHUB_UTIL_BIN/set-dev-aliases.sh
+source $CANOPY_UTIL_BIN/set-dev-aliases.sh
 
-startdatahubentity
+startcanopyentity
 sleepbetweenstarts
-startdatahubsearch
+startcanopysearch
 sleepbetweenstarts
-startdatahubuser
+startcanopyuser
 sleepbetweenstarts
-startdatahubsubmission
+startcanopysubmission
 sleepbetweenstarts
-startdatahubreport
+startcanopyreport
 sleepbetweenstarts
-startdatahubemail
+startcanopyemail
 sleepbetweenstarts
-startdatahubdownload
+startcanopydownload

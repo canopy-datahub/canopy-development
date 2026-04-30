@@ -1,5 +1,5 @@
 services:
- datahub-opensearch:
+ canopy-opensearch:
    image: public.ecr.aws/opensearchproject/opensearch:2.11.1
    environment:
      - discovery.type=single-node
@@ -15,17 +15,17 @@ services:
        soft: -1
        hard: -1
    volumes:
-     - datahub-opensearch-data:/usr/share/opensearch/data
+     - canopy-opensearch-data:/usr/share/opensearch/data
 
- datahub-opensearch-dashboards:
+ canopy-opensearch-dashboards:
    image: public.ecr.aws/opensearchproject/opensearch-dashboards:2.11.1
    ports:
      - "5601:5601"
    environment:
-     - 'OPENSEARCH_HOSTS=["http://datahub-opensearch:9200"]'
+     - 'OPENSEARCH_HOSTS=["http://canopy-opensearch:9200"]'
      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
    depends_on:
-     - datahub-opensearch
+     - canopy-opensearch
 
 volumes:
- datahub-opensearch-data:
+ canopy-opensearch-data:

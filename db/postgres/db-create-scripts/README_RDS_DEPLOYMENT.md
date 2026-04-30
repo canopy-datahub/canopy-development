@@ -1,7 +1,7 @@
 # RDS Database Deployment Guide
 
 ## Overview
-This guide explains how to deploy the DataHub database schema to an AWS RDS PostgreSQL instance.
+This guide explains how to deploy the Canopy database schema to an AWS RDS PostgreSQL instance.
 
 ## Prerequisites
 
@@ -13,15 +13,15 @@ This guide explains how to deploy the DataHub database schema to an AWS RDS Post
 
 **Note:** The script automatically handles AWS credentials similar to InstallGuide.ipynb:
 - Unsets any existing AWS environment credentials
-- Uses AWS profile for authentication (default: `datahub-rep`)
+- Uses AWS profile for authentication (default: `canopy-rep`)
 - Sets region (default: `us-east-1`)
 
 ## Database Configuration
 
 From [`RDS.yaml`](../../../canopy-cloud-replication/modules/RDS.yaml):
 - **DB Instance Identifier**: `${CANOPY_PROJECT_NAME}-postgresql-${CANOPY_ENV}`
-- **Database Name**: `${CANOPY_PROJECT_NAME}_${CANOPY_ENV}` (e.g., `datahub_dev`)
-- **Master Username**: `${CANOPY_PROJECT_NAME}postgres${CANOPY_ENV}` (e.g., `datahubpostgresdev`)
+- **Database Name**: `${CANOPY_PROJECT_NAME}_${CANOPY_ENV}` (e.g., `canopy_dev`)
+- **Master Username**: `canopy_postgres_${CANOPY_ENV}` (e.g., `canopy_postgres_dev`)
 - **Port**: `5432`
 - **Engine**: PostgreSQL 16.9
 
@@ -38,27 +38,27 @@ cd ${CANOPY_HOME}/canopy-development/db/postgres/db-create-scripts
 python deploy_to_rds.py --project-name <project-name> --env <env> --region <region> --profile <profile>
 
 # Examples:
-# Deploy to dev (uses default profile: datahub-rep, region: us-east-1)
-python deploy_to_rds.py --project-name datahub --env dev
+# Deploy to dev (uses default profile: canopy-rep, region: us-east-1)
+python deploy_to_rds.py --project-name canopy --env dev
 
 # Deploy with specific region and profile
-python deploy_to_rds.py --project-name datahub --env dev --region us-east-2 --profile my-profile
+python deploy_to_rds.py --project-name canopy --env dev --region us-east-2 --profile my-profile
 
 # Deploy to test
-python deploy_to_rds.py --project-name datahub --env test --region us-east-1 --profile datahub-rep
+python deploy_to_rds.py --project-name canopy --env test --region us-east-1 --profile canopy-rep
 
 # Deploy to prod
-python deploy_to_rds.py --project-name datahub --env prod --region us-east-1 --profile datahub-rep
+python deploy_to_rds.py --project-name canopy --env prod --region us-east-1 --profile canopy-rep
 
 # Deploy with custom project name
-python deploy_to_rds.py --project-name myproject --env dev --region us-east-1 --profile datahub-rep
+python deploy_to_rds.py --project-name myproject --env dev --region us-east-1 --profile canopy-rep
 ```
 
 **Parameters:**
 - `--project-name`: Project name (e.g., `canopy`) - **REQUIRED**
 - `--env`: Environment (`dev`, `test`, or `prod`) - default: `dev`
 - `--region`: AWS region - default: `us-east-1`
-- `--profile`: AWS profile name - default: `datahub-rep`
+- `--profile`: AWS profile name - default: `canopy-rep`
 
 **What the script does:**
 1. Unsets existing AWS environment credentials
@@ -97,7 +97,7 @@ aws rds describe-db-instances \
   --query 'DBInstances[0].Endpoint.Address' \
   --output text
 
-# Example output: datahub-postgresql-dev.cyhmos66o8v8.us-east-1.rds.amazonaws.com
+# Example output: canopy-postgresql-dev.cyhmos66o8v8.us-east-1.rds.amazonaws.com
 ```
 
 #### Step 2: Update Parameter Files
@@ -110,12 +110,12 @@ Before updating Secrets Manager, ensure the RDS credentials in your parameter fi
 **Update these parameters:**
 ```json
 {
-  "DataHubUserUsername": "datahub_user",
-  "DataHubUserPassword": "REPLACEME"
+  "CanopyDbUsername": "canopy_user",
+  "CanopyDbPassword": "REPLACEME"
 }
 ```
 
-**⚠️ Note**: These credentials are for the `datahub_user` role created by `01_create_user_roles.sql`, not the RDS master user.
+**⚠️ Note**: These credentials are for the `canopy_user` role created by `01_create_user_roles.sql`, not the RDS master user.
 
 **⚠️ Important Consistency Checks:**
 
@@ -125,9 +125,9 @@ Before updating Secrets Manager, ensure the RDS credentials in your parameter fi
    - This guide → `${CANOPY_PROJECT_NAME}_${CANOPY_ENV}`
 
 2. **Database User**: Must match between:
-   - `parameters-*.json` → `DataHubUserUsername`
+   - `parameters-*.json` → `CanopyDbUsername`
    - `01_create_user_roles.sql` → role created
 
 3. **Database Password**: Must match between:
-   - `parameters-*.json` → `DataHubUserPassword`
+   - `parameters-*.json` → `CanopyDbPassword`
    - `01_create_user_roles.sql` → role password

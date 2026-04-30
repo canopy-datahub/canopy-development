@@ -1,7 +1,7 @@
 # OpenSearch Refresh Lambda Deployment
 
 ## Overview
-This Lambda function refreshes OpenSearch indices for DataHub, including:
+This Lambda function refreshes OpenSearch indices for Canopy, including:
 - `study_search` - Main study search index
 - `variable_search` - Variable search index  
 - `study_autocomplete_v001` - Autocomplete suggestions index
@@ -9,7 +9,7 @@ This Lambda function refreshes OpenSearch indices for DataHub, including:
 ## Prerequisites
 - AWS CLI configured with appropriate credentials
 - Python 3.11
-- Access to the DataHub Lambda artifacts S3 bucket
+- Access to the Canopy Lambda artifacts S3 bucket
 
 ## Deployment Steps
 
@@ -39,12 +39,12 @@ cd ..
 
 For **dev environment**:
 ```bash
-aws s3 cp opensearch-refresh-lambda.zip s3://datahub-lambda-artifacts-stanford-dev/opensearch-refresh/opensearch-refresh-lambda.zip
+aws s3 cp opensearch-refresh-lambda.zip s3://canopy-lambda-artifacts-dev/opensearch-refresh/opensearch-refresh-lambda.zip
 ```
 
 For **prod environment**:
 ```bash
-aws s3 cp opensearch-refresh-lambda.zip s3://datahub-lambda-artifacts-stanford-prod/opensearch-refresh/opensearch-refresh-lambda.zip
+aws s3 cp opensearch-refresh-lambda.zip s3://canopy-lambda-artifacts-prod/opensearch-refresh/opensearch-refresh-lambda.zip
 ```
 
 ### 4. Update Lambda Function
@@ -53,8 +53,8 @@ After uploading to S3, the Lambda function will automatically use the new code o
 To manually update an existing Lambda:
 ```bash
 aws lambda update-function-code \
-  --function-name DataHub-OpenSearchRefresh-dev \
-  --s3-bucket datahub-lambda-artifacts-stanford-dev \
+  --function-name Canopy-OpenSearchRefresh-dev \
+  --s3-bucket canopy-lambda-artifacts-dev \
   --s3-key opensearch-refresh/opensearch-refresh-lambda.zip
 ```
 
@@ -84,7 +84,7 @@ The Lambda execution role needs:
 After deployment, you can test the Lambda function:
 ```bash
 aws lambda invoke \
-  --function-name DataHub-OpenSearchRefresh-dev \
+  --function-name Canopy-OpenSearchRefresh-dev \
   --payload '{}' \
   response.json
 

@@ -113,13 +113,13 @@ Where `{ENV}` is one of: `dev`, `test`, or `prod`
 cd ${CANOPY_HOME}/canopy-development/opensearch/opensearch_reindex
 
 # Create layer for dev environment
-python create_layer.py dependency-layer us-east-1 datahub-rep
+python create_layer.py dependency-layer us-east-1 canopy-rep
 
 # For test environment
-python create_layer.py dependency-layer us-east-1 datahub-rep
+python create_layer.py dependency-layer us-east-1 canopy-rep
 
 # For prod environment
-python create_layer.py dependency-layer us-east-1 datahub-rep
+python create_layer.py dependency-layer us-east-1 canopy-rep
 ```
 
 **Script Usage:**
@@ -131,7 +131,7 @@ python create_layer.py [layer-name] [region] [profile]
 
 - **layer-name**: Name of the Lambda layer (default: `dependency-layer`)
 - **region**: AWS region (default: `us-east-1`)
-- **profile**: AWS CLI profile (default: `datahub-rep`)
+- **profile**: AWS CLI profile (default: `canopy-rep`)
 
 #### What the script does
 
@@ -160,13 +160,13 @@ Before deploying the Lambda CloudFormation stack, upload the Lambda code.
 cd ${CANOPY_HOME}/canopy-development/opensearch/opensearch_reindex
 
 # Upload to dev environment
-python deploy_lambda.py datahub dev stanford
+python deploy_lambda.py canopy dev stanford
 
 # Upload to test environment
-python deploy_lambda.py datahub test stanford
+python deploy_lambda.py canopy test stanford
 
 # Upload to prod environment
-python deploy_lambda.py datahub prod stanford
+python deploy_lambda.py canopy prod stanford
 ```
 
 **Script Usage:**
@@ -176,7 +176,7 @@ python deploy_lambda.py <project-name> <env> <unique-id>
 
 **Parameters:**
 
-- **project-name**: Project name (e.g., `datahub`, `Redwood`) - **REQUIRED**
+- **project-name**: Project name (e.g., `canopy`, `Redwood`) - **REQUIRED**
 - **env**: `dev`, `test`, or `prod` - **REQUIRED**
 - **DeploymentId**: Unique identifier for S3 bucket (e.g., `stanford`) - **REQUIRED**
   - S3 bucket: `${PROJECT_NAME}-lambda-artifacts-{DeploymentId}-{env}`
@@ -224,7 +224,7 @@ If you need to update dependencies (e.g., upgrade `psycopg2-binary` or `opensear
 
 1. **Recreate the layer:**
    ```bash
-   python create_layer.py dependency-layer us-east-1 datahub-rep
+   python create_layer.py dependency-layer us-east-1 canopy-rep
    ```
 
 2. **Update the Layer ARN** in [`Lambda.yaml`](../../../canopy-cloud-replication/modules/Lambda.yaml) at line 272
@@ -244,7 +244,7 @@ The secret is created by the SecretsManager CloudFormation stack and contains th
 
 ```json
 {
-  "SEARCH_HOST": "vpc-datahub-opensearch-dev-xxxxx.us-east-1.es.amazonaws.com",
+  "SEARCH_HOST": "vpc-canopy-opensearch-dev-xxxxx.us-east-1.es.amazonaws.com",
   "SEARCH_USERNAME": "${OpenSearchUsername}",
   "SEARCH_PASSWORD": "${OpenSearchPassword}",
 }
@@ -321,10 +321,10 @@ This ensures all secrets are properly updated in AWS Secrets Manager.
 cd ${CANOPY_HOME}/canopy-development/opensearch/opensearch_reindex
 
 # Step 1: Create Lambda layer (REQUIRED FIRST)
-python create_layer.py dependency-layer us-east-1 datahub-rep
+python create_layer.py dependency-layer us-east-1 canopy-rep
 
-# Step 2: Upload Lambda code (replace 'datahub' with your project name)
-python deploy_lambda.py datahub dev stanford
+# Step 2: Upload Lambda code (replace 'canopy' with your project name)
+python deploy_lambda.py canopy dev stanford
 
 # Step 3: Deploy Lambda via CloudFormation (see Lambda Deployment in the InstallGuide.ipynb)
 
