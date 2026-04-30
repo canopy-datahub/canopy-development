@@ -1158,9 +1158,6 @@ INSERT INTO public.lkup_status VALUES (22, 'pending', 'institution', 10, NULL);
 INSERT INTO public.lkup_status VALUES (25, 'Draft', 'study', 10, NULL);
 INSERT INTO public.lkup_status VALUES (26, 'In Review', 'study', 20, NULL);
 INSERT INTO public.lkup_status VALUES (27, 'Approved', 'study', 30, NULL);
-INSERT INTO public.lkup_status VALUES (19, 'submitted', 'workbench_request', 10, NULL);
-INSERT INTO public.lkup_status VALUES (20, 'approved', 'workbench_request', 20, NULL);
-INSERT INTO public.lkup_status VALUES (21, 'rejected', 'workbench_request', 30, NULL);
 
 
 --
@@ -1197,39 +1194,6 @@ INSERT INTO public.lkup_support_request_type VALUES (5, 'Engagement', NULL, 50);
 
 INSERT INTO public.lkup_variable_category VALUES (1, 'Core Variable', 'core variable');
 INSERT INTO public.lkup_variable_category VALUES (2, 'Non-core Variable', 'non core variable');
-
---
--- TOC entry 5024 (class 0 OID 46715)
--- Dependencies: 419
--- Data for Name: lkup_variable_datatype; Type: TABLE DATA; Schema: public; Owner: datahub_admin
---
-
-INSERT INTO public.lkup_variable_datatype VALUES (1, 'Integer', NULL);
-INSERT INTO public.lkup_variable_datatype VALUES (2, 'String', NULL);
-INSERT INTO public.lkup_variable_datatype VALUES (3, 'Decimal', NULL);
-
-
---
--- TOC entry 5009 (class 0 OID 16999)
--- Dependencies: 287
--- Data for Name: lkup_variable_type; Type: TABLE DATA; Schema: public; Owner: datahub_admin
---
-
-INSERT INTO public.lkup_variable_type VALUES (1, 'text', NULL);
-INSERT INTO public.lkup_variable_type VALUES (2, 'numeric', NULL);
-INSERT INTO public.lkup_variable_type VALUES (3, 'codelisted', NULL);
-
-
---
--- TOC entry 5007 (class 0 OID 16875)
--- Dependencies: 277
--- Data for Name: lkup_workbench_interest; Type: TABLE DATA; Schema: public; Owner: datahub_admin
---
-
-INSERT INTO public.lkup_workbench_interest VALUES (2, 'Nice to have', NULL);
-INSERT INTO public.lkup_workbench_interest VALUES (3, 'Required for research', NULL);
-INSERT INTO public.lkup_workbench_interest VALUES (4, 'Other', NULL);
-INSERT INTO public.lkup_workbench_interest VALUES (1, 'Evaluating its usefulness', NULL);
 
 
 --
@@ -1446,24 +1410,6 @@ SELECT pg_catalog.setval('public.lkup_submission_step_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.lkup_support_request_type_id_seq', 5, true);
-
-
---
--- TOC entry 5055 (class 0 OID 0)
--- Dependencies: 286
--- Name: lkup_variable_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
---
-
-SELECT pg_catalog.setval('public.lkup_variable_type_id_seq', 3, true);
-
-
---
--- TOC entry 5056 (class 0 OID 0)
--- Dependencies: 276
--- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
---
-
-SELECT pg_catalog.setval('public.lkup_workbench_interest_id_seq', 4, true);
 
 
 -- Completed on 2025-06-24 07:49:44

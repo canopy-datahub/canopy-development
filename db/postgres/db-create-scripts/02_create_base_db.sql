@@ -190,36 +190,6 @@ $$;
 ALTER FUNCTION public.get_filename(_path text) OWNER TO datahub_admin;
 
 --
--- TOC entry 513 (class 1255 OID 22067)
--- Name: ras_tracking_after_delete_trigger_fnc(); Type: FUNCTION; Schema: public; Owner: datahub_admin
---
-
-CREATE FUNCTION public.ras_tracking_after_delete_trigger_fnc() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-            DECLARE
-                _delete_at timestamp := CURRENT_TIMESTAMP AT TIME ZONE 'UTC';
-            BEGIN		
-				IF (TG_OP = 'DELETE') THEN
-					EXECUTE format( 'INSERT INTO datahub_history.ras_tracking_history(id, authorization_code, correlation_id, session_id, access_token, refresh_token, id_token, passport, first_name, last_name, email, institution_name, expire_at, created_at, modified_at, deleted_at)
-						VALUES (%s, %L, %L,  %L,  %L, %L,   %L, %L, %L, %L, %L, %L, %L, %L, %L, %L);',
-						old.id, old.authorization_code, old.correlation_id, old.session_id, old.access_token, old.refresh_token, old.id_token, old.passport, old.first_name, old.last_name, old.email, old.institution_name, old.expire_at, old.created_at, old.modified_at, _delete_at);
-				END IF;
-				RETURN NEW;
-				
-				EXCEPTION
-    			WHEN NO_DATA_FOUND THEN 
-      			RAISE NOTICE 'No data found';
-    
-   				WHEN OTHERS THEN
-      			RAISE NOTICE '% %', SQLERRM, SQLSTATE;
-			END;
-$$;
-
-
-ALTER FUNCTION public.ras_tracking_after_delete_trigger_fnc() OWNER TO datahub_admin;
-
---
 -- TOC entry 518 (class 1255 OID 29429)
 -- Name: sp_generate_hub_content_metrics(); Type: PROCEDURE; Schema: public; Owner: datahub_admin
 --
@@ -853,127 +823,6 @@ ALTER SEQUENCE public.institution_id_seq OWNER TO datahub_admin;
 --
 
 ALTER SEQUENCE public.institution_id_seq OWNED BY public.institution.id;
-
-
---
--- TOC entry 270 (class 1259 OID 16827)
--- Name: jwt_token; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.jwt_token (
-    id integer NOT NULL,
-    user_id integer,
-    sagemaker_user_profile_name character varying(36),
-    created_at timestamp without time zone
-);
-
-
-ALTER TABLE public.jwt_token OWNER TO datahub_admin;
-
---
--- TOC entry 269 (class 1259 OID 16826)
--- Name: jwt_token_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.jwt_token_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.jwt_token_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5444 (class 0 OID 0)
--- Dependencies: 269
--- Name: jwt_token_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.jwt_token_id_seq OWNED BY public.jwt_token.id;
-
-
---
--- TOC entry 289 (class 1259 OID 17008)
--- Name: lkup_cde_codelist; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.lkup_cde_codelist (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    description text
-);
-
-
-ALTER TABLE public.lkup_cde_codelist OWNER TO datahub_admin;
-
---
--- TOC entry 288 (class 1259 OID 17007)
--- Name: lkup_cde_codelist_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.lkup_cde_codelist_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.lkup_cde_codelist_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5447 (class 0 OID 0)
--- Dependencies: 288
--- Name: lkup_cde_codelist_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.lkup_cde_codelist_id_seq OWNED BY public.lkup_cde_codelist.id;
-
-
---
--- TOC entry 291 (class 1259 OID 17017)
--- Name: lkup_cde_codelist_value; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.lkup_cde_codelist_value (
-    id integer NOT NULL,
-    cde_codelist_id integer,
-    value integer NOT NULL,
-    label text NOT NULL,
-    description text,
-    display_order integer
-);
-
-
-ALTER TABLE public.lkup_cde_codelist_value OWNER TO datahub_admin;
-
---
--- TOC entry 290 (class 1259 OID 17016)
--- Name: lkup_cde_codelist_value_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.lkup_cde_codelist_value_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.lkup_cde_codelist_value_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5450 (class 0 OID 0)
--- Dependencies: 290
--- Name: lkup_cde_codelist_value_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.lkup_cde_codelist_value_id_seq OWNED BY public.lkup_cde_codelist_value.id;
 
 
 --
@@ -1817,98 +1666,6 @@ CREATE TABLE public.lkup_variable_category (
 ALTER TABLE public.lkup_variable_category OWNER TO datahub_admin;
 
 --
--- TOC entry 419 (class 1259 OID 46715)
--- Name: lkup_variable_datatype; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.lkup_variable_datatype (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    description text
-);
-
-
-ALTER TABLE public.lkup_variable_datatype OWNER TO datahub_admin;
-
---
--- TOC entry 287 (class 1259 OID 16999)
--- Name: lkup_variable_type; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.lkup_variable_type (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    description text
-);
-
-
-ALTER TABLE public.lkup_variable_type OWNER TO datahub_admin;
-
---
--- TOC entry 286 (class 1259 OID 16998)
--- Name: lkup_variable_type_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.lkup_variable_type_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.lkup_variable_type_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5503 (class 0 OID 0)
--- Dependencies: 286
--- Name: lkup_variable_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.lkup_variable_type_id_seq OWNED BY public.lkup_variable_type.id;
-
-
---
--- TOC entry 277 (class 1259 OID 16875)
--- Name: lkup_workbench_interest; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.lkup_workbench_interest (
-    id integer NOT NULL,
-    name character varying(128) NOT NULL,
-    description character varying(255)
-);
-
-
-ALTER TABLE public.lkup_workbench_interest OWNER TO datahub_admin;
-
---
--- TOC entry 276 (class 1259 OID 16874)
--- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.lkup_workbench_interest_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.lkup_workbench_interest_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5506 (class 0 OID 0)
--- Dependencies: 276
--- Name: lkup_workbench_interest_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.lkup_workbench_interest_id_seq OWNED BY public.lkup_workbench_interest.id;
-
-
---
 -- TOC entry 311 (class 1259 OID 17268)
 -- Name: metrics_report; Type: TABLE; Schema: public; Owner: datahub_admin
 --
@@ -2083,145 +1840,6 @@ ALTER SEQUENCE public.newsletter_id_seq OWNER TO datahub_admin;
 --
 
 ALTER SEQUENCE public.newsletter_id_seq OWNED BY public.newsletter.id;
-
-
---
--- TOC entry 340 (class 1259 OID 22733)
--- Name: public_data; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.public_data (
-    id integer NOT NULL,
-    collection_id integer NOT NULL,
-    file_name character varying(256) NOT NULL,
-    file_size bigint,
-    file_category character varying(256) NOT NULL,
-    s3_file_id integer,
-    description character varying(1024),
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    created_by integer DEFAULT 9999 NOT NULL,
-    modified_at timestamp without time zone,
-    modified_by integer,
-    display_order integer
-);
-
-
-ALTER TABLE public.public_data OWNER TO datahub_admin;
-
---
--- TOC entry 338 (class 1259 OID 22425)
--- Name: public_data_collection; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.public_data_collection (
-    id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    description character varying(1024),
-    display_order integer
-);
-
-
-ALTER TABLE public.public_data_collection OWNER TO datahub_admin;
-
---
--- TOC entry 337 (class 1259 OID 22424)
--- Name: public_data_collection_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.public_data_collection_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.public_data_collection_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5522 (class 0 OID 0)
--- Dependencies: 337
--- Name: public_data_collection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.public_data_collection_id_seq OWNED BY public.public_data_collection.id;
-
-
---
--- TOC entry 339 (class 1259 OID 22732)
--- Name: public_data_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.public_data_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.public_data_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5524 (class 0 OID 0)
--- Dependencies: 339
--- Name: public_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.public_data_id_seq OWNED BY public.public_data.id;
-
-
---
--- TOC entry 268 (class 1259 OID 16802)
--- Name: ras_tracking; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.ras_tracking (
-    id integer NOT NULL,
-    authorization_code character varying(36),
-    correlation_id character varying(39),
-    session_id character varying(36),
-    access_token character varying(1024),
-    refresh_token character varying(1024),
-    id_token character varying(1024),
-    passport text,
-    first_name text,
-    last_name text,
-    email text,
-    institution_name text,
-    expire_at timestamp without time zone,
-    created_at timestamp without time zone,
-    modified_at timestamp without time zone
-);
-
-
-ALTER TABLE public.ras_tracking OWNER TO datahub_admin;
-
---
--- TOC entry 267 (class 1259 OID 16801)
--- Name: ras_tracking_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.ras_tracking_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.ras_tracking_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5527 (class 0 OID 0)
--- Dependencies: 267
--- Name: ras_tracking_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.ras_tracking_id_seq OWNED BY public.ras_tracking.id;
 
 
 --
@@ -2681,49 +2299,6 @@ ALTER SEQUENCE public.user_login_id_seq OWNED BY public.user_login.id;
 
 
 --
--- TOC entry 272 (class 1259 OID 16839)
--- Name: user_ras; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.user_ras (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    transaction_id character varying(255),
-    phs character varying(255) NOT NULL,
-    expiration_dt timestamp without time zone,
-    passport text,
-    create_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
-
-ALTER TABLE public.user_ras OWNER TO datahub_admin;
-
---
--- TOC entry 271 (class 1259 OID 16838)
--- Name: user_ras_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.user_ras_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.user_ras_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5569 (class 0 OID 0)
--- Dependencies: 271
--- Name: user_ras_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.user_ras_id_seq OWNED BY public.user_ras.id;
-
-
---
 -- TOC entry 417 (class 1259 OID 46689)
 -- Name: user_referrer; Type: TABLE; Schema: public; Owner: datahub_admin
 --
@@ -2808,48 +2383,6 @@ ALTER SEQUENCE public.user_role_id_seq OWNER TO datahub_admin;
 --
 
 ALTER SEQUENCE public.user_role_id_seq OWNED BY public.user_role.id;
-
-
---
--- TOC entry 426 (class 1259 OID 47335)
--- Name: user_workspace; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.user_workspace (
-    id integer NOT NULL,
-    user_id integer,
-    userprofile_name character varying(256),
-    workspace_name text,
-    created_date date,
-    modified_date date
-);
-
-
-ALTER TABLE public.user_workspace OWNER TO datahub_admin;
-
---
--- TOC entry 425 (class 1259 OID 47334)
--- Name: user_workspace_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.user_workspace_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.user_workspace_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5578 (class 0 OID 0)
--- Dependencies: 425
--- Name: user_workspace_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.user_workspace_id_seq OWNED BY public.user_workspace.id;
 
 
 --
@@ -4024,10 +3557,8 @@ CREATE VIEW public.view_user_population AS
     l.total_login,
     (d.last_download_at IS NOT NULL) AS has_downloaded_data,
     d.last_download_at,
-    d.total_download,
-    (wr.user_id IS NOT NULL) AS has_workbench,
-    wr.workspace_count
-   FROM (((((((((public.users u
+    d.total_download
+   FROM ((((((((public.users u
      JOIN public.lkup_status s ON ((u.status_id = s.id)))
      JOIN public.institution i ON ((u.institution_id = i.id)))
      LEFT JOIN public.lkup_institution_type p ON ((i.institution_type_id = p.id)))
@@ -4044,11 +3575,6 @@ CREATE VIEW public.view_user_population AS
             count(data_file_download.id) AS total_download
            FROM public.data_file_download
           GROUP BY data_file_download.download_by) d ON ((u.id = d.user_id)))
-     LEFT JOIN ( SELECT t_1.user_id,
-            count(w.id) AS workspace_count
-           FROM (public.jwt_token t_1
-             LEFT JOIN public.user_workspace w ON (((w.userprofile_name)::text = (t_1.sagemaker_user_profile_name)::text)))
-          GROUP BY t_1.user_id) wr ON ((u.id = wr.user_id)))
   ORDER BY u.id;
 
 
@@ -4106,155 +3632,6 @@ CREATE VIEW public.view_variable_overview_display AS
 ALTER VIEW public.view_variable_overview_display OWNER TO datahub_admin;
 
 --
--- TOC entry 332 (class 1259 OID 22337)
--- Name: weekly_hub_content_data; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.weekly_hub_content_data (
-    id integer NOT NULL,
-    report_date date NOT NULL,
-    center text,
-    study_id text,
-    study_title text,
-    study_status text,
-    study_create_date timestamp without time zone,
-    file_name text,
-    file_status text,
-    file_create_date timestamp without time zone,
-    file_size numeric,
-    tier_1_cde integer,
-    non_tier_1_headers integer,
-    file_category text,
-    is_current_version boolean,
-    source_file_name text,
-    version_no integer
-);
-
-
-ALTER TABLE public.weekly_hub_content_data OWNER TO datahub_admin;
-
---
--- TOC entry 331 (class 1259 OID 22336)
--- Name: weekly_hub_content_data_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.weekly_hub_content_data_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.weekly_hub_content_data_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5607 (class 0 OID 0)
--- Dependencies: 331
--- Name: weekly_hub_content_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.weekly_hub_content_data_id_seq OWNED BY public.weekly_hub_content_data.id;
-
-
---
--- TOC entry 279 (class 1259 OID 16883)
--- Name: workbench_request; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.workbench_request (
-    id integer NOT NULL,
-    requestor_user_id integer NOT NULL,
-    analytics_software_request text,
-    center_affiliated boolean,
-    research_use_statement text,
-    reason_of_request text,
-    status_id integer,
-    reject_reason text,
-    response_date timestamp without time zone,
-    license_effective_date date,
-    license_expiration_date date,
-    signature character varying(256),
-    created_at timestamp without time zone,
-    created_by integer,
-    modified_at timestamp without time zone,
-    modified_by integer
-);
-
-
-ALTER TABLE public.workbench_request OWNER TO datahub_admin;
-
---
--- TOC entry 278 (class 1259 OID 16882)
--- Name: workbench_request_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.workbench_request_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.workbench_request_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5610 (class 0 OID 0)
--- Dependencies: 278
--- Name: workbench_request_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.workbench_request_id_seq OWNED BY public.workbench_request.id;
-
-
---
--- TOC entry 281 (class 1259 OID 16902)
--- Name: workbench_request_interest; Type: TABLE; Schema: public; Owner: datahub_admin
---
-
-CREATE TABLE public.workbench_request_interest (
-    id integer NOT NULL,
-    workbench_request_id integer NOT NULL,
-    workbench_interest_id integer NOT NULL,
-    other_specify text,
-    created_at timestamp without time zone,
-    created_by integer,
-    modified_at timestamp without time zone,
-    modified_by integer
-);
-
-
-ALTER TABLE public.workbench_request_interest OWNER TO datahub_admin;
-
---
--- TOC entry 280 (class 1259 OID 16901)
--- Name: workbench_request_interest_id_seq; Type: SEQUENCE; Schema: public; Owner: datahub_admin
---
-
-CREATE SEQUENCE public.workbench_request_interest_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.workbench_request_interest_id_seq OWNER TO datahub_admin;
-
---
--- TOC entry 5613 (class 0 OID 0)
--- Dependencies: 280
--- Name: workbench_request_interest_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: datahub_admin
---
-
-ALTER SEQUENCE public.workbench_request_interest_id_seq OWNED BY public.workbench_request_interest.id;
-
-
---
 -- TOC entry 379 (class 1259 OID 28417)
 -- Name: data_file_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
 --
@@ -4310,33 +3687,6 @@ CREATE TABLE datahub_history.institution_history (
 
 
 ALTER TABLE datahub_history.institution_history OWNER TO datahub_admin;
-
---
--- TOC entry 273 (class 1259 OID 16854)
--- Name: ras_tracking_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
---
-
-CREATE TABLE datahub_history.ras_tracking_history (
-    id bigint NOT NULL,
-    authorization_code character varying(36),
-    correlation_id character varying(39),
-    session_id character varying(36),
-    access_token character varying(1024),
-    refresh_token character varying(1024),
-    id_token character varying(1024),
-    passport text,
-    first_name text,
-    last_name text,
-    email text,
-    institution_name text,
-    expire_at timestamp without time zone,
-    created_at timestamp without time zone,
-    modified_at timestamp without time zone,
-    deleted_at timestamp without time zone
-);
-
-
-ALTER TABLE datahub_history.ras_tracking_history OWNER TO datahub_admin;
 
 --
 -- TOC entry 380 (class 1259 OID 29013)
@@ -4510,44 +3860,6 @@ CREATE TABLE datahub_history.users_history (
 ALTER TABLE datahub_history.users_history OWNER TO datahub_admin;
 
 --
--- TOC entry 393 (class 1259 OID 29678)
--- Name: workbench_request_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
---
-
-CREATE TABLE datahub_history.workbench_request_history (
-    id integer NOT NULL,
-    column_name character varying(256) NOT NULL,
-    old_value text,
-    new_value text,
-    operation character(1) NOT NULL,
-    operated_at timestamp without time zone NOT NULL,
-    operated_by integer,
-    CONSTRAINT operation_check CHECK (((operation)::text = ANY (ARRAY[('D'::character varying)::text, ('U'::character varying)::text])))
-);
-
-
-ALTER TABLE datahub_history.workbench_request_history OWNER TO datahub_admin;
-
---
--- TOC entry 394 (class 1259 OID 29685)
--- Name: workbench_request_interest_history; Type: TABLE; Schema: datahub_history; Owner: datahub_admin
---
-
-CREATE TABLE datahub_history.workbench_request_interest_history (
-    id integer NOT NULL,
-    column_name character varying(256) NOT NULL,
-    old_value text,
-    new_value text,
-    operation character(1) NOT NULL,
-    operated_at timestamp without time zone NOT NULL,
-    operated_by integer,
-    CONSTRAINT operation_check CHECK (((operation)::text = ANY (ARRAY[('D'::character varying)::text, ('U'::character varying)::text])))
-);
-
-
-ALTER TABLE datahub_history.workbench_request_interest_history OWNER TO datahub_admin;
-
---
 -- TOC entry 4909 (class 2604 OID 16956)
 -- Name: data_file id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
@@ -4641,30 +3953,6 @@ ALTER TABLE ONLY public.hub_content_metrics ALTER COLUMN id SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY public.institution ALTER COLUMN id SET DEFAULT nextval('public.institution_id_seq'::regclass);
-
-
---
--- TOC entry 4897 (class 2604 OID 16830)
--- Name: jwt_token id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.jwt_token ALTER COLUMN id SET DEFAULT nextval('public.jwt_token_id_seq'::regclass);
-
-
---
--- TOC entry 4913 (class 2604 OID 17011)
--- Name: lkup_cde_codelist id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_cde_codelist ALTER COLUMN id SET DEFAULT nextval('public.lkup_cde_codelist_id_seq'::regclass);
-
-
---
--- TOC entry 4914 (class 2604 OID 17020)
--- Name: lkup_cde_codelist_value id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_cde_codelist_value ALTER COLUMN id SET DEFAULT nextval('public.lkup_cde_codelist_value_id_seq'::regclass);
 
 
 --
@@ -4836,22 +4124,6 @@ ALTER TABLE ONLY public.lkup_support_request_type ALTER COLUMN id SET DEFAULT ne
 
 
 --
--- TOC entry 4912 (class 2604 OID 17002)
--- Name: lkup_variable_type id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_variable_type ALTER COLUMN id SET DEFAULT nextval('public.lkup_variable_type_id_seq'::regclass);
-
-
---
--- TOC entry 4902 (class 2604 OID 16878)
--- Name: lkup_workbench_interest id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_workbench_interest ALTER COLUMN id SET DEFAULT nextval('public.lkup_workbench_interest_id_seq'::regclass);
-
-
---
 -- TOC entry 4934 (class 2604 OID 17271)
 -- Name: metrics_report id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
@@ -4881,30 +4153,6 @@ ALTER TABLE ONLY public.news_link ALTER COLUMN id SET DEFAULT nextval('public.ne
 --
 
 ALTER TABLE ONLY public.newsletter ALTER COLUMN id SET DEFAULT nextval('public.newsletter_id_seq'::regclass);
-
-
---
--- TOC entry 4945 (class 2604 OID 22736)
--- Name: public_data id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.public_data ALTER COLUMN id SET DEFAULT nextval('public.public_data_id_seq'::regclass);
-
-
---
--- TOC entry 4944 (class 2604 OID 22428)
--- Name: public_data_collection id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.public_data_collection ALTER COLUMN id SET DEFAULT nextval('public.public_data_collection_id_seq'::regclass);
-
-
---
--- TOC entry 4896 (class 2604 OID 16805)
--- Name: ras_tracking id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.ras_tracking ALTER COLUMN id SET DEFAULT nextval('public.ras_tracking_id_seq'::regclass);
 
 
 --
@@ -4989,14 +4237,6 @@ ALTER TABLE ONLY public.user_login ALTER COLUMN id SET DEFAULT nextval('public.u
 
 
 --
--- TOC entry 4898 (class 2604 OID 16842)
--- Name: user_ras id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.user_ras ALTER COLUMN id SET DEFAULT nextval('public.user_ras_id_seq'::regclass);
-
-
---
 -- TOC entry 4966 (class 2604 OID 46692)
 -- Name: user_referrer id; Type: DEFAULT; Schema: public; Owner: datahub_admin
 --
@@ -5010,14 +4250,6 @@ ALTER TABLE ONLY public.user_referrer ALTER COLUMN id SET DEFAULT nextval('publi
 --
 
 ALTER TABLE ONLY public.user_role ALTER COLUMN id SET DEFAULT nextval('public.user_role_id_seq'::regclass);
-
-
---
--- TOC entry 4972 (class 2604 OID 47338)
--- Name: user_workspace id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.user_workspace ALTER COLUMN id SET DEFAULT nextval('public.user_workspace_id_seq'::regclass);
 
 
 --
@@ -5050,30 +4282,6 @@ ALTER TABLE ONLY public.lkup_core_variable_property_value ALTER COLUMN id SET DE
 --
 
 ALTER TABLE ONLY public.variables ALTER COLUMN id SET DEFAULT nextval('public.variables_id_seq'::regclass);
-
-
---
--- TOC entry 4943 (class 2604 OID 22340)
--- Name: weekly_hub_content_data id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.weekly_hub_content_data ALTER COLUMN id SET DEFAULT nextval('public.weekly_hub_content_data_id_seq'::regclass);
-
-
---
--- TOC entry 4903 (class 2604 OID 16886)
--- Name: workbench_request id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.workbench_request ALTER COLUMN id SET DEFAULT nextval('public.workbench_request_id_seq'::regclass);
-
-
---
--- TOC entry 4904 (class 2604 OID 16905)
--- Name: workbench_request_interest id; Type: DEFAULT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.workbench_request_interest ALTER COLUMN id SET DEFAULT nextval('public.workbench_request_interest_id_seq'::regclass);
 
 
 --
@@ -5182,33 +4390,6 @@ ALTER TABLE ONLY public.hub_content_metrics
 
 ALTER TABLE ONLY public.institution
     ADD CONSTRAINT institution_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5039 (class 2606 OID 16832)
--- Name: jwt_token jwt_token_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.jwt_token
-    ADD CONSTRAINT jwt_token_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5059 (class 2606 OID 17015)
--- Name: lkup_cde_codelist lkup_cde_codelist_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_cde_codelist
-    ADD CONSTRAINT lkup_cde_codelist_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5061 (class 2606 OID 17024)
--- Name: lkup_cde_codelist_value lkup_cde_codelist_value_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_cde_codelist_value
-    ADD CONSTRAINT lkup_cde_codelist_value_pkey PRIMARY KEY (id);
 
 
 --
@@ -5365,24 +4546,6 @@ ALTER TABLE ONLY public.lkup_variable_category
 
 
 --
--- TOC entry 5123 (class 2606 OID 46721)
--- Name: lkup_variable_datatype lkup_variable_datatype_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_variable_datatype
-    ADD CONSTRAINT lkup_variable_datatype_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5057 (class 2606 OID 17006)
--- Name: lkup_variable_type lkup_variable_type_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_variable_type
-    ADD CONSTRAINT lkup_variable_type_pkey PRIMARY KEY (id);
-
-
---
 -- TOC entry 5081 (class 2606 OID 17275)
 -- Name: metrics_report metrics_report_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
@@ -5500,51 +4663,6 @@ ALTER TABLE ONLY public.user_referrer
 
 
 --
--- TOC entry 5047 (class 2606 OID 16880)
--- Name: lkup_workbench_interest pk_workbench_interest; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_workbench_interest
-    ADD CONSTRAINT pk_workbench_interest PRIMARY KEY (id);
-
-
---
--- TOC entry 5051 (class 2606 OID 16909)
--- Name: workbench_request_interest pk_workbench_request_interest; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.workbench_request_interest
-    ADD CONSTRAINT pk_workbench_request_interest PRIMARY KEY (id);
-
-
---
--- TOC entry 5099 (class 2606 OID 22432)
--- Name: public_data_collection public_data_collection_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.public_data_collection
-    ADD CONSTRAINT public_data_collection_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5101 (class 2606 OID 22742)
--- Name: public_data public_data_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.public_data
-    ADD CONSTRAINT public_data_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5037 (class 2606 OID 16809)
--- Name: ras_tracking ras_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.ras_tracking
-    ADD CONSTRAINT ras_tracking_pkey PRIMARY KEY (id);
-
-
---
 -- TOC entry 5017 (class 2606 OID 16570)
 -- Name: s3_file s3_file_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
@@ -5617,30 +4735,12 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 5041 (class 2606 OID 16847)
--- Name: user_ras user_ras_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.user_ras
-    ADD CONSTRAINT user_ras_pkey PRIMARY KEY (id);
-
-
---
 -- TOC entry 5035 (class 2606 OID 16790)
 -- Name: user_role user_role_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
 --
 
 ALTER TABLE ONLY public.user_role
     ADD CONSTRAINT user_role_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5129 (class 2606 OID 47342)
--- Name: user_workspace user_workspace_id; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.user_workspace
-    ADD CONSTRAINT user_workspace_id PRIMARY KEY (id);
 
 
 --
@@ -5671,33 +4771,6 @@ ALTER TABLE ONLY public.variables
 
 
 --
--- TOC entry 5097 (class 2606 OID 22344)
--- Name: weekly_hub_content_data weekly_hub_content_data_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.weekly_hub_content_data
-    ADD CONSTRAINT weekly_hub_content_data_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5049 (class 2606 OID 16890)
--- Name: workbench_request workbench_request_form_pkey; Type: CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.workbench_request
-    ADD CONSTRAINT workbench_request_form_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 5043 (class 2606 OID 16860)
--- Name: ras_tracking_history ras_tracking_history_pkey; Type: CONSTRAINT; Schema: datahub_history; Owner: datahub_admin
---
-
-ALTER TABLE ONLY datahub_history.ras_tracking_history
-    ADD CONSTRAINT ras_tracking_history_pkey PRIMARY KEY (id);
-
-
---
 -- TOC entry 5231 (class 2620 OID 28424)
 -- Name: data_file data_file_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
 --
@@ -5719,14 +4792,6 @@ CREATE TRIGGER data_submission_after_operation_trigger AFTER DELETE OR UPDATE ON
 --
 
 CREATE TRIGGER institution_after_operation_trigger AFTER DELETE OR UPDATE ON public.institution FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
-
-
---
--- TOC entry 5227 (class 2620 OID 22068)
--- Name: ras_tracking ras_tracking_after_delete_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
---
-
-CREATE TRIGGER ras_tracking_after_delete_trigger AFTER DELETE ON public.ras_tracking FOR EACH ROW EXECUTE FUNCTION public.ras_tracking_after_delete_trigger_fnc();
 
 
 --
@@ -5799,31 +4864,6 @@ CREATE TRIGGER user_role_after_operation_trigger AFTER DELETE OR UPDATE ON publi
 --
 
 CREATE TRIGGER users_after_operation_trigger AFTER DELETE OR UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
-
-
---
--- TOC entry 5228 (class 2620 OID 29684)
--- Name: workbench_request workbench_request_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
---
-
-CREATE TRIGGER workbench_request_after_operation_trigger AFTER DELETE OR UPDATE ON public.workbench_request FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
-
-
---
--- TOC entry 5229 (class 2620 OID 29691)
--- Name: workbench_request_interest workbench_request_interest_after_operation_trigger; Type: TRIGGER; Schema: public; Owner: datahub_admin
---
-
-CREATE TRIGGER workbench_request_interest_after_operation_trigger AFTER DELETE OR UPDATE ON public.workbench_request_interest FOR EACH ROW EXECUTE FUNCTION public.after_operation_trigger_fnc();
-
-
---
--- TOC entry 5178 (class 2606 OID 17025)
--- Name: lkup_cde_codelist_value fk_cde_codelist_value_codelist_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.lkup_cde_codelist_value
-    ADD CONSTRAINT fk_cde_codelist_value_codelist_id FOREIGN KEY (cde_codelist_id) REFERENCES public.lkup_cde_codelist(id) NOT VALID;
 
 
 --
@@ -6070,15 +5110,6 @@ ALTER TABLE ONLY public.institution
 
 
 --
--- TOC entry 5160 (class 2606 OID 16833)
--- Name: jwt_token fk_jwt_token_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.jwt_token
-    ADD CONSTRAINT fk_jwt_token_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- TOC entry 5188 (class 2606 OID 17276)
 -- Name: metrics_report fk_metrics_report_weekly_type_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
@@ -6139,24 +5170,6 @@ ALTER TABLE ONLY public.news
 
 ALTER TABLE ONLY public.lkup_property_codelist_value
     ADD CONSTRAINT fk_property_codelist_value_codelist_id FOREIGN KEY (property_codelist_id) REFERENCES public.lkup_property_codelist(id) NOT VALID;
-
-
---
--- TOC entry 5198 (class 2606 OID 22743)
--- Name: public_data fk_public_data_collection_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.public_data
-    ADD CONSTRAINT fk_public_data_collection_id FOREIGN KEY (collection_id) REFERENCES public.public_data_collection(id) NOT VALID;
-
-
---
--- TOC entry 5199 (class 2606 OID 22748)
--- Name: public_data fk_public_data_s3_file_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.public_data
-    ADD CONSTRAINT fk_public_data_s3_file_id FOREIGN KEY (s3_file_id) REFERENCES public.s3_file(id) NOT VALID;
 
 
 --
@@ -6385,15 +5398,6 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 5161 (class 2606 OID 16848)
--- Name: user_ras fk_user_ras_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.user_ras
-    ADD CONSTRAINT fk_user_ras_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) NOT VALID;
-
-
---
 -- TOC entry 5211 (class 2606 OID 46703)
 -- Name: user_referrer fk_user_referrer_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
@@ -6448,15 +5452,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 5214 (class 2606 OID 47343)
--- Name: user_workspace fk_user_workspace_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.user_workspace
-    ADD CONSTRAINT fk_user_workspace_user_id FOREIGN KEY (user_id) REFERENCES public.users(id) NOT VALID;
-
-
---
 -- TOC entry 5215 (class 2606 OID 58945)
 -- Name: lkup_variable_category fk_variable_category_center_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
 --
@@ -6499,42 +5494,6 @@ ALTER TABLE ONLY public.variables
 
 
 --
--- TOC entry 5165 (class 2606 OID 16915)
--- Name: workbench_request_interest fk_workbench_request_interest_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.workbench_request_interest
-    ADD CONSTRAINT fk_workbench_request_interest_id FOREIGN KEY (workbench_interest_id) REFERENCES public.lkup_workbench_interest(id) NOT VALID;
-
-
---
--- TOC entry 5166 (class 2606 OID 16910)
--- Name: workbench_request_interest fk_workbench_request_interest_request_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.workbench_request_interest
-    ADD CONSTRAINT fk_workbench_request_interest_request_id FOREIGN KEY (workbench_request_id) REFERENCES public.workbench_request(id) NOT VALID;
-
-
---
--- TOC entry 5163 (class 2606 OID 16896)
--- Name: workbench_request fk_workbench_request_status_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.workbench_request
-    ADD CONSTRAINT fk_workbench_request_status_id FOREIGN KEY (status_id) REFERENCES public.lkup_status(id) NOT VALID;
-
-
---
--- TOC entry 5164 (class 2606 OID 16891)
--- Name: workbench_request fk_workbench_requestor_user_id; Type: FK CONSTRAINT; Schema: public; Owner: datahub_admin
---
-
-ALTER TABLE ONLY public.workbench_request
-    ADD CONSTRAINT fk_workbench_requestor_user_id FOREIGN KEY (requestor_user_id) REFERENCES public.users(id) NOT VALID;
-
-
---
 -- TOC entry 5400 (class 0 OID 0)
 -- Dependencies: 8
 -- Name: SCHEMA datahub_history; Type: ACL; Schema: -; Owner: datahub_admin
@@ -6561,16 +5520,6 @@ GRANT ALL ON FUNCTION public.after_operation_trigger_fnc() TO datahub_user;
 
 REVOKE ALL ON FUNCTION public.before_operation_trigger_fnc() FROM PUBLIC;
 GRANT ALL ON FUNCTION public.before_operation_trigger_fnc() TO datahub_user;
-
-
---
--- TOC entry 5403 (class 0 OID 0)
--- Dependencies: 513
--- Name: FUNCTION ras_tracking_after_delete_trigger_fnc(); Type: ACL; Schema: public; Owner: datahub_admin
---
-
-REVOKE ALL ON FUNCTION public.ras_tracking_after_delete_trigger_fnc() FROM PUBLIC;
-GRANT ALL ON FUNCTION public.ras_tracking_after_delete_trigger_fnc() TO datahub_user;
 
 
 --
@@ -6781,16 +5730,6 @@ GRANT SELECT,USAGE ON SEQUENCE public.institution_id_seq TO datahub_user;
 
 
 --
--- TOC entry 5443 (class 0 OID 0)
--- Dependencies: 270
--- Name: TABLE jwt_token; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT SELECT,INSERT,UPDATE ON TABLE public.jwt_token TO iam_db_user_dev; --TODO: need to update the the iam user 
-GRANT ALL ON TABLE public.jwt_token TO datahub_user;
-
-
---
 -- TOC entry 5445 (class 0 OID 0)
 -- Dependencies: 269
 -- Name: SEQUENCE jwt_token_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
@@ -6800,30 +5739,12 @@ GRANT ALL ON SEQUENCE public.jwt_token_id_seq TO datahub_user;
 
 
 --
--- TOC entry 5446 (class 0 OID 0)
--- Dependencies: 289
--- Name: TABLE lkup_cde_codelist; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.lkup_cde_codelist TO datahub_user;
-
-
---
 -- TOC entry 5448 (class 0 OID 0)
 -- Dependencies: 288
 -- Name: SEQUENCE lkup_cde_codelist_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
 GRANT ALL ON SEQUENCE public.lkup_cde_codelist_id_seq TO datahub_user;
-
-
---
--- TOC entry 5449 (class 0 OID 0)
--- Dependencies: 291
--- Name: TABLE lkup_cde_codelist_value; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.lkup_cde_codelist_value TO datahub_user;
 
 
 --
@@ -7088,39 +6009,12 @@ GRANT ALL ON TABLE public.lkup_variable_category TO datahub_user;
 
 
 --
--- TOC entry 5501 (class 0 OID 0)
--- Dependencies: 419
--- Name: TABLE lkup_variable_datatype; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.lkup_variable_datatype TO datahub_user;
-
-
---
--- TOC entry 5502 (class 0 OID 0)
--- Dependencies: 287
--- Name: TABLE lkup_variable_type; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.lkup_variable_type TO datahub_user;
-
-
---
 -- TOC entry 5504 (class 0 OID 0)
 -- Dependencies: 286
 -- Name: SEQUENCE lkup_variable_type_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
 GRANT ALL ON SEQUENCE public.lkup_variable_type_id_seq TO datahub_user;
-
-
---
--- TOC entry 5505 (class 0 OID 0)
--- Dependencies: 277
--- Name: TABLE lkup_workbench_interest; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.lkup_workbench_interest TO datahub_user;
 
 
 --
@@ -7205,24 +6099,6 @@ GRANT ALL ON SEQUENCE public.newsletter_id_seq TO datahub_user;
 
 
 --
--- TOC entry 5520 (class 0 OID 0)
--- Dependencies: 340
--- Name: TABLE public_data; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.public_data TO datahub_user;
-
-
---
--- TOC entry 5521 (class 0 OID 0)
--- Dependencies: 338
--- Name: TABLE public_data_collection; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.public_data_collection TO datahub_user;
-
-
---
 -- TOC entry 5523 (class 0 OID 0)
 -- Dependencies: 337
 -- Name: SEQUENCE public_data_collection_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
@@ -7238,15 +6114,6 @@ GRANT ALL ON SEQUENCE public.public_data_collection_id_seq TO datahub_user;
 --
 
 GRANT ALL ON SEQUENCE public.public_data_id_seq TO datahub_user;
-
-
---
--- TOC entry 5526 (class 0 OID 0)
--- Dependencies: 268
--- Name: TABLE ras_tracking; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.ras_tracking TO datahub_user;
 
 
 --
@@ -7440,15 +6307,6 @@ GRANT ALL ON SEQUENCE public.user_login_id_seq TO datahub_user;
 
 
 --
--- TOC entry 5568 (class 0 OID 0)
--- Dependencies: 272
--- Name: TABLE user_ras; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.user_ras TO datahub_user;
-
-
---
 -- TOC entry 5570 (class 0 OID 0)
 -- Dependencies: 271
 -- Name: SEQUENCE user_ras_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
@@ -7491,15 +6349,6 @@ GRANT ALL ON TABLE public.user_role TO datahub_user;
 --
 
 GRANT SELECT,USAGE ON SEQUENCE public.user_role_id_seq TO datahub_user;
-
-
---
--- TOC entry 5577 (class 0 OID 0)
--- Dependencies: 426
--- Name: TABLE user_workspace; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.user_workspace TO datahub_user;
 
 
 --
@@ -7665,15 +6514,6 @@ GRANT ALL ON TABLE public.view_variable_overview_display TO datahub_user;
 
 
 --
--- TOC entry 5606 (class 0 OID 0)
--- Dependencies: 332
--- Name: TABLE weekly_hub_content_data; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.weekly_hub_content_data TO datahub_user;
-
-
---
 -- TOC entry 5608 (class 0 OID 0)
 -- Dependencies: 331
 -- Name: SEQUENCE weekly_hub_content_data_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
@@ -7683,30 +6523,12 @@ GRANT ALL ON SEQUENCE public.weekly_hub_content_data_id_seq TO datahub_user;
 
 
 --
--- TOC entry 5609 (class 0 OID 0)
--- Dependencies: 279
--- Name: TABLE workbench_request; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.workbench_request TO datahub_user;
-
-
---
 -- TOC entry 5611 (class 0 OID 0)
 -- Dependencies: 278
 -- Name: SEQUENCE workbench_request_id_seq; Type: ACL; Schema: public; Owner: datahub_admin
 --
 
 GRANT ALL ON SEQUENCE public.workbench_request_id_seq TO datahub_user;
-
-
---
--- TOC entry 5612 (class 0 OID 0)
--- Dependencies: 281
--- Name: TABLE workbench_request_interest; Type: ACL; Schema: public; Owner: datahub_admin
---
-
-GRANT ALL ON TABLE public.workbench_request_interest TO datahub_user;
 
 
 --
@@ -7743,15 +6565,6 @@ GRANT SELECT,INSERT ON TABLE datahub_history.data_submission_history TO datahub_
 --
 
 GRANT SELECT,INSERT ON TABLE datahub_history.institution_history TO datahub_user;
-
-
---
--- TOC entry 5618 (class 0 OID 0)
--- Dependencies: 273
--- Name: TABLE ras_tracking_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
---
-
-GRANT SELECT,INSERT,UPDATE ON TABLE datahub_history.ras_tracking_history TO datahub_user;
 
 
 --
@@ -7833,24 +6646,6 @@ GRANT SELECT,INSERT ON TABLE datahub_history.user_role_history TO datahub_user;
 --
 
 GRANT SELECT,INSERT ON TABLE datahub_history.users_history TO datahub_user;
-
-
---
--- TOC entry 5628 (class 0 OID 0)
--- Dependencies: 393
--- Name: TABLE workbench_request_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
---
-
-GRANT SELECT,INSERT ON TABLE datahub_history.workbench_request_history TO datahub_user;
-
-
---
--- TOC entry 5629 (class 0 OID 0)
--- Dependencies: 394
--- Name: TABLE workbench_request_interest_history; Type: ACL; Schema: datahub_history; Owner: datahub_admin
---
-
-GRANT SELECT,INSERT ON TABLE datahub_history.workbench_request_interest_history TO datahub_user;
 
 
 --
