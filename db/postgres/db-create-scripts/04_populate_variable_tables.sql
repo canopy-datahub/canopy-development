@@ -17,7 +17,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Data for Name: lkup_core_variable_permissible_value; Type: TABLE DATA; Schema: public; Owner: datahub_admin
+-- Data for Name: lkup_core_variable_permissible_value; Type: TABLE DATA; Schema: public; Owner: canopy_admin
 --
 
 INSERT INTO public.lkup_core_variable_permissible_value (id, variable_name, value, label) VALUES (1, 'nih_arthritis', 0, 'No');
@@ -677,7 +677,7 @@ INSERT INTO public.lkup_core_variable_permissible_value (id, variable_name, valu
 
 
 --
--- Data for Name: lkup_core_variable_property_value; Type: TABLE DATA; Schema: public; Owner: datahub_admin
+-- Data for Name: lkup_core_variable_property_value; Type: TABLE DATA; Schema: public; Owner: canopy_admin
 --
 
 INSERT INTO public.lkup_core_variable_property_value (id, variable_name, entity_property_id, property_value, created_at, created_by, modified_at, modified_by) VALUES (2396, 'nih_race', 206, 'race', '2025-10-28 16:38:12.825457', 9999, NULL, NULL);
@@ -2260,14 +2260,14 @@ The values for this data element are integers that come from a list of 5 permiss
 
 
 --
--- Name: lkup_core_variable_permissible_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
+-- Name: lkup_core_variable_permissible_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: canopy_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_core_variable_permissible_value_id_seq', 1, false);
 
 
 --
--- Name: lkup_core_variable_property_value_id_seq; Type: SEQUENCE SET; Schema: public; Owner: datahub_admin
+-- Name: lkup_core_variable_property_value_id_seq; Type: SEQUENCE SET; Schema: public; Owner: canopy_admin
 --
 
 SELECT pg_catalog.setval('public.lkup_core_variable_property_value_id_seq', 1, false);

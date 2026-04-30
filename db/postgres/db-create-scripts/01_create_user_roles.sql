@@ -1,7 +1,7 @@
--- Role: datahub_admin
--- DROP ROLE IF EXISTS datahub_admin;
+-- Role: canopy_admin
+-- DROP ROLE IF EXISTS canopy_admin;
 
-CREATE ROLE datahub_admin WITH
+CREATE ROLE canopy_admin WITH
   LOGIN
   PASSWORD 'REPLACEME'
   NOSUPERUSER
@@ -10,12 +10,12 @@ CREATE ROLE datahub_admin WITH
   CREATEROLE
   NOREPLICATION;
 
-GRANT rds_superuser TO datahub_admin WITH ADMIN OPTION;
+GRANT rds_superuser TO canopy_admin WITH ADMIN OPTION;
 
--- Role: datahub_user
--- DROP ROLE IF EXISTS datahub_user;
+-- Role: canopy_user
+-- DROP ROLE IF EXISTS canopy_user;
 
-CREATE ROLE datahub_user WITH
+CREATE ROLE canopy_user WITH
   LOGIN
   PASSWORD 'REPLACEME'
   NOSUPERUSER
