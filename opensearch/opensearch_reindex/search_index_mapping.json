@@ -13,7 +13,7 @@
                     }
                 }
             },
-            "acknowledgement_statement": {
+            "acknowledgment_statement": {
                 "type": "text",
                 "fields": {
                     "keyword": {
@@ -337,7 +337,7 @@
                     }
                 }
             },
-            "studyenddate": {
+            "study_end_date": {
                 "type": "text",
                 "fields": {
                     "keyword": {
@@ -346,7 +346,7 @@
                     }
                 }
             },
-            "studystartdate": {
+            "study_start_date": {
                 "type": "text",
                 "fields": {
                     "keyword": {
