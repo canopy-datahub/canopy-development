@@ -215,10 +215,10 @@ def clear_docs(client, index_name):
         raise
 
 
-def create_index_from_db(client, index_name, index_mapping_file_name, connection, query, is_autocomplete=False):
+def create_index_from_db(client, index_name, index_mapping_file_name, connection, query, is_autocomplete=False, recreate=False):
     """
     Create/update index from database with custom query and document structure
-    
+
     Args:
         client: OpenSearch client
         index_name: Name of the index to create
@@ -226,11 +226,20 @@ def create_index_from_db(client, index_name, index_mapping_file_name, connection
         connection: Database connection
         query: Custom SQL query
         is_autocomplete: Whether this is an autocomplete index
+        recreate: If True, drop the index first so it is rebuilt with the
+                  current mapping file (a plain refresh only clears documents
+                  and leaves the existing mapping untouched). Use when the
+                  mapping has changed, e.g. new fields added.
     """
     try:
         # Load index mapping
         mapping = load_index_mapping(index_mapping_file_name)
-        
+
+        # Optionally drop the index so it is recreated with the current mapping
+        if recreate and client.indices.exists(index=index_name):
+            client.indices.delete(index=index_name)
+            logger.info(f"Deleted index {index_name} for recreation with current mapping")
+
         # Create the index if it doesn't exist
         if not client.indices.exists(index=index_name):
             try:
@@ -303,38 +312,39 @@ def create_index_from_db(client, index_name, index_mapping_file_name, connection
         raise
 
 
-def refresh_index(client, index_name, index_mapping_file_name):
+def refresh_index(client, index_name, index_mapping_file_name, recreate=False):
     """
     Refresh a specific index with data from database
-    
+
     Args:
         client: OpenSearch client
         index_name: Name of the index to refresh
         index_mapping_file_name: Mapping file for the index
-        
+        recreate: If True, drop and recreate the index so mapping changes apply
+
     Returns:
         int: Number of documents indexed
     """
     connection = None
     try:
         connection = get_database_connection()
-        
+
         if index_name == study_search_index_name:
             doc_count = create_index_from_db(
-                client, index_name, index_mapping_file_name, 
-                connection, query=study_search_query
+                client, index_name, index_mapping_file_name,
+                connection, query=study_search_query, recreate=recreate
             )
         elif index_name == variable_index_name:
             doc_count = create_index_from_db(
-                client, index_name, index_mapping_file_name, 
-                connection, query=variable_query
+                client, index_name, index_mapping_file_name,
+                connection, query=variable_query, recreate=recreate
             )
         else:  # autocomplete
             doc_count = create_index_from_db(
-                client, index_name, index_mapping_file_name, 
-                connection, query=autocomplete_query, is_autocomplete=True
+                client, index_name, index_mapping_file_name,
+                connection, query=autocomplete_query, is_autocomplete=True, recreate=recreate
             )
-        
+
         return doc_count
         
     finally:
@@ -366,12 +376,15 @@ def lambda_handler(event, context):
         
         # Determine which indices to refresh (default: all)
         indices_to_refresh = event.get('indices', ['study_search', 'variable_search', 'autocomplete'])
-        
+        # Indices to drop-and-recreate (applies mapping changes); default: none
+        indices_to_recreate = event.get('recreate', [])
+
         # Refresh study search index
         if 'study_search' in indices_to_refresh:
             try:
                 logger.info(f"Starting refresh for index: {study_search_index_name}")
-                doc_count = refresh_index(client, study_search_index_name, study_search_index_mapping_file_name)
+                doc_count = refresh_index(client, study_search_index_name, study_search_index_mapping_file_name,
+                                          recreate='study_search' in indices_to_recreate)
                 results['study_search'] = {
                     'status': 'completed',
                     'documents': doc_count
@@ -387,7 +400,8 @@ def lambda_handler(event, context):
         if 'autocomplete' in indices_to_refresh:
             try:
                 logger.info(f"Starting refresh for index: {autocomplete_index_name}")
-                doc_count = refresh_index(client, autocomplete_index_name, autocomplete_index_mapping_file_name)
+                doc_count = refresh_index(client, autocomplete_index_name, autocomplete_index_mapping_file_name,
+                                          recreate='autocomplete' in indices_to_recreate)
                 results['autocomplete'] = {
                     'status': 'completed',
                     'documents': doc_count
@@ -403,7 +417,8 @@ def lambda_handler(event, context):
         if 'variable_search' in indices_to_refresh:
             try:
                 logger.info(f"Starting refresh for index: {variable_index_name}")
-                doc_count = refresh_index(client, variable_index_name, variable_index_mapping_file_name)
+                doc_count = refresh_index(client, variable_index_name, variable_index_mapping_file_name,
+                                          recreate='variable_search' in indices_to_recreate)
                 results['variable_search'] = {
                     'status': 'completed',
                     'documents': doc_count
